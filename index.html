@@ -32,6 +32,7 @@ body {
 .bg-mesh { position: fixed; inset: 0; z-index: 0; opacity: 0.85; transition: all 2s ease; }
 .orb { position: absolute; border-radius: 50%; filter: blur(90px); transition: all 2s ease; pointer-events: none; }
 .particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+
 .raindrop {
   position: absolute; width: 1.5px;
   background: linear-gradient(180deg, transparent 0%, rgba(180,220,255,0.5) 100%);
@@ -48,142 +49,165 @@ body {
 @keyframes flakefall {
   0% { transform: translateY(-10px) translateX(0); opacity:.7; }
   50% { transform: translateY(50vh) translateX(20px); }
-  100% { transform: translateY(110vh) translateX(-10px); opacity:0; }
+  100% { transform: translateY(110vh) translateX(-10px) opacity:0; }
 }
 
-.app { position: relative; z-index: 10; max-width: 680px; margin: 0 auto; padding: 30px 20px 100px; }
-.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; gap: 12px; }
-.logo { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
-.logo-badge { background: var(--accent); color: #0f1b2d; border-radius: 6px; padding: 3px 8px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
+.app { position: relative; z-index: 10; max-width: 680px; margin: 0 auto; padding: 20px 16px 80px; }
+
+
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 20px; gap: 12px; position: relative; }
+.logo-wrap { position: relative; cursor: pointer; }
+.logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 6px; }
+.logo-badge { background: var(--accent); color: #0f1b2d; border-radius: 6px; padding: 3px 8px; font-size: 0.68rem; font-weight: 800; text-transform: uppercase; }
+
+/* Menú desplegable del Logo */
+.logo-menu {
+  position: absolute; top: calc(100% + 8px); left: 0; 
+  background: rgba(15, 27, 45, 0.95); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid var(--card-b); border-radius: 14px; padding: 6px; display: none; z-index: 200; box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-width: 180px;
+}
+.logo-menu button {
+  width: 100%; background: none; border: none; color: white; padding: 10px 14px; text-align: left;
+  font-family: 'Syne', sans-serif; font-size: 0.85rem; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 8px;
+}
+.logo-menu button:hover { background: rgba(255,255,255,0.1); color: var(--accent); }
+
 .geo-btn {
-  background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  color: white; border-radius: 50px; padding: 10px 18px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 600;
-  cursor: pointer; display: flex; align-items: center; gap: 8px; transition: all .2s ease; white-space: nowrap;
+  background: var(--accent); color: #0f1b2d; border: none;
+  border-radius: 50px; padding: 10px 16px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 6px; transition: all .2s ease; white-space: nowrap; box-shadow: 0 4px 15px rgba(232,255,87,0.2);
 }
-.geo-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
+.geo-btn:hover { transform: translateY(-1px); box-shadow: 0 6px 20px rgba(232,255,87,0.3); }
 
-.search-wrap { position: relative; margin-bottom: 28px; z-index: 100; }
+.search-wrap { position: relative; margin-bottom: 24px; z-index: 100; }
 .search-in {
   width: 100%; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  color: white; border-radius: 50px; padding: 16px 52px 16px 24px; font-size: 1rem; font-family: 'Syne', sans-serif; outline: none; transition: all .2s ease;
+  color: white; border-radius: 50px; padding: 15px 50px 15px 22px; font-size: 0.95rem; font-family: 'Syne', sans-serif; outline: none; transition: all .2s ease;
 }
-.search-in::placeholder { color: rgba(255,255,255,.35); }
-.search-in:focus { border-color: rgba(255,255,255,.45); background: rgba(255,255,255,.12); }
-.search-ico { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: .6; pointer-events: none; }
+.search-in::placeholder { color: rgba(255,255,255,.4); }
+.search-in:focus { border-color: rgba(255,255,255,.5); background: rgba(255,255,255,.12); }
+.search-ico { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); opacity: .5; pointer-events: none; }
+
 .ac {
-  position: absolute; top: calc(100% + 8px); left: 0; right: 0;
-  background: rgba(13, 23, 42, 0.98); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; overflow: hidden; box-shadow: 0 16px 40px rgba(0,0,0,0.6);
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: rgba(10, 18, 32, 0.98); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border: 1px solid rgba(255,255,255,0.15); border-radius: 20px; overflow: hidden; box-shadow: 0 12px 35px rgba(0,0,0,0.6);
 }
-.ac-item { padding: 14px 22px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.05); transition: background .2s; display: flex; align-items: center; gap: 14px; }
+.ac-item { padding: 14px 20px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.05); transition: background .2s; display: flex; align-items: center; gap: 12px; }
 .ac-item:last-child { border: none; }
 .ac-item:hover { background: rgba(255,255,255,.08); }
 .ac-city { font-weight: 600; color: #fff; }
-.ac-sub { font-size: .75rem; opacity: .5; margin-top: 3px; }
+.ac-sub { font-size: .75rem; opacity: .5; margin-top: 2px; }
 
 #content { display: flex; flex-direction: column; gap: 16px; }
 
 .hero-narrative-card {
-  background: linear-gradient(135deg, rgba(232,255,87,0.12) 0%, rgba(255,255,255,0.03) 100%);
-  border: 2px solid rgba(232,255,87,0.3); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border-radius: var(--r); padding: 32px 28px; position: relative; overflow: hidden;
+  background: linear-gradient(135deg, rgba(232,255,87,0.1) 0%, rgba(255,255,255,0.03) 100%);
+  border: 2px solid rgba(232,255,87,0.25); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r); padding: 28px 24px; position: relative; overflow: hidden;
 }
-.hero-loc { font-size: .85rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-.hero-text { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #ffffff; letter-spacing: -0.2px; }
+.hero-loc { font-size: .8rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
+.hero-text { font-size: 1.25rem; font-weight: 600; line-height: 1.45; color: #ffffff; }
 
-.nick-banner { font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 12px; cursor: pointer; opacity: 0.7; }
-.nick-banner:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+.name-trigger-btn { font-size: 0.72rem; background: rgba(255,255,255,0.08); padding: 5px 12px; border-radius: 6px; display: inline-block; margin-top: 14px; cursor: pointer; opacity: 0.7; border: 1px solid transparent; }
+.name-trigger-btn:hover { opacity: 1; background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.1); }
 
-.name-box { background: var(--card); border: 1px solid var(--card-b); border-radius: var(--r); padding: 30px; text-align: center; }
-.name-box h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 800; }
-.name-box p { font-size: 0.9rem; opacity: 0.6; margin-bottom: 20px; }
-.name-row { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
-.name-in { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--card-b); color: white; border-radius: 50px; padding: 12px 20px; font-family: 'Syne', sans-serif; outline: none; font-size: 1rem; text-align: center; }
-.name-in:focus { border-color: var(--accent); }
-.name-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50px; padding: 0 24px; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; }
-
-.mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
-.mini-temp { font-size: 3.5rem; font-weight: 800; letter-spacing: -2px; line-height: 1; }
-.mini-temp sup { font-size: 1.5rem; opacity: .7; }
+.mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.08); }
+.mini-temp { font-size: 3.2rem; font-weight: 800; letter-spacing: -1.5px; line-height: 1; }
+.mini-temp sup { font-size: 1.3rem; opacity: .7; }
 .mini-meta { text-align: right; }
-.mini-cond { font-weight: 700; background: rgba(255,255,255,0.1); padding: 6px 14px; border-radius: 50px; font-size: .85rem; display: inline-block; margin-bottom: 4px; }
-.mini-hl { font-size: .8rem; opacity: .5; }
+.mini-cond { font-weight: 700; background: rgba(255,255,255,0.1); padding: 5px 12px; border-radius: 50px; font-size: .8rem; display: inline-block; margin-bottom: 4px; }
+.mini-hl { font-size: .78rem; opacity: .5; }
 
-.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
 @media(max-width:480px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
-.stat { background: var(--card); border: 1px solid var(--card-b); border-radius: 18px; padding: 16px 12px; text-align: center; }
-.stat-sym { font-size: 1.5rem; font-family: 'Syne Mono'; margin-bottom: 6px; }
-.stat-val { font-size: 1.1rem; font-weight: 700; }
-.stat-lbl { font-size: .68rem; opacity: .5; margin-top: 4px; text-transform: uppercase; font-weight: 600; }
+.stat { background: var(--card); border: 1px solid var(--card-b); border-radius: 16px; padding: 14px 10px; text-align: center; }
+.stat-sym { font-size: 1.3rem; font-family: 'Syne Mono'; margin-bottom: 4px; }
+.stat-val { font-size: 1.05rem; font-weight: 700; }
+.stat-lbl { font-size: .65rem; opacity: .5; margin-top: 2px; text-transform: uppercase; font-weight: 600; }
 
-.humidity-card { background: var(--card); border: 1px solid var(--card-b); border-radius: var(--r); padding: 22px; display: flex; align-items: center; gap: 22px; }
-.hum-circle { position: relative; width: 75px; height: 75px; flex-shrink: 0; }
-.hum-circle svg { width: 75px; height: 75px; transform: rotate(-90deg); }
+.humidity-card { background: var(--card); border: 1px solid var(--card-b); border-radius: var(--r); padding: 20px; display: flex; align-items: center; gap: 18px; }
+.hum-circle { position: relative; width: 65px; height: 65px; flex-shrink: 0; }
+.hum-circle svg { width: 65px; height: 65px; transform: rotate(-90deg); }
 .hum-circle .track { fill: none; stroke: rgba(255,255,255,.1); stroke-width: 6; }
 .hum-circle .fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1s ease; }
-.hum-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1.05rem; font-weight: 800; }
-.hum-desc { font-size: .92rem; font-weight: 500; color: rgba(255,255,255,0.9); margin-top: 4px; }
+.hum-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; }
+.hum-desc { font-size: .88rem; color: rgba(255,255,255,0.8); margin-top: 3px; }
 
-.hourly-scroll, .forecast-row { display: flex; gap: 10px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
+.hourly-scroll, .forecast-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 6px; scrollbar-width: none; }
 .hourly-scroll::-webkit-scrollbar, .forecast-row::-webkit-scrollbar { display: none; }
-.h-chip { background: var(--card); border: 1px solid var(--card-b); border-radius: 24px; padding: 14px 16px; text-align: center; min-width: 72px; }
-.h-chip.now { background: rgba(232,255,87,.14); border-color: rgba(232,255,87,.35); }
-.h-t { font-size: .7rem; opacity: .5; font-weight: 700; }
-.h-sym { font-size: 1.2rem; font-family: 'Syne Mono'; margin: 4px 0; }
-.h-tmp { font-size: .95rem; font-weight: 700; }
+.h-chip { background: var(--card); border: 1px solid var(--card-b); border-radius: 20px; padding: 12px 14px; text-align: center; min-width: 68px; }
+.h-chip.now { background: rgba(232,255,87,.12); border-color: rgba(232,255,87,.3); }
+.h-t { font-size: .65rem; opacity: .5; font-weight: 700; }
+.h-sym { font-size: 1.1rem; font-family: 'Syne Mono'; margin: 2px 0; }
+.h-tmp { font-size: .9rem; font-weight: 700; }
 
-.fc-day { background: var(--card); border: 1px solid var(--card-b); border-radius: 18px; padding: 16px 14px; text-align: center; min-width: 84px; flex: 1; }
-.fc-name { font-size: .7rem; opacity: .5; font-weight: 700; }
-.fc-sym { font-size: 1.4rem; font-family: 'Syne Mono'; margin: 6px 0; }
-.fc-max { font-size: 1.05rem; font-weight: 700; }
-.fc-min { font-size: .75rem; opacity: .4; }
+.fc-day { background: var(--card); border: 1px solid var(--card-b); border-radius: 16px; padding: 14px 12px; text-align: center; min-width: 80px; flex: 1; }
+.fc-name { font-size: .65rem; opacity: .5; font-weight: 700; }
+.fc-sym { font-size: 1.2rem; font-family: 'Syne Mono'; margin: 4px 0; }
+.fc-max { font-size: 1rem; font-weight: 700; }
+.fc-min { font-size: .72rem; opacity: .4; }
 
-.rec-card { background: rgba(232,255,87,.05); border: 1px solid rgba(232,255,87,.2); border-radius: var(--r); padding: 20px; }
-.rec-hdr { font-size: .72rem; opacity: .7; text-transform: uppercase; font-weight: 700; margin-bottom: 12px; }
-.rec-pills { display: flex; flex-wrap: wrap; gap: 8px; }
-.rec-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 30px; padding: 6px 14px; font-size: .85rem; font-weight: 600; }
+.rec-card { background: rgba(232,255,87,.04); border: 1px solid rgba(232,255,87,.15); border-radius: var(--r); padding: 18px; }
+.rec-hdr { font-size: .7rem; opacity: .6; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+.rec-pills { display: flex; flex-wrap: wrap; gap: 6px; }
+.rec-pill { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.08); border-radius: 30px; padding: 5px 12px; font-size: .8rem; font-weight: 600; }
 
-.chat-wrap { background: rgba(0,0,0,0.2); border: 1px solid var(--card-b); border-radius: var(--r); padding: 20px; }
-.chat-msgs { max-height: 280px; overflow-y: auto; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
-.msg { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: .9rem; line-height: 1.5; animation: msgin .25s ease both; }
-@keyframes msgin { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:none} }
-.msg.u { background: rgba(232,255,87,.15); border: 1px solid rgba(232,255,87,.3); align-self: flex-end; border-bottom-right-radius: 4px; }
-.msg.b { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); align-self: flex-start; border-bottom-left-radius: 4px; }
-.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
-.chip { background: rgba(255,255,255,.06); border: 1px solid rgba(255,255,255,.1); border-radius: 50px; padding: 6px 14px; font-size: .75rem; cursor: pointer; transition: all .2s; }
-.chip:hover { background: rgba(232,255,87,.15); border-color: var(--accent); }
-.chat-row { display: flex; gap: 10px; }
-.chat-in { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--card-b); color: white; border-radius: 50px; padding: 14px 22px; font-family: 'Syne', sans-serif; font-size: .92rem; outline: none; }
-.chat-in:focus { border-color: var(--accent); }
-.send-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+.chat-wrap { background: rgba(0,0,0,0.15); border: 1px solid var(--card-b); border-radius: var(--r); padding: 18px; }
+.chat-msgs { max-height: 240px; overflow-y: auto; margin-bottom: 12px; display: flex; flex-direction: column; gap: 8px; padding-right: 4px; }
+.msg { max-width: 85%; padding: 10px 16px; border-radius: 16px; font-size: .88rem; line-height: 1.45; animation: msgin .2s ease both; }
+@keyframes msgin { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.msg.u { background: rgba(232,255,87,.12); border: 1px solid rgba(232,255,87,.25); align-self: flex-end; border-bottom-right-radius: 4px; }
+.msg.b { background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.08); align-self: flex-start; border-bottom-left-radius: 4px; }
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.08); border-radius: 50px; padding: 5px 12px; font-size: .72rem; cursor: pointer; }
+.chip:hover { background: rgba(232,255,87,.12); border-color: var(--accent); }
+.chat-row { display: flex; gap: 8px; }
+.chat-in { flex: 1; background: rgba(0,0,0,0.25); border: 1px solid var(--card-b); color: white; border-radius: 50px; padding: 12px 20px; font-family: 'Syne', sans-serif; font-size: .88rem; outline: none; }
+.send-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50%; width: 42px; height: 42px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 
-.sec-lbl { font-size: .72rem; opacity: .45; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 10px; margin-bottom: 4px; }
-.welcome { text-align: center; padding: 60px 20px; }
-.welcome-sym { font-size: 4.5rem; font-family: 'Syne Mono'; margin-bottom: 16px; color: var(--accent); }
-.welcome h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
-.welcome p { opacity: .6; font-size: .95rem; line-height: 1.7; max-width: 320px; margin: 0 auto; }
+.sec-lbl { font-size: .68rem; opacity: .45; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; margin-top: 8px; margin-bottom: 4px; }
+.welcome { text-align: center; padding: 50px 16px; }
+.welcome-sym { font-size: 4rem; font-family: 'Syne Mono'; margin-bottom: 12px; color: var(--accent); }
+.welcome h2 { font-size: 1.8rem; font-weight: 800; margin-bottom: 8px; }
+.welcome p { opacity: .6; font-size: .9rem; line-height: 1.6; max-width: 300px; margin: 0 auto 16px; }
+
+/* Modal sutil para configurar nombre */
+.name-modal {
+  position: fixed; inset: 0; background: rgba(5,10,20,0.8); backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 20px;
+}
+.modal-box { background: #0f1b2d; border: 1px solid var(--card-b); padding: 24px; border-radius: var(--r); width: 100%; max-width: 360px; text-align: center; }
+.modal-box h3 { margin-bottom: 8px; font-weight: 800; }
+.modal-box p { font-size: 0.85rem; opacity: 0.6; margin-bottom: 16px; }
 </style>
 </head>
 <body>
 
 <div class="bg" id="bg"></div>
 <div class="bg-mesh" id="mesh">
-  <div class="orb" id="orb1" style="width:500px;height:500px;top:-150px;right:-100px;"></div>
-  <div class="orb" id="orb2" style="width:400px;height:400px;bottom:-100px;left:-100px;"></div>
-  <div class="orb" id="orb3" style="width:250px;height:250px;top:40%;left:40%;"></div>
+  <div class="orb" id="orb1" style="width:450px;height:450px;top:-150px;right:-100px;"></div>
+  <div class="orb" id="orb2" style="width:350px;height:350px;bottom:-100px;left:-100px;"></div>
+  <div class="orb" id="orb3" style="width:200px;height:200px;top:40%;left:40%;"></div>
 </div>
 <div class="particles" id="particles"></div>
 
 <div class="app">
   <div class="header">
-    <div class="logo">Clima <span class="logo-badge">para dummies</span></div>
-    <button class="geo-btn" id="geoBtn">Mi ubicación</button>
+    <div class="logo-wrap" id="logoWrap">
+      <div class="logo">Clima <span class="logo-badge">Dummies ▼</span></div>
+      <div class="logo-menu" id="logoMenu">
+        <button onclick="refreshCurrentWeather(event)">🔄 Refrescar clima</button>
+        <button onclick="cleanForSearch(event)">🔍 Buscar otro lugar</button>
+      </div>
+    </div>
+    <button class="geo-btn" id="geoBtn">📍 Usar mi ubi</button>
   </div>
 
   <div class="search-wrap">
     <input class="search-in" id="srch" type="text" placeholder="Buscá pueblos, playas, ciudades..." autocomplete="off">
     <span class="search-ico">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
       </svg>
     </span>
@@ -194,7 +218,20 @@ body {
     <div class="welcome">
       <div class="welcome-sym">☀</div>
       <h2>Clima para Dummies</h2>
-      <p>Cargando tu rincón preferido del mapa...</p>
+      <p>Rastreando tu ubicación para darte el reporte express...</p>
+    </div>
+  </div>
+</div>
+
+<!-- Modal oculto para cambiar nombre opcionalmente -->
+<div class="name-modal" id="nmModal" style="display: none;">
+  <div class="modal-box">
+    <h3>¿Cómo te llamás?</h3>
+    <p>Opcional. Si lo dejas vacío, te llamaré de formas ramdom muy copadas.</p>
+    <input class="name-in" id="modalNameIn" type="text" style="width:100%; background:rgba(0,0,0,0.4); border:1px solid var(--card-b); color:white; border-radius:50px; padding:12px 20px; font-family:'Syne'; outline:none; text-align:center; margin-bottom:14px;" placeholder="Tu nombre o apodo...">
+    <div style="display:flex; gap:8px;">
+      <button class="geo-btn" style="flex:1; justify-content:center; background:rgba(255,255,255,0.1); color:white;" onclick="closeNameModal()">Cancelar</button>
+      <button class="geo-btn" style="flex:1; justify-content:center;" onclick="saveName()">Guardar</button>
     </div>
   </div>
 </div>
@@ -203,26 +240,17 @@ body {
 let wd = null, loc = null, acTimer = null;
 let userName = localStorage.getItem('dummy_name') || '';
 
-const NICKNAMES = {
-  'jonatan': 'Choni', 'jonathan': 'Jona', 'franco': 'Franquito', 'francisco': 'Fran',
-  'santiago': 'Santi', 'guillermo': 'Guille', 'nicolas': 'Nico', 'alejandro': 'Ale',
-  'juan': 'Juancho', 'mateo': 'Matute', 'lucas': 'Luquitas', 'matias': 'Mati',
-  'rodrigo': 'Rodri', 'diego': 'Dieguito', 'martin': 'Tincho', 'sebastian': 'Seba',
-  'camila': 'Cami', 'sofia': 'Sofi', 'valentina': 'Valen', 'florencia': 'Flor',
-  'maria': 'Mari', 'agustina': 'Agus', 'lucia': 'Lu', 'daniela': 'Dani'
-};
+// Palabras clave aleatorias cuando el usuario no configuró su nombre
+const RANDOM_SLANGS = ['mae', 'che', 'parce', 'maje', 'amigo', 'amiga', 'mi amor', 'hermano', 'titán', 'crack', 'fiera'];
 
-function getNickname(name) {
-  if (!name) return 'Titán';
-  const normal = name.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-  if (NICKNAMES[normal]) return NICKNAMES[normal];
-  const generics = ['Fiera', 'Maquinaria', 'Capo', 'Jefe', 'Lince', 'Crack'];
-  return generics[Math.floor((normal.charCodeAt(0) || 0) % generics.length)];
+function getDynamicGreeting() {
+  if (userName) return userName;
+  return RANDOM_SLANGS[Math.floor(Math.random() * RANDOM_SLANGS.length)];
 }
 
 function wSym(code, day=true) {
   if (code===0) return day ? '☀' : '☽';
-  if (code<=2) return day ? '⛅' : '☁';
+  if (code subdivision <= 2) return day ? '⛅' : '☁';
   if (code===3) return '☁';
   if ([45,48].includes(code)) return '◎';
   if ([51,53,55,61,63,65,80,81,82].includes(code)) return '⛆';
@@ -236,69 +264,72 @@ function wText(code) {
   return m[code]||'Variable';
 }
 
-function getSlangNarrative(country, code, t, feels, rain, wind, uv) {
+// Generador de respuestas dinámicas con humor y variabilidad alta
+function getSlangNarrative(country, code, t, rain) {
   const c = (country || '').toLowerCase();
-  const nick = getNickname(userName);
-  let base = ""; let extra = "";
+  const g = getDynamicGreeting();
+  
+  // Bolsas de frases aleatorias para evitar respuestas repetitivas
+  const cr_hot = [
+    `¡Pura vida, ${g}! Qué clase de solazo se maneja hoy mae. Te vas a derretir en la acera, legalmente está para buscar una sombrita o una birra.`,
+    `¡Diay ${g}! Pegó fuerte el calorón hoy mae. Olvídate de abrigos, salí en shorts o vas a terminar modo sauna viviente.`,
+    `¿Todo bien, ${g}? Hace un bochorno de locos mae. El aire está pesado, ideal para no hacer absolutamente nada productivo.`
+  ];
+  const cr_rain = [
+    `¡Gente, ${g}! Se viene un baldazo de agua del copón. Guardá la ropa y sacá los pilotos porque se va a inundar hasta el pensamiento.`,
+    `¡Mae ${g}, qué baldazo! Está lloviendo parejo. El cielo se cayó por completo, quédate adentro viendo pelis mejor.`,
+    `¡Pura vida ${g}! Tremendo aguacero se armó en un segundo. Clásico de la zona, salí con paraguas o salís a nadar.`
+  ];
+  const arg_hot = [
+    `¡Qué hacés, ${g}! Che, hace un calor de cagarse afuera. Caminás media cuadra y ya sos un charco humano, posta.`,
+    `¡Mirá lo que es esto, ${g}! Un horno el día de hoy, ideal para tomarse un tereré bien frío o quedarse pegado al ventilador.`,
+    `¡Buenas, ${g}! Te cocinás vivo si salís al sol directo. Tremendo calorazo se mandó hoy.`
+  ];
+  const arg_rain = [
+    `¡Se viene el agua, ${g}! Meté la ropa antes de que se te licúen los calzones en la soga. Tremendo diluvio se armó.`,
+    `¡Che ${g}, terrible tormenta! Un embole para andar afuera saltando charcos. Está para tortas fritas y encierro total.`,
+    `¡Qué onda, ${g}! Alto diluvio. Se cae el cielo a pedazos, no seas salame y llevate el paraguas.`
+  ];
+  const gen_neutral = [
+    `¡Hola, ${g}! El clima está bastante tranqui, ni fu ni fa. Una temperatura amigable para salir a dar una vuelta sin sufrir.`,
+    `¿Qué cuenta la vida, ${g}? Día templado, medio gris pero zafa lindo. Ni te congelás ni te derretís.`,
+    `¡Buenas, ${g}! Todo bastante en paz por acá hoy. Podés andar con un bucito liviano y estás re bien.`
+  ];
 
-  if (c.includes('argentina')) {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Qué onda, ${nick}! Se cae el cielo abajo, bro. Meté la ropa adentro porque se larga un diluvio de la patada y te va a licuar las plantas.`;
-    else if (t >= 30) base = `¡Qué hacés, ${nick}! Che, hace un calor de cagarse afuera. Caminás media cuadra y ya sos un charco humano, posta.`;
-    else if (t <= 12) base = `¡Buenas, ${nick}! Hace un frío que te parte al medio. Salí bien abrigado y no seas salame, mirá que te congelás al toque.`;
-    else base = `¡Todo tranqui, ${nick}! El día está ahí, medio pelo. Ni frío ni calor, zafa lindo para salir a dar una vuelta sin drama.`;
-    if (wind > 25) extra = " Hay un viento bárbaro que te vuela la gorra.";
-    if (uv >= 7) extra += " Ponete protector porque quedás como un tomate en ensalada.";
+  // Selección inteligente por condiciones
+  const isRainy = ([95,96,99].includes(code) || rain > 2);
+  
+  if (c.includes('costa rica')) {
+    if (isRainy) return cr_rain[Math.floor(Math.random() * cr_rain.length)];
+    if (t >= 27) return cr_hot[Math.floor(Math.random() * cr_hot.length)];
   } 
-  else if (c.includes('colombia')) {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Q'hubo, ${nick}, parce! Qué viaje, se está desgajando el cielo durísimo. No salga sin paraguas si no se quiere pegar una saneada medrosa.`;
-    else if (t >= 30) base = `¡Qué más, ${nick}! Uy juemadre, está haciendo un calor bien berraco. Provoca quedarse quieto tomando algo frío.`;
-    else if (t <= 14) base = `¡Hola, ${nick}! Está haciendo un frío bien harto afuera, póngase una buena chaqueta para salir a la calle.`;
-    else base = `¡Qué onda, ${nick}, todo bien! El clima está una elegancia, apenas para salir a dar una vuelta sin tanto visaje.`;
-  } 
-  else if (c.includes('costa rica')) {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Pura vida, ${nick}! Mae, se viene un baldazo de agua del copón. Se va a inundar todo, mejor se guarda de una sola vez.`;
-    else if (t >= 30) base = `¡Qué dice, ${nick}, mae! Está pegando un solazo de locos, legalmente se va a derretir si sale al mediodía.`;
-    else if (t <= 16) base = `¡Pura vida, ${nick}! Qué chiflón de frío está haciendo, mae. Alístese la jacket o un buen polerón porque se va a congelar.`;
-    else base = `¡Buenas, ${nick}! El tiempo está bien monito hoy mae, ni mucha lluvia ni mucho sol. Sabor.`;
-  } 
-  else if (c.includes('mexico') || c.includes('méxico')) {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Qué onda, ${nick}, carnal! Va a caer un mendigo aguacero marca diablo. No te la juegues y saca las botas.`;
-    else if (t >= 30) base = `¡Qué transa, ${nick}! Hace un calorón de la fregada, la neta está como para una chela bien fría porque el sol no perdona.`;
-    else if (t <= 12) base = `¡Qué onda, ${nick}! Está haciendo un chingo de frío, tápate bien carnal, saca la chamarra gruesa de una vez.`;
-    else base = `¡Qué milagro, ${nick}! El clima está bastante chido hoy, ni frío ni calor, ideal para andar en la calle.`;
-  } 
-  else if (c.includes('españa') || c.includes('espana')) {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Hombre, ${nick}, tío! Menuda tormenta, está cayendo la del pulpo. Como salgas a la calle te vas a quedar empapado perdío.`;
-    else if (t >= 30) base = `¡Qué pasa, ${nick}! Hace un calor de la hostia afuera, chaval. No hay quien pare bajo el sol sin una buena sombra.`;
-    else if (t <= 11) base = `¡Muy buenas, ${nick}! Hace un frío que pela. Píllate un buen abrigo o un plumífero porque te vas a quedar pajarito.`;
-    else base = `¡Hola, ${nick}! Menudo día más majo se ha quedado. No hace falta complicarse mucho la vida hoy, se está de lujo.`;
-  } 
-  else {
-    if ([95,96,99].includes(code) || rain > 3) base = `¡Hola, ${nick}! Se cae el cielo en pedazos. Hay una pinta tremenda de tormenta y vas a terminar flotando.`;
-    else if (t >= 30) base = `¡Hola, ${nick}! El sol está modo derretimiento activado. Parece que estamos viviendo adentro de un horno microondas.`;
-    else if (t <= 12) base = `¡Hola, ${nick}! Hace un frío polar insoportable. Si salís en remera vas a quedar tieso como estatua.`;
-    else base = `¡Hola, ${nick}! Día templado y tranquilo. El cielo está pintado de un gris neutro que no molesta a nadie.`;
+  if (c.includes('argentina') || c.includes('uruguay')) {
+    if (isRainy) return arg_rain[Math.floor(Math.random() * arg_rain.length)];
+    if (t >= 27) return arg_hot[Math.floor(Math.random() * arg_hot.length)];
   }
-  return `"${base}${extra}"`;
+  
+  // Genérico por defecto cambiante
+  if (isRainy) return `¡Atención ${g}! Se está cayendo el cielo. Un aguacero de novela, ideal para quedarse adentro durmiendo la siesta.`;
+  if (t >= 29) return `¡Uff, ${g}! Qué calorón se siente. Estamos adentro de un microondas, hidratate bien y buscá aire acondicionado.`;
+  if (t <= 13) return `¡Hace un frío polar, ${g}! Ponete hasta el poncho porque el viento te congela la nariz en dos segundos.`;
+  
+  return gen_neutral[Math.floor(Math.random() * gen_neutral.length)];
 }
 
 const THEMES = {
-  sunny:  { bg:'#0a1628', o1:'rgba(255,200,50,.25)', o2:'rgba(50,120,255,.15)', o3:'rgba(255,150,0,.1)', px:'none' },
-  cloudy: { bg:'#111a28', o1:'rgba(100,130,160,.2)', o2:'rgba(60,80,110,.15)', o3:'rgba(80,100,130,.1)', px:'none' },
-  rainy:  { bg:'#0a1120', o1:'rgba(40,80,200,.25)', o2:'rgba(20,50,150,.2)', o3:'rgba(60,100,220,.1)', px:'rain' },
-  stormy: { bg:'#050810', o1:'rgba(80,0,160,.25)', o2:'rgba(20,30,80,.3)', o3:'rgba(150,50,255,.1)', px:'rain' },
-  snowy:  { bg:'#0f1724', o1:'rgba(180,210,255,.2)', o2:'rgba(100,140,200,.15)', o3:'rgba(200,220,255,.08)', px:'snow' },
-  foggy:  { bg:'#101824', o1:'rgba(120,140,160,.2)', o2:'rgba(80,100,130,.15)', o3:'rgba(100,120,150,.08)', px:'none' },
-  night:  { bg:'#030710', o1:'rgba(50,30,120,.2)', o2:'rgba(20,10,60,.2)', o3:'rgba(80,60,180,.08)', px:'none' },
+  sunny:  { bg:'#0a1628', o1:'rgba(255,200,50,.2)', o2:'rgba(50,120,255,.12)', o3:'rgba(255,150,0,.08)', px:'none' },
+  cloudy: { bg:'#111a28', o1:'rgba(100,130,160,.15)', o2:'rgba(60,80,110,.12)', o3:'rgba(80,100,130,.08)', px:'none' },
+  rainy:  { bg:'#0a1120', o1:'rgba(40,80,200,.2)', o2:'rgba(20,50,150,.15)', o3:'rgba(60,100,220,.08)', px:'rain' },
+  stormy: { bg:'#050810', o1:'rgba(80,0,160,.2)', o2:'rgba(20,30,80,.2)', o3:'rgba(150,50,255,.08)', px:'rain' },
+  snowy:  { bg:'#0f1724', o1:'rgba(180,210,255,.15)', o2:'rgba(100,140,200,.12)', o3:'rgba(200,220,255,.05)', px:'snow' },
+  night:  { bg:'#030710', o1:'rgba(50,30,120,.15)', o2:'rgba(20,10,60,.15)', o3:'rgba(80,60,180,.05)', px:'none' }
 };
 
 function applyTheme(code, day) {
-  let k = 'sunny';
-  if (!day) k = 'night';
+  let k = 'sunny'; if (!day) k = 'night';
   else if ([95,96,99].includes(code)) k = 'stormy';
   else if ([61,63,65,80,81,82].includes(code)) k = 'rainy';
   else if ([71,73,75,77,85,86].includes(code)) k = 'snowy';
-  else if ([45,48].includes(code)) k = 'foggy';
   else if ([1,2,3].includes(code)) k = 'cloudy';
 
   const t = THEMES[k] || THEMES.sunny;
@@ -307,88 +338,78 @@ function applyTheme(code, day) {
   document.getElementById('orb2').style.background = `radial-gradient(circle, ${t.o2} 0%, transparent 70%)`;
   document.getElementById('orb3').style.background = `radial-gradient(circle, ${t.o3} 0%, transparent 70%)`;
   
-  const p = document.getElementById('particles');
-  p.innerHTML = '';
+  const p = document.getElementById('particles'); p.innerHTML = '';
   if (t.px === 'rain') {
-    for(let i=0; i<35; i++){
+    for(let i=0; i<25; i++){
       const d=document.createElement('div'); d.className='raindrop';
       d.style.cssText=`left:${Math.random()*100}vw;height:${15+Math.random()*15}px;animation-duration:${.4+Math.random()*.3}s;animation-delay:${Math.random()*2}s`;
       p.appendChild(d);
-    }
-  } else if (t.px === 'snow') {
-    for(let i=0; i<20; i++){
-      const s=document.createElement('div'); s.className='flake'; const sz=2+Math.random()*3;
-      s.style.cssText=`left:${Math.random()*100}vw;width:${sz}px;height:${sz}px;animation-duration:${3+Math.random()*3}s;animation-delay:${Math.random()*3}s`;
-      p.appendChild(s);
     }
   }
 }
 
 async function fetchWeather(lat, lon, name, country) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,is_day,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,wind_speed_10m_max&timezone=auto&forecast_days=7`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,is_day,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max&timezone=auto&forecast_days=7`;
   try {
     const r = await fetch(url);
     wd = await r.json();
-    loc = {name, country};
+    loc = {lat, lon, name, country};
     render();
   } catch (err) {
-    alert("Error bajando los datos del clima.");
+    alert("Error bajando datos climáticos.");
   }
 }
 
+// Controladores del Logo Interactivos
+document.getElementById('logoWrap').addEventListener('click', function(e) {
+  e.stopPropagation();
+  const m = document.getElementById('logoMenu');
+  m.style.display = m.style.display === 'block' ? 'none' : 'block';
+});
+document.addEventListener('click', () => { document.getElementById('logoMenu').style.display = 'none'; });
+
+function refreshCurrentWeather(e) {
+  e.stopPropagation();
+  document.getElementById('logoMenu').style.display = 'none';
+  if(loc) fetchWeather(loc.lat, loc.lon, loc.name, loc.country);
+  else triggerAutoGeo();
+}
+
+function cleanForSearch(e) {
+  e.stopPropagation();
+  document.getElementById('logoMenu').style.display = 'none';
+  document.getElementById('srch').value = '';
+  document.getElementById('srch').focus();
+  document.getElementById('content').innerHTML = `
+    <div class="welcome">
+      <div class="welcome-sym">🔍</div>
+      <h2>Buscar nuevo lugar</h2>
+      <p>Escribí arriba la playa, ciudad o pueblo que quieras chismosear.</p>
+    </div>
+  `;
+}
+
+// Modales de Nombre
+function openNameModal() { document.getElementById('nmModal').style.display = 'flex'; }
+function closeNameModal() { document.getElementById('nmModal').style.display = 'none'; }
 function saveName() {
-  const input = document.getElementById('nameIn');
-  if (input && input.value.trim()) {
-    userName = input.value.trim();
-    localStorage.setItem('dummy_name', userName);
-    triggerAutoGeo();
-  }
-}
-
-function resetName() {
-  userName = '';
-  localStorage.removeItem('dummy_name');
-  wd = null;
-  render();
+  const val = document.getElementById('modalNameIn').value.trim();
+  userName = val;
+  if(val) localStorage.setItem('dummy_name', val);
+  else localStorage.removeItem('dummy_name');
+  closeNameModal();
+  if(loc) fetchWeather(loc.lat, loc.lon, loc.name, loc.country);
 }
 
 function render() {
-  if (!userName) {
-    document.getElementById('content').innerHTML = `
-      <div class="name-box">
-        <h3>¡Pará un cacho! ¿Cómo te llamás?</h3>
-        <p>Poné tu nombre real para que el sistema te adivine tu verdadero apodo y te hable con modismos locales.</p>
-        <div class="name-row">
-          <input class="name-in" id="nameIn" type="text" placeholder="Tu nombre acá..." onkeydown="if(event.key==='Enter')saveName()">
-          <button class="name-btn" onclick="saveName()">Listo</button>
-        </div>
-      </div>
-    `;
-    return;
-  }
-
-  if (!wd) {
-    document.getElementById('content').innerHTML = `
-      <div class="welcome">
-        <div class="welcome-sym">🛰</div>
-        <h2>¡Qué onda, ${getNickname(userName)}!</h2>
-        <p>Estamos intentando ubicarte automáticamente en el mapa para tirarte la justa del tiempo...</p>
-        <div class="nick-banner" onclick="resetName()">¿No sos ${userName}? Cambiar nombre</div>
-      </div>
-    `;
-    return;
-  }
-
   const c = wd.current, d = wd.daily, h = wd.hourly;
-  const day = c.is_day===1;
-  applyTheme(c.weather_code, day);
+  applyTheme(c.weather_code, c.is_day===1);
 
-  const funnyText = getSlangNarrative(loc.country, c.weather_code, c.temperature_2m, c.apparent_temperature, d.precipitation_sum[0], c.wind_speed_10m, d.uv_index_max[0]);
+  const funnyText = getSlangNarrative(loc.country, c.weather_code, c.temperature_2m, d.precipitation_sum[0]);
 
   let hHtml=''; let now=new Date(); let cnt=0;
-  for(let i=0; i<h.time.length && cnt<10; i++){
-    const t=new Date(h.time[i]);
-    if(t < now - 3600000) continue;
+  for(let i=0; i<h.time.length && cnt<8; i++){
+    const t=new Date(h.time[i]); if(t < now - 3600000) continue;
     const isNow=cnt===0;
     hHtml+=`<div class="h-chip${isNow?' now':''}">
       <div class="h-t">${isNow?'AHORA':t.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
@@ -410,13 +431,6 @@ function render() {
     </div>`;
   }
 
-  const recs=[];
-  if(c.temperature_2m>26) recs.push('Ropa cortita y botellita de agua');
-  else if(c.temperature_2m<13) recs.push('Campera que abrigue en serio');
-  else recs.push('Un bucito por las dudas');
-  if(d.precipitation_sum[0]>1) recs.push('Paraguas (salvo que te guste mojarte)');
-  if(d.uv_index_max[0]>=5) recs.push('Protector solar para la piel');
-
   const C=2*Math.PI*34, filled=C*(c.relative_humidity_2m/100);
 
   document.getElementById('content').innerHTML = `
@@ -431,28 +445,14 @@ function render() {
           <div class="mini-hl">Máx: ${Math.round(d.temperature_2m_max[0])}° | Mín: ${Math.round(d.temperature_2m_min[0])}°</div>
         </div>
       </div>
-      <div class="nick-banner" onclick="resetName()">¿No sos ${userName}? Cambiar</div>
+      <div class="name-trigger-btn" onclick="openNameModal()">⚙ ${userName ? 'Cambiar mi nombre' : 'Configurar mi nombre'}</div>
     </div>
 
     <div class="stats-grid">
       <div class="stat"><div class="stat-sym">≋</div><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
       <div class="stat"><div class="stat-sym">◉</div><div class="stat-val">${d.precipitation_sum[0]} mm</div><div class="stat-lbl">Agua</div></div>
       <div class="stat"><div class="stat-sym">◈</div><div class="stat-val">UV ${Math.round(c.uv_index)}</div><div class="stat-lbl">Rayos UV</div></div>
-      <div class="stat"><div class="stat-sym">▲</div><div class="stat-val">${Math.round(d.wind_speed_10m_max[0])} km/h</div><div class="stat-lbl">Ráfagas</div></div>
-    </div>
-
-    <div class="humidity-card">
-      <div class="hum-circle">
-        <svg viewBox="0 0 80 80">
-          <circle class="track" cx="40" cy="40" r="34"/>
-          <circle class="fill" cx="40" cy="40" r="34" stroke="#E8FF57" stroke-dasharray="${C}" stroke-dashoffset="${C - filled}" transform="rotate(-90 40 40)"/>
-        </svg>
-        <div class="hum-num">${c.relative_humidity_2m}%</div>
-      </div>
-      <div class="hum-info">
-        <div class="hum-title">Humedad ambiente</div>
-        <div class="hum-desc">${c.relative_humidity_2m > 75 ? 'El aire es prácticamente una sopa flotante.' : c.relative_humidity_2m < 35 ? 'Más seco que lengua de loro.' : 'Humedad decente, se respira tranqui.'}</div>
-      </div>
+      <div class="stat"><div class="stat-sym">▲</div><div class="stat-val">${Math.round(c.relative_humidity_2m)}%</div><div class="stat-lbl">Humedad</div></div>
     </div>
 
     <div class="sec-lbl">El día hora por hora</div>
@@ -461,113 +461,51 @@ function render() {
     <div class="sec-lbl">Los próximos días</div>
     <div class="forecast-row">${fcHtml}</div>
 
-    <div class="rec-card">
-      <div class="rec-hdr">— Qué meter en la mochila hoy</div>
-      <div class="rec-pills">${recs.map(i=>`<span class="rec-pill">${i}</span>`).join('')}</div>
-    </div>
-
-    <!-- CHAT INTERACTIVO ABIERTO E INTELIGENTE -->
     <div class="chat-wrap">
-      <div class="sec-lbl">Preguntale al asistente inteligente</div>
+      <div class="sec-lbl">Preguntale al asistente de planes</div>
       <div class="chips">
         <span class="chip" onclick="sq('¿Cuál es el mejor día para pelis?')">¿Mejor día para pelis?</span>
-        <span class="chip" onclick="sq('¿Qué tal viene la semana? ¿Qué me cuentas?')">¿Qué me cuentas de la semana?</span>
-        <span class="chip" onclick="sq('¿Se puede salir a correr o a entrenar?')">¿Se puede salir a entrenar?</span>
+        <span class="chip" onclick="sq('¿Qué me cuentas de cómo viene la semana?')">¿Qué me cuentas de la semana?</span>
       </div>
       <div class="chat-msgs" id="cm"></div>
       <div class="chat-row">
-        <input class="chat-in" id="ci" placeholder="Preguntá lo que quieras sobre planes, clima o el día..." onkeydown="if(event.key==='Enter')sc()">
+        <input class="chat-in" id="ci" placeholder="¿Está para birra, correr o quedarse adentro?..." onkeydown="if(event.key==='Enter')sc()">
         <button class="send-btn" onclick="sc()">➔</button>
       </div>
     </div>
   `;
 }
 
-// ─── CEREBRO DEL CHAT ABIERTO Y CONTEXTUAL ───
+// Cerebro Conversacional Contextual Abierto
 function sc() {
   const inp = document.getElementById('ci'), msg = inp.value.trim();
   if(!msg || !wd) return;
-  inp.value = '';
-  addM(msg, 'u');
+  inp.value = ''; addM(msg, 'u');
   
   setTimeout(() => {
     const m = msg.toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
-    const d = wd.daily;
-    const dns = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-    let response = "";
+    const d = wd.daily; const dns = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    let r = "";
     
-    // 1. INTENCIÓN: QUEDARSE EN CASA / PELIS / ARRUNCHADO / CERRADO / CAMA
-    if (m.includes('peli') || m.includes('casa') || m.includes('adentro') || m.includes('cama') || m.includes('arrunch') || m.includes('encerrado')) {
-      let maxRain = -1, rainIdx = 0;
-      let minTemp = Infinity, coldIdx = 0;
-      for(let i=0; i<7; i++) {
-        if(d.precipitation_sum[i] > maxRain) { maxRain = d.precipitation_sum[i]; rainIdx = i; }
-        if(d.temperature_2m_min[i] < minTemp) { minTemp = d.temperature_2m_min[i]; coldIdx = i; }
-      }
-      
-      if(maxRain > 3) {
-        const dName = rainIdx === 0 ? 'Hoy mismo' : rainIdx === 1 ? 'Mañana' : dns[new Date(d.time[rainIdx]).getDay()];
-        response = `¡De cabeza el **${dName}**! Ese día marca caída de agua pesada (${Math.round(maxRain)} mm). Es el escenario perfecto para clavar maratón de series, comer algo rico y no asomar la nariz afuera ni por error.`;
-      } else {
-        const dName = coldIdx === 0 ? 'Hoy mismo' : coldIdx === 1 ? 'Mañana' : dns[new Date(d.time[coldIdx]).getDay()];
-        response = `Como no hay lluvias fuertes a la vista, el mejor día para quedarse encerrado haciendo fiaca es el **${dName}**. Va a ser el día más fresco de la tanda con una mínima de **${Math.round(minTemp)}°C**. ¡Saca las cobijas!`;
-      }
+    if (m.includes('peli') || m.includes('casa') || m.includes('adentro') || m.includes('cama') || m.includes('arrunch')) {
+      let maxR = -1, idx = 0; for(let i=0; i<7; i++) { if(d.precipitation_sum[i] > maxR) { maxR = d.precipitation_sum[i]; idx = i; } }
+      const dN = idx === 0 ? 'Hoy' : idx === 1 ? 'Mañana' : dns[new Date(d.time[idx]).getDay()];
+      r = maxR > 2 ? `¡El **${dN}** de cabeza! Va a caer alto aguacero (${Math.round(maxR)}mm), ideal para quedarse adentro comiendo pochoclos/palomitas sin culpa.` : `Como no hay tormentas a la vista, el día más fresco para quedarse aplastado en la cama es el **${dN}** con una mínima de ${Math.round(d.temperature_2m_min[idx])}°C.`;
     }
-    
-    // 2. INTENCIÓN: ¿QUÉ ME CUENTAS? / RESUMEN SEMANAL / CÓMO VIENE LA MANO
-    else if (m.includes('cuentas') || m.includes('resumen') || m.includes('semana') || m.includes('viene la mano') || m.includes('que hay')) {
-      let rainDaysCount = 0; let extremeHeat = false;
-      for(let i=0; i<7; i++) {
-        if(d.precipitation_sum[i] > 2) rainDaysCount++;
-        if(d.temperature_2m_max[i] >= 31) extremeHeat = true;
-      }
-      response = `Te hago el resumen ejecutivo: `;
-      if(rainDaysCount >= 3) response += `Se viene una semana bastante inestable y pasada por agua. Vas a tener varias oportunidades para mojarte, así que no te confíes de ningún cielo limpio.`;
-      else if(extremeHeat) response += `Se viene una seguidilla de días calientes y picados. El sol va a estar pegando duro, ideal para andar liviano, buscar aire acondicionado y tomar mucha agua.`;
-      else response += `La semana viene bastante equilibrada y tranquila. No se ven tormentas del fin del mundo ni calores desérticos. Una joyita para planear cosas afuera.`;
+    else if (m.includes('cuentas') || m.includes('resumen') || m.includes('semana') || m.includes('mano')) {
+      let rains = 0; for(let i=0; i<7; i++) { if(d.precipitation_sum[i] > 2) rains++; }
+      r = rains >= 3 ? `Viene inestable la mano, bastante pasada por agua. Tené el paraguas cerca.` : `Viene una pinturita de semana, días mayormente estables para disfrutar afuera sin sorpresas raras.`;
+    }
+    else if (m.includes('correr') || m.includes('entrenar') || m.includes('bici')) {
+      r = wd.current.precipitation > 0.5 ? "Ahora mismo está mojado afuera, te vas a patinar entero." : wd.current.temperature_2m > 30 ? "Hace demasiado calor ahora mismo, te va a dar una pálida si salís a correr. Esperá a que baje." : "Clima ideal para meterle patas a la calle, ¡salí ya!";
+    }
+    else if (m.includes('birra') || m.includes('cerveza') || m.includes('salir')) {
+      r = wd.current.temperature_2m >= 24 ? "Está pintado para una buena birra bien fría al aire libre. Salida obligatoria." : "Hace fresquito para andar afuera, mejor busquen un lugar techado o armen plan en casa.";
     }
 
-    // 3. INTENCIÓN: DEPORTE / CORREAR / ENTRENAR / SALIR / BICI
-    else if (m.includes('correr') || m.includes('entrenar') || m.includes('bici') || m.includes('deporte') || m.includes('ejercicio')) {
-      if(wd.current.precipitation > 0.5) response = "Ahora mismo está cayendo agua, así que te vas a empapar o a patinar en el asfalto. Si podés, meté rutina adentro de casa.";
-      else if(wd.current.temperature_2m > 30) response = `Hacen ${Math.round(wd.current.temperature_2m)}°C en la calle. Si vas a salir a entrenar ahora te va a dar un golpe de calor fulminante. Esperá a que baje el sol o salí bien temprano.`;
-      else response = `¡Metele para adelante! Con ${Math.round(wd.current.temperature_2m)}°C y sin lluvias actuales, el clima está óptimo para salir a quemar suelas sin sufrir.`;
-    }
-
-    // 4. INTENCIÓN: BIRRA / CERVEZA / SALIDITA / FIESTA
-    else if (m.includes('birra') || m.includes('cerveza') || m.includes('salir') || m.includes('juntada') || m.includes('tomar')) {
-      if(wd.current.temperature_2m >= 25) response = `Está ideal para una birra helada o algo refrescante al aire libre. El clima pide a gritos salidita de corrido.`;
-      else if(wd.current.temperature_2m <= 13) response = `Está helado para andar afuera de bar en bar. Si salís, busquen un lugar cerrado con calefacción o armen juntada adentro con algo que abrigue el cuerpo.`;
-      else response = `Zafa súper bien para salir. No está ni para congelarse ni para andar en short, un saquito encima y estás listo para la noche.`;
-    }
-
-    // 5. INTENCIÓN: FRÍO ESPECÍFICO
-    else if (m.includes('frio') || m.includes('fresco') || m.includes('minima') || m.includes('baja')) {
-      let minTemp = Infinity; let minIndex = 0;
-      for (let i = 0; i < d.temperature_2m_min.length; i++) {
-        if (d.temperature_2m_min[i] < minTemp) { minTemp = d.temperature_2m_min[i]; minIndex = i; }
-      }
-      const nameDay = minIndex === 0 ? 'Hoy mismo' : minIndex === 1 ? 'Mañana' : dns[new Date(d.time[minIndex]).getDay()];
-      response = `El día más frío va a ser el **${nameDay}**, tocando los **${Math.round(minTemp)}°C**. A abrigarse los huesos.`;
-    } 
-
-    // 6. INTENCIÓN: CALOR ESPECÍFICO
-    else if (m.includes('calor') || m.includes('caluroso') || m.includes('maxima') || m.includes('alta')) {
-      let maxTemp = -Infinity; let maxIndex = 0;
-      for (let i = 0; i < d.temperature_2m_max.length; i++) {
-        if (d.temperature_2m_max[i] > maxTemp) { maxTemp = d.temperature_2m_max[i]; maxIndex = i; }
-      }
-      const nameDay = maxIndex === 0 ? 'Hoy mismo' : maxIndex === 1 ? 'Mañana' : dns[new Date(d.time[maxIndex]).getDay()];
-      response = `El día más caliente va a ser el **${nameDay}**, clavando una máxima de **${Math.round(maxTemp)}°C**. Pantalón corto asegurado.`;
-    }
-
-    // POR DEFECTO SI NO ENTIENDE
-    if(!response) {
-      response = `Mmm, no te capté del todo esa. Pero contame: ¿estás queriendo armar algún plan afuera, querés saber qué ponerte de ropa o buscás qué día va a ser el más loco de la semana?`;
-    }
-    
-    addM(response, 'b');
-  }, 450);
+    if(!r) r = "Che/Mae, no te capté esa del todo, pero decime: ¿estás queriendo planear algo al aire libre o buscás el día más fresco/lluvioso?";
+    addM(r, 'b');
+  }, 400);
 }
 
 function sq(q){ document.getElementById('ci').value=q; sc(); }
@@ -577,7 +515,7 @@ function addM(t,cls){
   div.appendChild(m); div.scrollTop=div.scrollHeight;
 }
 
-// ─── BUSCADOR INTELIGENTE OPTIMIZADO PARA PALABRAS SUELTAS ───
+// ─── BUSCADOR ULTRA PREDICTIVO OPTIMIZADO PARA MÓVILES ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   let q = this.value.trim();
@@ -585,23 +523,23 @@ document.getElementById('srch').addEventListener('input', function() {
   
   acTimer = setTimeout(async () => {
     try {
-      // Optimizador de texto: Reemplaza espacios múltiples por comas sutiles para ayudar al motor OSM Nominatim
-      let cleanQuery = q.replace(/\s+/g, ' ');
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQuery)}&format=json&addressdetails=1&limit=5&accept-language=es`;
+      // Limpiador agresivo de conectores comunes en búsquedas flojas en celulares
+      let clean = q.toLowerCase().replace(/\s+costa\s+rica/g, ', Costa Rica').replace(/\s+argentina/g, ', Argentina').replace(/\s+mexico/g, ', México');
+      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(clean)}&format=json&addressdetails=1&limit=5&accept-language=es`;
       
-      const r = await fetch(url);
+      const r = await fetch(url, { headers: { 'Accept-Language': 'es' } });
       const data = await r.json();
       const ac = document.getElementById('ac');
       
       if(!data || data.length === 0) { ac.style.display = 'none'; return; }
       
       ac.innerHTML = data.map(item => {
-        const name = item.address.city || item.address.town || item.address.quarter || item.address.village || item.address.municipality || item.address.neighbourhood || item.display_name.split(',')[0];
+        const name = item.address.city || item.address.town || item.address.village || item.address.hamlet || item.address.county || item.display_name.split(',')[0];
         const state = item.address.state ? item.address.state + ', ' : '';
         const country = item.address.country || '';
         
         return `<div class="ac-item" onclick="selCity(${item.lat}, ${item.lon}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
-          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".5"><circle cx="12" cy="10" r="3"/><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
+          <svg width="12" height="12" viewBox="0 0 24 24" fill="currentColor" opacity=".4"><path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7z"/></svg>
           <div>
             <div class="ac-city">${name}</div>
             <div class="ac-sub">${state}${country}</div>
@@ -610,7 +548,7 @@ document.getElementById('srch').addEventListener('input', function() {
       }).join('');
       ac.style.display = 'block';
     } catch(e) { console.error(e); }
-  }, 350);
+  }, 300);
 });
 
 document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
@@ -621,7 +559,7 @@ function selCity(lat, lon, name, country){
   fetchWeather(lat, lon, name, country);
 }
 
-// ─── LÓGICA DE GEOLOCALIZACIÓN COMPARTIDA ───
+// Geolocalización Automática Directa al entrar
 function triggerAutoGeo() {
   if(!navigator.geolocation) return;
   document.getElementById('geoBtn').textContent = 'Ubicando...';
@@ -631,37 +569,28 @@ function triggerAutoGeo() {
     try {
       const nr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`);
       const nd = await nr.json();
-      const city = nd.address.city || nd.address.town || nd.address.village || nd.address.municipality || 'Mi ubicación';
-      document.getElementById('geoBtn').textContent = city;
+      const city = nd.address.city || nd.address.town || nd.address.village || 'Mi ubicación';
+      document.getElementById('geoBtn').textContent = '📍 ' + city;
       document.getElementById('srch').value = city;
       fetchWeather(lat, lon, city, nd.address.country || '');
     } catch { fetchWeather(lat, lon, 'Mi ubicación', ''); }
   }, () => {
-    document.getElementById('geoBtn').textContent = 'Mi ubicación';
-    // Si falla el auto-rastreo, mostramos un aviso amigable en la bienvenida
-    if(userName) {
-      document.getElementById('content').innerHTML = `
-        <div class="welcome">
-          <div class="welcome-sym">📍</div>
-          <h2>¡Hola, ${getNickname(userName)}!</h2>
-          <p>No pudimos leer tu ubicación en segundo plano. Poné el nombre de tu pueblo o playa en el buscador de arriba para arrancar.</p>
-          <div class="nick-banner" onclick="resetName()">Cambiar nombre</div>
-        </div>
-      `;
-    }
-  }, { timeout: 7000 });
+    document.getElementById('geoBtn').textContent = '📍 Usar mi ubi';
+    document.getElementById('content').innerHTML = `
+      <div class="welcome">
+        <div class="welcome-sym">📍</div>
+        <h2>¡Buenas, ${getDynamicGreeting()}!</h2>
+        <p>No logramos leer tu ubicación de forma automática. Tocá el botón verde de arriba o usa el buscador para arrancar.</p>
+      </div>
+    `;
+  }, { timeout: 6000 });
 }
 
 document.getElementById('geoBtn').onclick = triggerAutoGeo;
 
-// AL CARGAR: Si ya hay nombre, busca la ubicación directamente sin intervención del usuario
 window.addEventListener('load', () => {
-  if(userName) {
-    render(); 
-    triggerAutoGeo();
-  } else {
-    render();
-  }
+  // Disparo automático e inmediato en segundo plano
+  triggerAutoGeo();
 });
 </script>
 </body>
