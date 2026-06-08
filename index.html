@@ -1,104 +1,550 @@
-const express = require('express');
-const cors = require('cors');
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clima para Dummies</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<style>
+* { margin:0; padding:0; box-sizing:border-box; }
 
-const app = express();
-app.use(cors());
-app.use(express.json());
+:root {
+  --card: rgba(255,255,255,0.06);
+  --card-b: rgba(255,255,255,0.12);
+  --blur: blur(20px);
+  --r: 22px;
+  --text: #fff;
+  --soft: rgba(255,255,255,0.6);
+  --accent: #E8FF57;
+}
 
-// REEMPLAZA ACÁ CON TU API KEY DE GEMINI (CONSEGUILA EN GOOGLE AI STUDIO)
-const GEMINI_API_KEY = "TU_API_KEY_AQUI"; 
-const GEMINI_API_URL = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${GEMINI_API_KEY}`;
+body {
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+  background: #0f1b2d;
+}
 
-// 1. ENDPOINT PARA LA RESEÑA AUTOMÁTICA CON HUMOR
-app.post('/api/narrative', async (req, res) => {
-  const { weatherData, locationName } = req.body;
+.bg, .bg-mesh {
+  position: fixed; inset: 0; z-index: 0;
+  transition: all 2s ease;
+}
+.bg-mesh { opacity: 0.9; }
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); transition: all 2s ease;
+  pointer-events: none;
+}
+
+.particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
+.raindrop {
+  position: absolute; width: 1.5px;
+  background: linear-gradient(180deg, transparent 0%, rgba(180,220,255,0.6) 100%);
+  animation: rain linear infinite; opacity: 0;
+}
+@keyframes rain {
+  0% { transform: translateY(-30px) skewX(-10deg); opacity:.5; }
+  100% { transform: translateY(110vh) skewX(-10deg); opacity:0; }
+}
+.flake {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  animation: flakefall linear infinite; opacity: 0;
+}
+@keyframes flakefall {
+  0% { transform: translateY(-10px) translateX(0); opacity:.7; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  100% { transform: translateY(110vh) translateX(-10px); opacity:0; }
+}
+
+.app { position: relative; z-index: 10; max-width: 680px; margin: 0 auto; padding: 28px 20px 120px; }
+
+.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 24px; animation: dn .5s ease both; }
+.logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; display: flex; align-items: center; gap: 8px; }
+.logo-badge { background: var(--accent); color: #0f1b2d; border-radius: 6px; padding: 2px 8px; font-size: 0.7rem; font-weight: 700; text-transform: uppercase; }
+.geo-btn {
+  background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur);
+  color: white; border-radius: 50px; padding: 8px 18px; font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; gap: 7px; transition: all .2s;
+}
+.geo-btn:hover { background: rgba(255,255,255,0.15); border-color: rgba(255,255,255,0.25); }
+.geo-icon { width: 14px; height: 14px; }
+
+.search-wrap { position: relative; margin-bottom: 22px; animation: dn .5s .08s ease both; }
+.search-in {
+  width: 100%; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur);
+  color: white; border-radius: 50px; padding: 14px 50px 14px 22px; font-size: .95rem; font-family: 'Syne', sans-serif; outline: none; transition: all .2s;
+}
+.search-in::placeholder { color: rgba(255,255,255,.4); }
+.search-ico { position: absolute; right: 18px; top: 50%; transform: translateY(-50%); opacity: .5; }
+
+.ac {
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 200;
+  background: rgba(15, 27, 45, 0.98); backdrop-filter: var(--blur); border: 1px solid var(--card-b); border-radius: 18px; overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.5);
+}
+.ac-item { padding: 14px 20px; cursor: pointer; font-size: .88rem; border-bottom: 1px solid rgba(255,255,255,.06); transition: background .15s; }
+.ac-item:hover { background: rgba(255,255,255,.08); }
+.ac-city { font-weight: 600; }
+.ac-sub { font-size: .72rem; opacity: .5; margin-top: 2px; }
+
+.main-card { background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); border-radius: var(--r); padding: 26px 28px 22px; margin-bottom: 14px; animation: up .6s .15s ease both; position: relative; overflow: hidden; }
+.loc-line { font-size: .78rem; font-weight: 500; opacity: .55; text-transform: uppercase; margin-bottom: 4px; display: flex; align-items: center; gap: 6px; }
+.city-h { font-size: 2.2rem; font-weight: 800; line-height: 1; letter-spacing: -1px; margin-bottom: 3px; }
+.date-h { font-size: .76rem; opacity: .45; margin-bottom: 22px; }
+
+.temp-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.big-t { font-size: 6rem; font-weight: 800; line-height: 1; letter-spacing: -5px; }
+.big-t sup { font-size: 2.2rem; vertical-align: top; margin-top: 14px; opacity: .6; }
+.t-meta { text-align: right; padding-top: 6px; }
+.feels-t { font-size: .8rem; opacity: .55; margin-bottom: 6px; }
+.cond-pill { display: inline-flex; align-items: center; gap: 8px; background: rgba(255,255,255,.1); border: 1px solid rgba(255,255,255,.15); border-radius: 20px; padding: 5px 14px; font-size: .8rem; font-weight: 600; }
+.w-symbol { font-size: 3rem; line-height: 1; font-family: 'Syne Mono', monospace; opacity: .9; }
+.hi-lo { font-size: .75rem; opacity: .5; margin-top: 4px; }
+
+.narrative { background: rgba(0,0,0,.2); border-left: 3px solid var(--accent); border-radius: 0 12px 12px 0; padding: 14px 18px; font-size: .92rem; line-height: 1.65; font-style: italic; color: rgba(255,255,255,.88); margin-top: 14px; }
+.nar-loading { display: flex; align-items: center; gap: 6px; font-size: .8rem; opacity: .5; font-style: normal; }
+.dot { width: 5px; height: 5px; border-radius: 50%; background: white; animation: dotpop 1.2s infinite; }
+.dot:nth-child(2){ animation-delay:.2s; }
+.dot:nth-child(3){ animation-delay:.4s; }
+@keyframes dotpop { 0%,80%,100%{opacity:.2;transform:scale(1)} 40%{opacity:1;transform:scale(1.3)} }
+
+.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; margin-bottom: 14px; animation: up .6s .22s ease both; }
+@media(max-width:480px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+.stat { background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); border-radius: 16px; padding: 14px 12px; text-align: center; transition: transform .2s; }
+.stat:hover { transform: translateY(-3px); }
+.stat-sym { font-size: 1.5rem; line-height: 1; margin-bottom: 6px; font-family: 'Syne Mono', monospace; }
+.stat-val { font-size: 1.05rem; font-weight: 700; }
+.stat-lbl { font-size: .65rem; opacity: .5; margin-top: 3px; text-transform: uppercase; font-weight: 600; }
+
+.humidity-card { background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); border-radius: var(--r); padding: 20px 22px; margin-bottom: 14px; animation: up .6s .27s ease both; display: flex; align-items: center; gap: 20px; }
+.hum-circle { position: relative; width: 80px; height: 80px; flex-shrink: 0; }
+.hum-circle svg { width: 80px; height: 80px; transform: rotate(-90deg); }
+.hum-circle .track { fill: none; stroke: rgba(255,255,255,.08); stroke-width: 6; }
+.hum-circle .fill { fill: none; stroke-width: 6; stroke-linecap: round; transition: stroke-dashoffset 1.5s ease; }
+.hum-num { position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; font-size: 1rem; font-weight: 800; }
+.hum-info { flex: 1; }
+.hum-title { font-size: .7rem; opacity: .5; text-transform: uppercase; font-weight: 600; margin-bottom: 6px; }
+.hum-desc { font-size: .9rem; font-weight: 500; line-height: 1.4; }
+
+.hourly-scroll { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; scrollbar-width: none; margin-bottom: 14px; animation: up .6s .33s ease both; }
+.hourly-scroll::-webkit-scrollbar { display: none; }
+.h-chip { background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); border-radius: 40px; padding: 11px 15px; text-align: center; min-width: 64px; flex-shrink: 0; }
+.h-chip.now { background: rgba(232,255,87,.12); border-color: rgba(232,255,87,.3); }
+.h-t { font-size: .68rem; opacity: .5; margin-bottom: 5px; font-weight: 600; }
+.h-sym { font-size: 1rem; font-family: 'Syne Mono'; margin-bottom: 4px; }
+.h-tmp { font-size: .85rem; font-weight: 700; }
+
+.forecast-row { display: flex; gap: 9px; overflow-x: auto; scrollbar-width: none; padding-bottom: 4px; margin-bottom: 14px; animation: up .6s .36s ease both; }
+.forecast-row::-webkit-scrollbar { display: none; }
+.fc-day { background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); border-radius: 16px; padding: 14px 12px; text-align: center; min-width: 80px; flex-shrink: 0; transition: all .2s; }
+.fc-day.active { background: rgba(232,255,87,.1); border-color: rgba(232,255,87,.3); }
+.fc-name { font-size: .68rem; opacity: .5; margin-bottom: 8px; font-weight: 600; text-transform: uppercase; }
+.fc-sym { font-size: 1.4rem; font-family: 'Syne Mono'; margin-bottom: 7px; }
+.fc-max { font-size: 1rem; font-weight: 700; }
+.fc-min { font-size: .72rem; opacity: .4; margin-top: 2px; }
+
+.rec-card { background: rgba(232,255,87,.05); border: 1px solid rgba(232,255,87,.15); backdrop-filter: var(--blur); border-radius: var(--r); padding: 18px 20px; margin-bottom: 14px; animation: up .6s .4s ease both; }
+.rec-hdr { font-size: .7rem; opacity: .6; text-transform: uppercase; font-weight: 600; margin-bottom: 10px; }
+.rec-pills { display: flex; flex-wrap: wrap; gap: 8px; }
+.rec-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 30px; padding: 6px 14px; font-size: .82rem; font-weight: 600; }
+
+.sec-lbl { font-size: .68rem; opacity: .4; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-bottom: 10px; }
+
+.chat-wrap { animation: up .6s .44s ease both; }
+.chat-msgs { max-height: 280px; overflow-y: auto; margin-bottom: 14px; display: flex; flex-direction: column; gap: 9px; padding-right: 4px; }
+.msg { max-width: 84%; padding: 11px 16px; border-radius: 18px; font-size: .86rem; line-height: 1.55; animation: msgin .3s ease both; }
+@keyframes msgin { from{opacity:0;transform:translateY(6px)} to{opacity:1;transform:none} }
+.msg.u { background: rgba(232,255,87,.12); border: 1px solid rgba(232,255,87,.25); align-self: flex-end; border-bottom-right-radius: 4px; font-weight: 500; }
+.msg.b { background: rgba(0,0,0,.2); border: 1px solid rgba(255,255,255,.06); align-self: flex-start; border-bottom-left-radius: 4px; }
+
+.chips { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 12px; }
+.chip { background: rgba(255,255,255,.05); border: 1px solid rgba(255,255,255,.1); border-radius: 20px; padding: 6px 14px; font-size: .75rem; cursor: pointer; font-weight: 500; transition: all .2s; }
+.chip:hover { background: rgba(232,255,87,.1); border-color: rgba(232,255,87,.3); }
+
+.chat-row { display: flex; gap: 9px; }
+.chat-in { flex: 1; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); color: white; border-radius: 50px; padding: 14px 22px; font-family: 'Syne', sans-serif; font-size: .88rem; outline: none; }
+.chat-in::placeholder { color: rgba(255,255,255,.3); }
+.send-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50%; width: 48px; height: 48px; font-size: 1.1rem; cursor: pointer; flex-shrink: 0; display: flex; align-items: center; justify-content: center; font-weight: 700; }
+
+.welcome { text-align: center; padding: 70px 20px; animation: up .7s ease both; }
+.welcome-sym { font-size: 4rem; font-family: 'Syne Mono'; margin-bottom: 20px; }
+.welcome h2 { font-size: 1.9rem; font-weight: 800; margin-bottom: 10px; }
+.welcome p { opacity: .5; font-size: .88rem; line-height: 1.7; max-width: 300px; margin: 0 auto; }
+
+@keyframes dn { from{opacity:0;transform:translateY(-10px)} to{opacity:1;transform:none} }
+@keyframes up { from{opacity:0;transform:translateY(14px)} to{opacity:1;transform:none} }
+</style>
+</head>
+<body>
+
+<div class="bg" id="bg"></div>
+<div class="bg-mesh" id="mesh">
+  <div class="orb" id="orb1" style="width:500px;height:500px;top:-150px;right:-100px;"></div>
+  <div class="orb" id="orb2" style="width:400px;height:400px;bottom:-100px;left:-100px;"></div>
+  <div class="orb" id="orb3" style="width:250px;height:250px;top:40%;left:40%;"></div>
+</div>
+<div class="particles" id="particles"></div>
+
+<div class="app">
+  <div class="header">
+    <div class="logo">Clima <span class="logo-badge">para dummies</span></div>
+    <button class="geo-btn" id="geoBtn">
+      <svg class="geo-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="12" cy="12" r="3"/><path d="M12 2v3M12 19v3M2 12h3M19 12h3"/>
+      </svg>
+      Mi ubicación
+    </button>
+  </div>
+
+  <div class="search-wrap">
+    <input class="search-in" id="srch" type="text" placeholder="Buscar ciudad (Ej: Villa Mercedes)..." autocomplete="off">
+    <span class="search-ico">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+      </svg>
+    </span>
+    <div class="ac" id="ac" style="display:none"></div>
+  </div>
+
+  <div id="content">
+    <div class="welcome">
+      <div class="welcome-sym">◈</div>
+      <h2>Clima para Dummies</h2>
+      <p>Sin tecnicismos. Sin confusión.<br>Solo lo que necesitás saber para salir de casa.</p>
+    </div>
+  </div>
+</div>
+
+<script>
+// URL de tu API intermedia local que corre con Axios
+const BACKEND_URL = 'http://localhost:3000';
+
+let wd = null, loc = null, acTimer = null;
+let chatHist = [];
+
+function wSym(code, day=true) {
+  if (code===0) return day ? '☀' : '☽';
+  if (code<=2) return day ? '⛅' : '☁';
+  if (code===3) return '☁';
+  if ([45,48].includes(code)) return '◎';
+  if ([51,53,55,61,63,65,80,81,82].includes(code)) return '⛆';
+  if ([71,73,75,77,85,86].includes(code)) return '❄';
+  if ([95,96,99].includes(code)) return '⚡';
+  return '~';
+}
+
+function wText(code) {
+  const m={0:'Despejado',1:'Casi despejado',2:'Algo nublado',3:'Nublado',45:'Niebla',48:'Niebla con escarcha',51:'Llovizna leve',53:'Llovizna',55:'Llovizna fuerte',61:'Lluvia leve',63:'Lluvia',65:'Lluvia fuerte',71:'Nieve leve',73:'Nieve',75:'Nieve fuerte',77:'Granizo',80:'Chaparrones',81:'Chaparrones mod.',82:'Chaparrones fuertes',85:'Nevadas',86:'Nevadas fuertes',95:'Tormenta',96:'Tormenta con granizo',99:'Tormenta severa'};
+  return m[code]||'Variable';
+}
+
+function humDesc(h) {
+  if (h < 30) return { text: 'Ambiente re seco. Si tenés piel sensible, cuidado.', color: '#ffb464' };
+  if (h < 50) return { text: 'Humedad ideal. El aire está impecable.', color: '#64dc96' };
+  if (h < 70) return { text: 'Algo húmedo. La pesadez se empieza a notar.', color: '#64b4ff' };
+  if (h < 85) return { text: 'Bastante húmedo. Vas a transpirar de lo lindo.', color: '#648cff' };
+  return { text: 'Humedad por las nubes. Es un sauna andante.', color: '#b464ff' };
+}
+
+const THEMES = {
+  sunny:  { bg:'#0a1628', o1:'rgba(255,200,50,.35)', o2:'rgba(50,120,255,.2)', o3:'rgba(255,150,0,.15)', px:'none' },
+  cloudy: { bg:'#141e2e', o1:'rgba(100,130,160,.3)', o2:'rgba(60,80,110,.25)', o3:'rgba(80,100,130,.15)', px:'none' },
+  rainy:  { bg:'#0d1628', o1:'rgba(40,80,200,.35)', o2:'rgba(20,50,150,.3)', o3:'rgba(60,100,220,.15)', px:'rain' },
+  stormy: { bg:'#0a0e18', o1:'rgba(80,0,160,.3)', o2:'rgba(20,30,80,.4)', o3:'rgba(150,50,255,.1)', px:'rain' },
+  snowy:  { bg:'#121c2c', o1:'rgba(180,210,255,.25)', o2:'rgba(100,140,200,.2)', o3:'rgba(200,220,255,.1)', px:'snow' },
+  foggy:  { bg:'#131c2a', o1:'rgba(120,140,160,.25)', o2:'rgba(80,100,130,.2)', o3:'rgba(100,120,150,.1)', px:'none' },
+  night:  { bg:'#050a14', o1:'rgba(50,30,120,.3)', o2:'rgba(20,10,60,.3)', o3:'rgba(80,60,180,.1)', px:'none' }
+};
+
+function applyTheme(code, day) {
+  let k = 'sunny';
+  if (!day) k = 'night';
+  else if ([95,96,99].includes(code)) k = 'stormy';
+  else if ([61,63,65,80,81,82].includes(code)) k = 'rainy';
+  else if ([71,73,75,77,85,86].includes(code)) k = 'snowy';
+  else if ([45,48].includes(code)) k = 'foggy';
+  else if ([1,2,3].includes(code)) k = 'cloudy';
   
-  if (!weatherData) return res.status(400).json({ error: 'Faltan datos del clima' });
+  const t = THEMES[k];
+  document.getElementById('bg').style.background = t.bg;
+  document.getElementById('orb1').style.background = `radial-gradient(circle, ${t.o1} 0%, transparent 70%)`;
+  document.getElementById('orb2').style.background = `radial-gradient(circle, ${t.o2} 0%, transparent 70%)`;
+  document.getElementById('orb3').style.background = `radial-gradient(circle, ${t.o3} 0%, transparent 70%)`;
+  
+  const p = document.getElementById('particles');
+  p.innerHTML = '';
+  if (t.px === 'rain') {
+    for(let i=0;i<40;i++) {
+      const d=document.createElement('div'); d.className='raindrop';
+      d.style.cssText=`left:${Math.random()*100}vw;height:${15+Math.random()*20}px;animation-duration:${.4+Math.random()*.4}s;animation-delay:${Math.random()*2}s`;
+      p.appendChild(d);
+    }
+  } else if (t.px === 'snow') {
+    for(let i=0;i<30;i++) {
+      const d=document.createElement('div'); d.className='flake';
+      const s = 3 + Math.random()*4;
+      d.style.cssText=`left:${Math.random()*100}vw;width:${s}px;height:${s}px;animation-duration:${3+Math.random()*4}s;animation-delay:${Math.random()*5}s`;
+      p.appendChild(d);
+    }
+  }
+}
 
-  const promptBody = {
-    contents: [{
-      parts: [{
-        text: `Actúa como un meteorólogo e influencer argentino/rioplatense con un humor ácido, irónico pero súper amigable. 
-        Analizá estos datos del clima actuales para la ciudad de "${locationName}":
-        - Temperatura actual: ${weatherData.temp}°C
-        - Sensación térmica: ${weatherData.sensacion}°C
-        - Humedad: ${weatherData.humedad}%
-        - Lluvia hoy: ${weatherData.lluvia} mm
-        - Condición general: ${weatherData.condicion}
+async function fetchWeather(lat, lon, name, country) {
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,relative_humidity_2m,wind_speed_10m,precipitation,weather_code,is_day,uv_index&hourly=temperature_2m,weather_code&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum,uv_index_max,wind_speed_10m_max&timezone=auto&forecast_days=7`;
+  const r = await fetch(url); 
+  wd = await r.json();
+  loc = {name, country, lat, lon};
+  chatHist = [];
+  render();
+}
 
-        Escribí una reseña cortita (máximo 3 líneas), directa, sin tecnicismos aburridos, usando modismos rioplatenses ("che", "viste", "olvidate", "fiero", "re pesado", "saquito"). Que sea graciosa y acorde estrictamente a si hace frío, calor, si está húmedo o si se viene la tormenta.`
-      }]
-    }]
-  };
+function render() {
+  const c = wd.current, d = wd.daily, h = wd.hourly;
+  const day = c.is_day===1;
+  applyTheme(c.weather_code, day);
 
+  const now = new Date();
+  const dStr = now.toLocaleDateString('es-ES',{weekday:'long',day:'numeric',month:'long'});
+
+  let hHtml='', cnt=0;
+  for(let i=0;i<h.time.length&&cnt<10;i++){
+    const t=new Date(h.time[i]); if(t<now-3600000) continue;
+    hHtml+=`<div class="h-chip${cnt===0?' now':''}">
+      <div class="h-t">${cnt===0?'AHORA':t.toLocaleTimeString('es-ES',{hour:'2-digit',minute:'2-digit'})}</div>
+      <div class="h-sym">${wSym(h.weather_code[i], t.getHours()>6&&t.getHours()<20)}</div>
+      <div class="h-tmp">${Math.round(h.temperature_2m[i])}°</div>
+    </div>`;
+    cnt++;
+  }
+
+  let fcHtml='';
+  const dns=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  for(let i=0;i<7;i++){
+    const nd=new Date(d.time[i]);
+    fcHtml+=`<div class="fc-day${i===0?' active':''}">
+      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].toUpperCase()}</div>
+      <div class="fc-sym">${wSym(d.weather_code[i])}</div>
+      <div class="fc-max">${Math.round(d.temperature_2m_max[i])}°</div>
+      <div class="fc-min">${Math.round(d.temperature_2m_min[i])}°</div>
+    </div>`;
+  }
+
+  const recs = getRecs(c, d);
+  const hum = c.relative_humidity_2m;
+  const humD = humDesc(hum);
+
+  document.getElementById('content').innerHTML = `
+  <div class="main-card">
+    <div class="loc-line">📍 ${loc.country || 'Ubicación'}</div>
+    <div class="city-h">${loc.name}</div>
+    <div class="date-h">${dStr.charAt(0).toUpperCase()+dStr.slice(1)}</div>
+    <div class="temp-row">
+      <div>
+        <div class="big-t">${Math.round(c.temperature_2m)}<sup>°</sup></div>
+        <div class="feels-t">Se siente ${Math.round(c.apparent_temperature)}°</div>
+        <div class="cond-pill">${wSym(c.weather_code,day)} &nbsp;${wText(c.weather_code)}</div>
+      </div>
+      <div class="t-meta">
+        <div class="w-symbol">${wSym(c.weather_code,day)}</div>
+        <div class="hi-lo">▲ ${Math.round(d.temperature_2m_max[0])}° &nbsp; ▼ ${Math.round(d.temperature_2m_min[0])}°</div>
+      </div>
+    </div>
+    <div class="narrative" id="nar">
+      <div class="nar-loading">Consultando a la IA sobre el clima de hoy...&nbsp;<div class="dot"></div><div class="dot"></div><div class="dot"></div></div>
+    </div>
+  </div>
+
+  <div class="stats-grid">
+    <div class="stat"><div class="stat-sym">≋</div><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
+    <div class="stat"><div class="stat-sym">◉</div><div class="stat-val">${d.precipitation_sum[0]} mm</div><div class="stat-lbl">Lluvia</div></div>
+    <div class="stat"><div class="stat-sym">◈</div><div class="stat-val">UV ${Math.round(d.uv_index_max[0])}</div><div class="stat-lbl">Índice UV</div></div>
+    <div class="stat"><div class="stat-sym">▲</div><div class="stat-val">${Math.round(d.wind_speed_10m_max[0])} km/h</div><div class="stat-lbl">Viento Máx</div></div>
+  </div>
+
+  <div class="humidity-card">
+    <div class="hum-circle">
+      <svg viewBox="0 0 80 80">
+        <circle class="track" cx="40" cy="40" r="34"/>
+        <circle class="fill" cx="40" cy="40" r="34" stroke="${humD.color}" stroke-dasharray="${2*Math.PI*34}" stroke-dashoffset="${2*Math.PI*34 * (1 - hum/100)}"/>
+      </svg>
+      <div class="hum-num">${hum}%</div>
+    </div>
+    <div class="hum-info">
+      <div class="hum-title">Humedad relativa</div>
+      <div class="hum-desc">${humD.text}</div>
+    </div>
+  </div>
+
+  <div class="sec-lbl">Próximas horas</div><div class="hourly-scroll">${hHtml}</div>
+  <div class="sec-lbl">Próximos 7 días</div><div class="forecast-row">${fcHtml}</div>
+
+  <div class="rec-card"><div class="rec-hdr">— Recomendación rápida</div><div class="rec-pills">${recs}</div></div>
+
+  <div class="chat-wrap">
+    <div class="sec-lbl">Preguntale a la IA</div>
+    <div class="chips">
+      <span class="chip" data-q="¿Me voy a mojar la ropa si la cuelgo afuera ahora?">¿Puedo colgar la ropa?</span>
+      <span class="chip" data-q="¿Da para meter asado afuera o nos congelamos / llueve?">¿Da para asado afuera?</span>
+      <span class="chip" data-q="Decime qué ropa me tengo que poner exactamente sin sufrir">¿Qué me pongo hoy?</span>
+    </div>
+    <div class="chat-msgs" id="cm"></div>
+    <div class="chat-row">
+      <input class="chat-in" id="ci" placeholder="Preguntale lo que sea sobre el clima..." onkeydown="if(event.key==='Enter')sendToChat()">
+      <button class="send-btn" id="sendBtn">→</button>
+    </div>
+  </div>
+  `;
+
+  // Controladores de eventos seguros
+  document.getElementById('sendBtn').onclick = sendToChat;
+  document.querySelectorAll('.chip').forEach(el => {
+    el.onclick = function() { document.getElementById('ci').value = this.dataset.q; sendToChat(); }
+  });
+
+  generateLiveNarrative();
+}
+
+function getRecs(c, d) {
+  const items=[], t=c.temperature_2m, r=d.precipitation_sum[0], uv=d.uv_index_max[0];
+  if(t<12) items.push('Campera abrigada');
+  else if(t<19) items.push('Saquito o Buzo');
+  else items.push('Remera tranqui');
+  if(r>1) items.push('Paraguas de una');
+  if(uv>=5) items.push('Protector solar');
+  return items.map(i=>`<span class="rec-pill">${i}</span>`).join('');
+}
+
+// LLAMADA AL SERVER (NARRATIVA)
+async function generateLiveNarrative() {
   try {
-    const response = await fetch(GEMINI_API_URL, {
+    const res = await fetch(`${BACKEND_URL}/api/narrative`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(promptBody)
+      body: JSON.stringify({
+        locationName: loc.name,
+        weatherData: {
+          temp: Math.round(wd.current.temperature_2m),
+          sensacion: Math.round(wd.current.apparent_temperature),
+          humedad: wd.current.relative_humidity_2m,
+          lluvia: wd.daily.precipitation_sum[0],
+          condicion: wText(wd.current.weather_code)
+        }
+      })
     });
-    
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error de Gemini:', errorData);
-      throw new Error('Fallo en la API de Google');
-    }
-
-    const data = await response.json();
-    const text = data.candidates[0].content.parts[0].text;
-    res.json({ result: text.trim() });
-  } catch (error) {
-    console.error(error);
-    res.json({ result: `Y... qué querés que te diga, el servidor tiró error. Pero hace ${weatherData.temp}°C, arreglate con eso.` });
+    const data = await res.json();
+    document.getElementById('nar').textContent = data.result;
+  } catch {
+    document.getElementById('nar').textContent = "No se pudo obtener la reseña. ¿Prendiste el backend (node server.js)?";
   }
-});
+}
 
-// 2. ENDPOINT PARA EL CHAT INTERACTIVO (Corregido estructuralmente)
-app.post('/api/chat', async (req, res) => {
-  const { message, weatherData, locationName, history } = req.body;
+// LLAMADA AL SERVER (CHAT)
+async function sendToChat() {
+  const inp = document.getElementById('ci'), msg = inp.value.trim();
+  if (!msg || !wd) return;
+  inp.value = '';
 
-  // Formateamos el historial asegurando la alternancia user/model que exige Gemini
-  const formattedHistory = (history || []).map(msg => ({
-    role: msg.role === 'user' ? 'user' : 'model',
-    parts: [{ text: msg.content }]
-  }));
-
-  const systemInstructionText = `Sos el experto en clima interactivo de "Clima para Dummies". Hablás en perfecto español rioplatense (de forma casual, divertida, usando "che", "viste", "ni lo pienses").
-  Tu contexto actual es la ciudad de "${locationName}".
-  Datos del clima: Temperatura ${weatherData.temp}°C, Sensación Térmica ${weatherData.sensacion}°C, Humedad ${weatherData.humedad}%, Lluvia de hoy ${weatherData.lluvia} mm, Condición: ${weatherData.condicion}.
-  Respondé la pregunta del usuario usando estos datos con mucha onda, humor y practicidad para la vida cotidiana.`;
-
-  // Estructura oficial requerida por Gemini para pasarle las instrucciones del sistema
-  const requestBody = {
-    contents: [
-      ...formattedHistory,
-      { role: 'user', parts: [{ text: message }] }
-    ],
-    systemInstruction: {
-      parts: [{ text: systemInstructionText }]
-    }
-  };
+  addMsgHTML(msg, 'u');
+  addMsgHTML('Pensando...', 'b', true);
+  chatHist.push({ role: 'user', content: msg });
 
   try {
-    const response = await fetch(GEMINI_API_URL, {
+    const res = await fetch(`${BACKEND_URL}/api/chat`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify(requestBody)
+      body: JSON.stringify({
+        message: msg,
+        history: chatHist.slice(-6),
+        locationName: loc.name,
+        weatherData: {
+          temp: Math.round(wd.current.temperature_2m),
+          sensacion: Math.round(wd.current.apparent_temperature),
+          humedad: wd.current.relative_humidity_2m,
+          lluvia: wd.daily.precipitation_sum[0],
+          condicion: wText(wd.current.weather_code)
+        }
+      })
     });
-
-    if (!response.ok) {
-      const errorData = await response.json();
-      console.error('Error de Gemini en Chat:', errorData);
-      throw new Error('Fallo en la API de Google');
-    }
-
-    const data = await response.json();
-    const text = data.candidates[0].content.parts[0].text;
-    res.json({ result: text.trim() });
-  } catch (error) {
-    console.error(error);
-    res.json({ result: "Che, se me congeló la neurona artificial. Preguntame de nuevo en un toque." });
+    const data = await res.json();
+    removeTypingHTML();
+    addMsgHTML(data.result, 'b');
+    chatHist.push({ role: 'assistant', content: data.result });
+  } catch {
+    removeTypingHTML();
+    addMsgHTML("Se cortó la señal con la neurona artificial che.", 'b');
   }
-});
+}
 
-app.listen(3000, () => console.log('🚀 Servidor de Clima para Dummies corriendo en http://localhost:3000'));
+function addMsgHTML(t, cls, isTyping=false) {
+  const box = document.getElementById('cm'), m = document.createElement('div');
+  m.className = `msg ${cls}`; if(isTyping) m.id = 'typing-indicator';
+  m.textContent = t;
+  if(box) { box.appendChild(m); box.scrollTop = box.scrollHeight; }
+}
+function removeTypingHTML() { const e = document.getElementById('typing-indicator'); if(e) e.remove(); }
+
+// BUSCADOR PROTEGIDO CONTRA ERRORES DE CARACTERES
+document.getElementById('srch').oninput = function() {
+  clearTimeout(acTimer);
+  const q = this.value.trim();
+  if (q.length < 2) { document.getElementById('ac').style.display='none'; return; }
+  
+  acTimer = setTimeout(async () => {
+    try {
+      const r = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=es`);
+      const d = await r.json(); const results = d.results || [];
+      const ac = document.getElementById('ac');
+      ac.innerHTML = '';
+      
+      if(!results.length) { ac.style.display = 'none'; return; }
+
+      results.forEach(city => {
+        const row = document.createElement('div');
+        row.className = 'ac-item';
+        
+        row.dataset.lat = city.latitude;
+        row.dataset.lon = city.longitude;
+        row.dataset.name = city.name;
+        row.dataset.country = city.country || 'Argentina';
+
+        row.innerHTML = `
+          <div class="ac-city">${city.name}${city.admin1 ? ', ' + city.admin1 : ''}</div>
+          <div class="ac-sub">${city.country || ''}</div>
+        `;
+
+        row.onclick = function() {
+          document.getElementById('srch').value = this.dataset.name;
+          ac.style.display = 'none';
+          fetchWeather(parseFloat(this.dataset.lat), parseFloat(this.dataset.lon), this.dataset.name, this.dataset.country);
+        };
+
+        ac.appendChild(row);
+      });
+      ac.style.display = 'block';
+    } catch (err) { console.error("Error en geolocalizador:", err); }
+  }, 250);
+};
+
+document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
+
+// MI UBICACIÓN (GEOLOCALIZACIÓN NATIVA)
+document.getElementById('geoBtn').onclick = () => {
+  if(!navigator.geolocation) return;
+  navigator.geolocation.getCurrentPosition(async pos => {
+    const {latitude:lat, longitude:lon} = pos.coords;
+    try {
+      const nr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`);
+      const nd = await nr.json();
+      const city = nd.address.city || nd.address.town || nd.address.village || 'Mi ubicación';
+      fetchWeather(lat, lon, city, nd.address.country || '');
+    } catch { fetchWeather(lat, lon, 'Mi ubicación', ''); }
+  });
+};
+
+// Carga por defecto inicial
+window.onload = () => { fetchWeather(-33.6742, -65.4578, 'Villa Mercedes', 'Argentina'); };
+</script>
+</body>
+</html>
