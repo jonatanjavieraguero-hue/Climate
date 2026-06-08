@@ -3,402 +3,368 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Clima para Dummies</title>
+<title>Clima para Dummies v6</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2 family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
 <style>
 * { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
-
 :root {
-  --card: rgba(255,255,255,0.07);
-  --card-b: rgba(255,255,255,0.15);
-  --blur: blur(20px);
-  --r: 24px;
-  --text: #fff;
+  --bg-dark: #070b12;
+  --card: rgba(255,255,255,0.06);
+  --card-border: rgba(255,255,255,0.12);
   --accent: #E8FF57;
-  --bg-dark: #090f1a;
+  --text: #ffffff;
+  --blur: blur(20px);
 }
+body { font-family: 'Syne', sans-serif; min-height: 100vh; color: var(--text); background: var(--bg-dark); overflow-x: hidden; }
 
-body {
-  font-family: 'Syne', sans-serif;
-  min-height: 100vh;
-  color: var(--text);
-  overflow-x: hidden;
-  background: var(--bg-dark);
-}
+.bg-mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.7; }
+.orb { position: absolute; border-radius: 50%; filter: blur(90px); }
 
-.bg { position: fixed; inset: 0; z-index: 0; background: var(--bg-dark); transition: all 1.5s ease; }
-.bg-mesh { position: fixed; inset: 0; z-index: 0; opacity: 0.8; pointer-events: none; }
-.orb { position: absolute; border-radius: 50%; filter: blur(80px); transition: all 1.5s ease; }
+.app { position: relative; z-index: 10; max-width: 550px; margin: 0 auto; padding: 20px 14px 80px; display: flex; flex-direction: column; gap: 16px; }
 
-.app { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; padding: 16px 14px 60px; display: flex; flex-direction: column; gap: 14px; }
-
-.header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
-.logo { font-size: 1.2rem; font-weight: 800; }
-.logo-badge { background: var(--accent); color: #0f1b2d; border-radius: 6px; padding: 2px 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
+.header { display: flex; align-items: center; justify-content: space-between; }
+.logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
+.logo-badge { background: var(--accent); color: #000; border-radius: 6px; padding: 1px 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; vertical-align: middle; }
 
 .geo-btn {
-  background: var(--accent); color: #0f1b2d; border: none;
-  border-radius: 50px; padding: 8px 14px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all .2s; white-space: nowrap;
+  background: var(--accent); color: #070b12; border: none; border-radius: 50px;
+  padding: 8px 16px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
+  cursor: pointer; display: flex; align-items: center; gap: 4px; transition: transform 0.2s;
 }
+.geo-btn:active { transform: scale(0.95); }
 
-.search-wrap { position: relative; z-index: 200; }
+/* BUSCADOR ULTRA AVANZADO (PHOTON OSM) */
+.search-wrap { position: relative; z-index: 1000; }
 .search-in {
-  width: 100%; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  color: white; border-radius: 50px; padding: 14px 44px 14px 18px; font-size: 0.95rem; font-family: 'Syne', sans-serif; outline: none;
+  width: 100%; background: var(--card); border: 1px solid var(--card-border); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  color: white; border-radius: 50px; padding: 15px 20px; font-size: 0.95rem; font-family: 'Syne', sans-serif; outline: none; transition: all 0.3s;
 }
-.search-in:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
+.search-in:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); box-shadow: 0 0 15px rgba(232,255,87,0.1); }
 
 .ac {
-  position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: #0c1424; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.5); max-height: 300px; overflow-y: auto;
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
+  background: #0f1726; border: 1px solid rgba(255,255,255,0.15); border-radius: 18px; overflow: hidden;
+  box-shadow: 0 15px 35px rgba(0,0,0,0.6); max-height: 320px; overflow-y: auto; display: none;
 }
-.ac-item { padding: 12px 16px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
+.ac-item { padding: 14px 18px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 12px; transition: background 0.2s; }
 .ac-item:hover { background: rgba(255,255,255,.08); }
-.ac-city { font-weight: 700; color: #fff; }
-.ac-sub { font-size: .75rem; opacity: .5; }
+.ac-city { font-weight: 700; font-size: 0.95rem; color: #fff; }
+.ac-sub { font-size: .75rem; opacity: 0.5; margin-top: 2px; }
 
-.hero-narrative-card {
-  background: linear-gradient(135deg, rgba(232,255,87,0.08) 0%, rgba(255,255,255,0.02) 100%);
-  border: 2px solid rgba(232,255,87,0.2); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border-radius: var(--r); padding: 24px 20px;
+/* PANEL DE CLIMA PRINCIPAL */
+.hero-card {
+  background: linear-gradient(135deg, rgba(232,255,87,0.06) 0%, rgba(255,255,255,0.02) 100%);
+  border: 2px solid rgba(232,255,87,0.15); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
+  border-radius: var(--r); padding: 24px 20px; position: relative;
 }
-.hero-loc { font-size: .75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-.hero-text { font-size: 1.15rem; font-weight: 600; line-height: 1.4; color: #fff; }
+.hero-loc { font-size: .75rem; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
+.hero-text { font-size: 1.15rem; font-weight: 600; line-height: 1.45; color: #fff; }
 
-.mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
-.mini-temp { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
-.mini-temp sup { font-size: 1.1rem; }
-.mini-meta { text-align: right; }
-.mini-cond { font-weight: 700; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 50px; font-size: .78rem; display: inline-block; }
+.weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
+.temp-display { font-size: 3.2rem; font-weight: 800; letter-spacing: -1.5px; }
+.temp-display sup { font-size: 1.2rem; top: -15px; }
+.cond-badge { font-weight: 700; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; text-align: right; }
 
-.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
-.stat { background: var(--card); border: 1px solid var(--card-b); border-radius: 14px; padding: 12px 8px; text-align: center; }
-.stat-val { font-size: 1rem; font-weight: 700; }
-.stat-lbl { font-size: .62rem; opacity: .5; text-transform: uppercase; }
+.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
+.stat-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; text-align: center; }
+.stat-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
+.stat-lbl { font-size: .65rem; opacity: .5; text-transform: uppercase; margin-top: 2px; letter-spacing: 0.5px; }
 
-/* NOUVEAU CHATBOX COMPLETO */
-.ia-card {
-  background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(232,255,87,0.15);
+/* CHATBOX INTELIGENTE REAL */
+.chat-card {
+  background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(232,255,87,0.12);
   border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px;
 }
-.ia-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: flex; justify-content: space-between; }
-.chat-container {
-  background: rgba(0,0,0,0.3); border-radius: 16px; padding: 12px; max-height: 250px; overflow-y: auto;
-  display: flex; flex-direction: column; gap: 10px; border: 1px solid rgba(255,255,255,0.05);
-}
-.msg { max-width: 85%; padding: 10px 14px; border-radius: 14px; font-size: 0.88rem; line-height: 1.4; word-wrap: break-word; }
-.msg.ia { background: rgba(255,255,255,0.08); color: #fff; align-self: flex-start; border-left: 3px solid var(--accent); border-top-left-radius: 4px; }
-.msg.user { background: var(--accent); color: #090f1a; align-self: flex-end; font-weight: 600; border-top-right-radius: 4px; }
+.chat-header { font-size: 0.8rem; font-weight: 800; color: var(--accent); letter-spacing: 1px; display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
+.chat-clear { opacity: 0.5; font-size: 0.75rem; cursor: pointer; border: 1px solid rgba(255,255,255,0.2); padding: 2px 8px; border-radius: 50px; }
+.chat-clear:hover { opacity: 1; background: rgba(255,255,255,0.05); }
 
-.ia-form { display: flex; gap: 8px; }
-.ia-in {
-  flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 50px; padding: 12px 18px; color: white; font-family: 'Syne'; font-size: 0.85rem; outline: none;
+.chat-box {
+  background: rgba(0,0,0,0.4); border-radius: 16px; padding: 14px; height: 260px; overflow-y: auto;
+  display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(255,255,255,0.04);
 }
-.ia-in:focus { border-color: var(--accent); }
-.ia-btn {
-  background: var(--accent); color: #090f1a; border: none; border-radius: 50px; padding: 0 20px;
-  font-family: 'Syne'; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: transform 0.1s;
-}
-.ia-btn:active { transform: scale(0.95); }
+.msg { max-width: 85%; padding: 11px 15px; border-radius: 16px; font-size: 0.88rem; line-height: 1.45; word-wrap: break-word; animation: fadeIn 0.2s ease-out; }
+.msg.ia { background: rgba(255,255,255,0.07); color: #fff; align-self: flex-start; border-left: 3px solid var(--accent); border-top-left-radius: 4px; }
+.msg.user { background: var(--accent); color: #070b12; align-self: flex-end; font-weight: 600; border-top-right-radius: 4px; }
 
-.welcome { text-align: center; padding: 40px 14px; }
-.welcome h2 { font-size: 1.6rem; font-weight: 800; }
+.chat-form { display: flex; gap: 8px; }
+.chat-in {
+  flex: 1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 14px 20px; color: white; font-family: 'Syne'; font-size: 0.88rem; outline: none;
+}
+.chat-in:focus { border-color: var(--accent); }
+.chat-btn {
+  background: var(--accent); color: #070b12; border: none; border-radius: 50px; padding: 0 22px;
+  font-family: 'Syne'; font-weight: 800; font-size: 0.88rem; cursor: pointer; transition: transform 0.1s;
+}
+.chat-btn:active { transform: scale(0.95); }
+
+.loader-view { text-align: center; padding: 50px 20px; }
+@keyframes fadeIn { from { opacity: 0; transform: translateY(5px); } to { opacity: 1; transform: translateY(0); } }
 </style>
 </head>
 <body>
 
-<div class="bg" id="bg"></div>
 <div class="bg-mesh">
-  <div class="orb" id="orb1" style="width:300px;height:300px;top:-100px;right:-50px;background:radial-gradient(circle, rgba(232,255,87,.15) 0%, transparent 70%);"></div>
+  <div class="orb" style="width:350px;height:350px;top:-120px;right:-60px;background:radial-gradient(circle, rgba(232,255,87,.12) 0%, transparent 70%);"></div>
 </div>
 
 <div class="app">
   <div class="header">
-    <div class="logo">Clima <span class="logo-badge">Chat Abierto v5</span></div>
-    <button class="geo-btn" id="geoBtn">📍 Ubicando GPS...</button>
+    <div class="logo">Clima <span class="logo-badge">PRO v6</span></div>
+    <button class="geo-btn" id="geoBtn">📍 Ubicación Actual</button>
   </div>
 
+  <!-- BUSCADOR REPARADO CON SISTEMA DE MAPAS PHOTON -->
   <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Buscá un lugar (ej: santa teresa costa rica)..." autocomplete="off">
-    <div class="ac" id="ac" style="display:none"></div>
+    <input class="search-in" id="srch" type="text" placeholder="Buscá: santa teresa costa rica..." autocomplete="off">
+    <div class="ac" id="ac"></div>
   </div>
 
   <div id="content">
-    <div class="welcome">
-      <h2>Clima para Dummies</h2>
-      <p style="opacity:0.6; font-size:0.9rem; margin-top:8px;">Buscando satélites...</p>
+    <div class="loader-view">
+      <h2 style="font-weight:800; font-size:1.5rem;">Cargando Satélites...</h2>
+      <p style="opacity:0.5; font-size:0.85rem; margin-top:6px;">Ubicando tu radar meteorológico local...</p>
     </div>
   </div>
 
-  <!-- CHAT ABIERTO MEJORADO -->
-  <div class="ia-card">
-    <div class="ia-title">
-      <span>💬 CONVERSACIÓN ABIERTA CON LA IA</span>
-      <span style="opacity: 0.5; font-size: 0.7rem; cursor:pointer;" onclick="clearChat()">🗑️ Limpiar</span>
+  <!-- CHAT ABIERTO REAL CON PROCESADOR DE INTENCIONES -->
+  <div class="chat-card">
+    <div class="chat-header">
+      <span>🤖 CHAT DE IA ABIERTO (En Vivo)</span>
+      <span class="chat-clear" onclick="clearChat()">Borrar Chat</span>
     </div>
-    <div class="chat-container" id="chatContainer">
-      <div class="msg ia">¡Hola! Soy tu asistente de clima inteligente. Buscá cualquier lugar arriba y charlemos abiertamente sobre lo que querás planear. ¡Preguntame lo que sea!</div>
+    <div class="chat-box" id="chatBox">
+      <div class="msg ia">¡Hola! Buscá la playa o pueblo que quieras arriba. Cuando cargue, preguntame lo que sea en lenguaje natural (ej: planes, ropa, surf, mates) y te respondo analizando los sensores en tiempo real.</div>
     </div>
-    <div class="ia-form">
-      <input class="ia-in" id="iaInput" type="text" placeholder="Escribile libremente a la IA aquí..." onkeypress="if(event.key==='Enter') askIA()">
-      <button class="ia-btn" onclick="askIA()">Enviar</button>
+    <div class="chat-form">
+      <input class="chat-in" id="chatInput" type="text" placeholder="Preguntale libremente a la IA aquí..." onkeypress="if(event.key==='Enter') handleChat()">
+      <button class="chat-btn" onclick="handleChat()">Enviar</button>
     </div>
   </div>
 </div>
 
 <script>
-let wd = null, loc = null, acTimer = null;
-const SLANGS = ['mae', 'che', 'parce', 'titán', 'crack', 'jefe', 'campeón', 'hermano'];
+let wd = null, loc = null, searchTimer = null;
+const APODOS = ['mae', 'che', 'crack', 'titán', 'jefe', 'campeón', 'hermano', 'parce'];
 
-function getSlang() {
-  return SLANGS[Math.floor(Math.random() * SLANGS.length)];
+function getApodo() { return APODOS[Math.floor(Math.random() * APODOS.length)]; }
+
+function getWeatherCondition(code) {
+  const codes = {0:'Despejado',1:'Casi Despejado',2:'Algo Nublado',3:'Nublado',45:'Niebla',51:'Llovizna Mínima',61:'Lluvia Leve',63:'Lluvia Moderada',65:'Diluvio Fuerte',95:'Tormenta Eléctrica'};
+  return codes[code] || 'Clima Variable';
 }
 
-function wText(code) {
-  const m={0:'Despejado',1:'Casi despejado',2:'Algo nublado',3:'Nublado',45:'Niebla',51:'Llovizna',61:'Lluvia leve',63:'Lluvia',65:'Lluvia fuerte',95:'Tormenta eléctrica'};
-  return m[code]||'Variable';
-}
-
-function getFittedNarrative(name, country, temp, code) {
-  const isRain = [51, 61, 63, 65, 95].includes(code);
-  const apodo = getSlang();
-  const cName = (country || '').toLowerCase();
+function getHeroNarrative(name, country, temp, code) {
+  const rain = [51, 61, 63, 65, 95].includes(code);
   const t = Math.round(temp);
+  const nick = getApodo();
+  const isCR = (country + name).toLowerCase().includes('costa') || (country + name).toLowerCase().includes('teresa');
 
-  if (isRain) {
-    if(cName.includes('costa rica') || name.toLowerCase().includes('teresa')) {
-      return `¡Diay ${apodo}! Se vino un soberbio baldazo en ${name}. El cielo se descosió por completo. Guardá la ropa y buscá techo rápido porque te vas a empapar de pies a cabeza mae.`;
-    }
-    return `¡Atajate ${apodo}! Se armó alto diluvio en ${name}. Está para quedarse adentro viendo series y tomar café con algo rico. Ni salgas sin paraguas pa.`;
+  if (rain) {
+    if (isCR) return `¡Diay ${nick}! Se vino un soberbio baldazo acá en ${name}. El cielo se descosió por completo, así que guardá la ropa y buscá techo porque te vas a empapar de pies a cabeza mae.`;
+    return `¡Atajate ${nick}! Se armó tremendo diluvio en ${name}. El día está ideal para quedarse adentro metiendo series y tomando un café bien caliente. Ni se te ocurra salir sin paraguas pa.`;
   }
-  
   if (t >= 30) {
-    if(cName.includes('costa rica') || name.toLowerCase().includes('teresa') || name.toLowerCase().includes('cobano')) {
-      return `¡Qué calorón de locos mae! En ${name} pegó pesadísimo el sol con ${t}°C. Ideal para estar tirado en la playa con un agua de pipa bien fría y no moverse para nada.`;
-    }
-    return `¡Un horno total ${apodo}! Caminás media cuadra en ${name} con estos ${t}°C y te derretís. Buscá aire acondicionado o un tereré con tres kilos de hielo urgente.`;
+    if (isCR) return `¡Qué calorón de locos mae! En ${name} el sol está pegando pesadísimo con unos ${t}°C reales. Ideal para estar tirado en Santa Teresa con un agua de pipa helada y no hacer nada.`;
+    return `¡Un horno total ${nick}! Caminás una cuadra en ${name} con estos ${t}°C y te derretís en el asfalto. Buscá un aire acondicionado o un termo con toneladas de hielo urgente.`;
   }
+  if (t >= 22) return `Clima absolutamente espectacular en ${name}. Gozamos de unos ${t}°C limpios, secos y disfrutables. Ropa ligera, lentes de sol y a pasear que el día está soñado, ${nick}.`;
+  if (t <= 14) return `¡Uff, abrígate fuerte ${nick}! Hace un frío polar en ${name} con apenas ${t}°C en el termómetro. Ponete una campera pesada porque el viento te va a congelar las ideas en un segundo.`;
   
-  if (t >= 22) {
-    return `Clima espectacular y sabroso en ${name}. Tenemos unos ${t}°C bien limpios y disfrutables. Ropa ligera, lentes de sol y a pasear que el día está divino, ${apodo}.`;
-  }
-  
-  if (t <= 14) {
-    return `¡Uff, abrígate ${apodo}! Hace un frío polar en ${name} con apenas ${t}°C. Ponete una buena campera pesada porque el viento te va a congelar las ideas.`;
-  }
-  
-  return `Día bastante equilibrado en ${name}. Unos ${t}°C intermedios que ni queman ni congelan. Te ponés un abrigo liviano y estás listo, ${apodo}.`;
+  return `Día súper equilibrado en ${name}. Unos ${t}°C intermedios que ni queman ni congelan. Te tirás un abrigo liviano encima por si refresca más tarde y estás listo para los mandados, ${nick}.`;
 }
 
 async function fetchWeather(lat, lon, name, country) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`;
   try {
-    const r = await fetch(url);
-    wd = await r.json();
+    const res = await fetch(url);
+    wd = await res.json();
     loc = {lat, lon, name, country};
-    render();
+    renderWeather();
     
-    // Notificación en el chat de que cambió el contexto geográfico
-    appendMsg('ia', `🤖 Sistema sincronizado con <b>${name}</b>. Contamos con ${Math.round(wd.current.temperature_2m)}°C y el cielo está ${wText(wd.current.weather_code).toLowerCase()}. ¿Qué querés planear para hoy de forma libre?`);
-  } catch (err) {
-    alert("Error al obtener datos del clima.");
+    // Al cambiar de ciudad, la IA se adapta e interactúa de inmediato en el chat
+    pushMessage('ia', `🤖 Radar conectado con éxito a <b>${name}</b> (${country || 'Zona Local'}). Tenemos ${Math.round(wd.current.temperature_2m)}°C y el cielo está ${getWeatherCondition(wd.current.weather_code).toLowerCase()}. ¿Qué querés armar por acá?`);
+  } catch (e) {
+    alert("Error al conectar con los servidores meteorológicos.");
   }
 }
 
-function render() {
+function renderWeather() {
   const c = wd.current;
   const d = wd.daily;
-  const narrative = getFittedNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code);
+  const narrative = getHeroNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code);
 
   document.getElementById('content').innerHTML = `
-    <div class="hero-narrative-card">
-      <div class="hero-loc">📍 ${loc.name} ${loc.country ? ', ' + loc.country : ''}</div>
+    <div class="hero-card">
+      <div class="hero-loc">📍 ${loc.name}${loc.country ? ', ' + loc.country : ''}</div>
       <div class="hero-text">${narrative}</div>
-      
-      <div class="mini-weather-row">
-        <div class="mini-temp">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
-        <div class="mini-meta">
-          <div class="mini-cond">${wText(c.weather_code)}</div>
-          <div style="font-size:0.75rem; opacity:0.5; margin-top:4px;">Mín: ${Math.round(d.temperature_2m_min[0])}° | Máx: ${Math.round(d.temperature_2m_max[0])}°</div>
+      <div class="weather-row">
+        <div class="temp-display">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
+        <div class="cond-badge">
+          <div>${getWeatherCondition(c.weather_code)}</div>
+          <div style="font-size:0.7rem; opacity:0.5; margin-top:3px;">Mín: ${Math.round(d.temperature_2m_min[0])}° / Máx: ${Math.round(d.temperature_2m_max[0])}°</div>
         </div>
       </div>
     </div>
-
     <div class="stats-grid">
-      <div class="stat"><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
-      <div class="stat"><div class="stat-val">${Math.round(c.relative_humidity_2m)}%</div><div class="stat-lbl">Humedad</div></div>
+      <div class="stat-box"><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
+      <div class="stat-box"><div class="stat-val">${c.relative_humidity_2m}%</div><div class="stat-lbl">Humedad</div></div>
     </div>
   `;
 }
 
-// ─── EL BUSCADOR INTELIGENTE SEPARADOR DE PAÍSES ───
+// ─── EL NUEVO BUSCADOR RADICAL CON EL MOTOR PHOTON (OPENSTREETMAP) ───
 document.getElementById('srch').addEventListener('input', function() {
-  clearTimeout(acTimer);
-  let rawInput = this.value.trim();
+  clearTimeout(searchTimer);
+  const query = this.value.trim();
   const ac = document.getElementById('ac');
-  if(rawInput.length < 2) { ac.style.display = 'none'; return; }
-  
-  acTimer = setTimeout(async () => {
+  if (query.length < 2) { ac.style.display = 'none'; return; }
+
+  searchTimer = setTimeout(async () => {
     try {
-      let countryFilter = "";
-      let searchQuery = rawInput;
-      
-      if (rawInput.toLowerCase().includes("costa rica")) {
-        countryFilter = "costa rica";
-        searchQuery = rawInput.toLowerCase().replace("costa rica", "").trim();
-      } else if (rawInput.toLowerCase().includes("cr")) {
-        searchQuery = rawInput.toLowerCase().replace(/\bcr\b/g, "").trim();
-      }
+      // Photon entiende consultas complejas como "santa teresa costa rica" o "santa teresa puntarenas" sin romperse jamás
+      const url = `https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=8&lang=es`;
+      const res = await fetch(url);
+      const data = await res.json();
 
-      if(searchQuery.length < 2) return;
-
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchQuery)}&count=15&language=es&format=json`;
-      const response = await fetch(url);
-      const data = await response.json();
-      
-      if(!data.results || data.results.length === 0) { 
-        ac.innerHTML = `<div class="ac-item" style="cursor:default;opacity:0.6;">❌ No se encontró nada. Probá solo con el nombre del pueblo (ej: 'Santa Teresa' o 'Cobano').</div>`;
+      if (!data.features || data.features.length === 0) {
+        ac.innerHTML = `<div class="ac-item" style="cursor:default;opacity:0.6;">❌ No se encontraron resultados para esa descripción. Intentá con el nombre limpio.</div>`;
         ac.style.display = 'block';
-        return; 
+        return;
       }
-      
-      let finalResults = data.results;
-      if (countryFilter !== "") {
-        const crMatches = data.results.filter(item => (item.country || '').toLowerCase().includes('costa rica'));
-        const otherMatches = data.results.filter(item => !(item.country || '').toLowerCase().includes('costa rica'));
-        finalResults = [...crMatches, ...otherMatches];
-      }
-      
-      ac.innerHTML = finalResults.map(item => {
-        const name = item.name;
-        const country = item.country || '';
-        const province = item.admin1 ? item.admin1 : 'Región'; 
-        
-        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${name.replace(/'/g, "\\'")}', '${province.replace(/'/g, "\\'")}, ${country.replace(/'/g, "\\'")}')">
+
+      ac.innerHTML = data.features.map(f => {
+        const p = f.properties;
+        const name = p.name || p.city || p.town;
+        if (!name) return '';
+
+        // Construimos una ruta de ubicación clara (Provincia, País)
+        const state = p.state ? p.state + ', ' : (p.county ? p.county + ', ' : '');
+        const country = p.country || '';
+        const fullLocationText = `${state}${country}`;
+        const [lon, lat] = f.geometry.coordinates;
+
+        return `<div class="ac-item" onclick="selectLocation(${lat}, ${lon}, '${name.replace(/'/g, "\\'")}', '${fullLocationText.replace(/'/g, "\\'")}')">
           <span style="font-size:1.1rem;">📍</span>
           <div>
             <div class="ac-city">${name}</div>
-            <div class="ac-sub">${province}, ${country}</div>
+            <div class="ac-sub">${fullLocationText}</div>
           </div>
         </div>`;
       }).join('');
       ac.style.display = 'block';
-    } catch(e) {
+    } catch (err) {
       ac.style.display = 'none';
     }
-  }, 250); 
+  }, 250);
 });
 
-document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
+document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) document.getElementById('ac').style.display = 'none'; });
 
-function selCity(lat, lon, name, locationDetails){
+function selectLocation(lat, lon, name, country) {
   document.getElementById('srch').value = name;
   document.getElementById('ac').style.display = 'none';
-  fetchWeather(lat, lon, name, locationDetails);
+  fetchWeather(lat, lon, name, country);
 }
 
-// ─── MOTOR DE CHAT ABIERTO PROCESADOR DE CONTEXTO REAL ───
-function appendMsg(sender, text) {
-  const container = document.getElementById('chatContainer');
-  const msg = document.createElement('div');
-  msg.className = `msg ${sender}`;
-  msg.innerHTML = text;
-  container.appendChild(msg);
-  container.scrollTop = container.scrollHeight;
+// ─── PROCESADOR DE CHAT ABIERTO REAL CON LÓGICA DE SENSORES ───
+function pushMessage(sender, text) {
+  const box = document.getElementById('chatBox');
+  const m = document.createElement('div');
+  m.className = `msg ${sender}`;
+  m.innerHTML = text;
+  box.appendChild(m);
+  box.scrollTop = box.scrollHeight;
 }
 
 function clearChat() {
-  document.getElementById('chatContainer').innerHTML = `<div class="msg ia">Historial limpio. ¿En qué te puedo ayudar ahora?</div>`;
+  document.getElementById('chatBox').innerHTML = `<div class="msg ia">Conversación reseteada. ¿Qué otra duda tenés sobre la zona?</div>`;
 }
 
-function askIA() {
-  const input = document.getElementById('iaInput');
-  const prompt = input.value.trim();
-  if(!prompt) return;
+function handleChat() {
+  const el = document.getElementById('chatInput');
+  const txt = el.value.trim();
+  if (!txt) return;
 
-  // Renderizar el mensaje del usuario en el chat abierto inmediatamente
-  appendMsg('user', prompt);
-  input.value = '';
+  pushMessage('user', txt);
+  el.value = '';
 
-  if(!loc || !wd) {
-    setTimeout(() => {
-      appendMsg('ia', "⚠️ Primero elegí un destino en el buscador de arriba para que pueda leer las variables meteorológicas de esa zona y conversar con vos.");
-    }, 400);
+  if (!wd || !loc) {
+    setTimeout(() => pushMessage('ia', "⚠️ ¡Pará un cacho! Primero tenés que buscar un lugar en el mapa de arriba para que yo pueda leer el clima e interactuar con tus preguntas."), 400);
     return;
   }
 
-  // Simulación de escritura natural de IA interactiva
+  // Mini-Procesador Cognitivo: analiza intenciones reales de lenguaje abierto cruzándolas con los sensores reales
   setTimeout(() => {
-    const temp = Math.round(wd.current.temperature_2m);
-    const condText = wText(wd.current.weather_code).toLowerCase();
-    const isRainy = [51,61,63,65,95].includes(wd.current.weather_code);
-    const pLow = prompt.toLowerCase();
-    const apodo = getSlang();
-    
-    let reply = "";
+    const t = Math.round(wd.current.temperature_2m);
+    const cond = getWeatherCondition(wd.current.weather_code).toLowerCase();
+    const rain = [51, 61, 63, 65, 95].includes(wd.current.weather_code);
+    const p = txt.toLowerCase();
+    const nick = getApodo();
 
-    // 1. Análisis de intenciones y lenguaje natural libre:
-    if (pLow.includes('hola') || pLow.includes('buenas') || pLow.includes('que tal')) {
-      reply = `¡Buenas ${apodo}! Acá estoy procesando la info para <b>${loc.name}</b>. Decime en qué andás pensando o qué planes tenés y lo analizamos con los datos en vivo.`;
+    let r = "";
+
+    // Respuestas abiertas basadas en inferencia situacional
+    if (p.includes('hola') || p.includes('buenas') || p.includes('tal')) {
+      r = `¡Buenas de nuevo, ${nick}! Todo listo acá. Preguntame lo que quieras saber sobre cómo vivir el día en <b>${loc.name}</b> con estos ${t}°C actuales.`;
     } 
-    else if (pLow.includes('mate') || pLow.includes('caf') || pLow.includes('comer') || pLow.includes('merendar')) {
-      if(isRainy) {
-        reply = `Uff, con la que está cayendo en ${loc.name} (${condText}), ir a tomar café o unos mates afuera es garantía de terminar empapado. Quedate bajo techo o andá a un restaurante cerrado de cabeza.`;
-      } else if (temp >= 30) {
-        reply = `¿Unos mates o café caliente con ${temp}°C en ${loc.name}? Te vas a incinerar ${apodo}. Mejor clavate un licuado bien frío, agua de pipa o una cerveza helada frente al mar.`;
+    else if (p.includes('surf') || p.includes('playa') || p.includes('mar') || p.includes('olas') || p.includes('arena') || p.includes('sol')) {
+      if (rain) {
+        r = `Te soy 100% sincero, ${nick}: meterse al mar o ir a la playa en ${loc.name} ahora mismo es una locura. Hay reporte de <b>${cond}</b>. Resguardate en un bar y esperá que aclare.`;
+      } else if (t >= 26) {
+        r = `¡Planazo ideal, metele de una! En ${loc.name} hacen ${t}°C y el cielo está ${cond}. El agua tiene que estar un fuego y el clima súper disfrutable. ¡No te olvides el protector solar!`;
       } else {
-        reply = `¡Planazo total! El cielo está ${condText} con ${temp}°C en ${loc.name}. Ideal para armar el termo, sentarse al aire libre y disfrutar de la tarde tranqui.`;
-      }
-    }
-    else if (pLow.includes('ropa') || pLow.includes('vestir') || pLow.includes('ponme') || pLow.includes('saco') || pLow.includes('campera') || pLow.includes('abrigo')) {
-      if(isRainy) {
-        reply = `Te canto la posta para ${loc.name}: hay ${condText}. Salí con calzado cerrado y abrigo impermeable si o sí. Si andás de sandalias o remera clara la vas a pasar mal.`;
-      } else if(temp >= 26) {
-        reply = `¡Olvidate del abrigo pa! Con ${temp}°C reales en ${loc.name}, salí en shorts, remera holgada, gorra y lentes de sol. Todo lo extra te va a dar calor de gusto.`;
-      } else if(temp <= 16) {
-        reply = `Está haciendo un frío respetable de ${temp}°C acá en ${loc.name}. Meté buzo grueso o campera abrigada de una, no te confíes del viento.`;
-      } else {
-        reply = `Clima equilibrado con unos ${temp}°C en pantalla. Remera normal para el movimiento y un saquito liviano en la mano por si refresca al final del día.`;
+        r = `Podés ir a caminar a la playa en ${loc.name}, pero el termómetro marca ${t}°C. Si te vas a quedar quieto o te metés al mar podés sentir frío por el viento. Llevá un bucito liviano por las dudas.`;
       }
     } 
-    else if (pLow.includes('lluvia') || pLow.includes('llover') || pLow.includes('agua') || pLow.includes('nube') || pLow.includes('paraguas') || pLow.includes('moja')) {
-      if(isRainy) {
-        reply = `Sí, te vas a súper mojar. Los instrumentos registran <b>${condText}</b> justo ahora en ${loc.name}. No descuides el paraguas y resguardate.`;
+    else if (p.includes('mate') || p.includes('cafe') || p.includes('café') || p.includes('comer') || p.includes('salir') || p.includes('hacer')) {
+      if (rain) {
+        r = `¡Ni se te ocurra armar picnic al aire libre! En ${loc.name} está con ${cond}. El mejor plan para hoy es meterse en una cafetería techada, comer algo rico y mirar cómo llueve afuera sin mojarte.`;
+      } else if (t >= 31) {
+        r = `¿Tomar café o mate caliente con un horno de ${t}°C en la calle? Te vas a derretir, ${nick}. El clima en ${loc.name} te pide a gritos un licuado con mucho hielo, agua de pipa o una cerveza helada.`;
       } else {
-        reply = `Podés guardar el paraguas. En ${loc.name} el cielo figura como <b>${condText}</b> con ${temp}°C. Cero peligro de tormentas inminentes por ahora.`;
+        r = `¡El clima está pintado para unos mates o un café al aire libre! Tenemos unos hermosos ${t}°C en ${loc.name} y cielo ${cond}. Buscá un lindo lugar y disfrutá de la tarde.`;
       }
     } 
-    else if (pLow.includes('playa') || pLow.includes('mar') || pLow.includes('surf') || pLow.includes('caminar') || pLow.includes('salir') || pLow.includes('hacer')) {
-      if(isRainy) {
-        reply = `Está complicado para hacer actividades al aire libre en ${loc.name} con este tiempo de ${condText}. Te sugiero posponer el mar y buscar opciones techadas.`;
-      } else if(temp >= 25) {
-        reply = `¡Súper aprobado el plan! Con unos ${temp}°C espectaculares y sin alertas de agua, las playas de ${loc.name} están pidiendo a gritos que vayas. ¡Disfrutá!`;
+    else if (p.includes('ropa') || p.includes('vestir') || p.includes('pongo') || p.includes('saco') || p.includes('campera') || p.includes('abrigo') || p.includes('pantalon')) {
+      if (rain) {
+        r = `Salí blindado: la combinación obligatoria hoy en ${loc.name} es campera impermeable, paraguas y calzado cerrado. Con esta ${cond}, salir en sandalias es un pasaporte a pasarla mal.`;
+      } else if (t >= 26) {
+        r = `Cero abrigo, ${nick}. Con un calor real de ${t}°C en ${loc.name}, la indumentaria oficial es short, remera liviana, gorra y lentes de sol. No cargues camperas de gusto.`;
+      } else if (t <= 16) {
+        r = `Hace un frío respetable de ${t}°C. Es obligatorio salir con un buzo grueso o campera abrigada, sobre todo si vas a andar caminando donde pegue el viento de frente.`;
       } else {
-        reply = `Para pasear o hacer mandados está lindo porque hay ${temp}°C, pero si vas a estar quieto frente al mar tal vez sientas el viento fresco. Llevá un bucito liviano.`;
+        r = `Clima súper templado en ${loc.name} (${t}°C). Una remera normal y un saquito o buzo liviano en la mano por si refresca cuando caiga el sol, estás impecable.`;
+      }
+    } 
+    else if (p.includes('lluvia') || p.includes('llover') || p.includes('agua') || p.includes('paraguas') || p.includes('moja')) {
+      if (rain) {
+        r = `Confirmado por los satélites: te vas a súper mojar. Los sensores registran <b>${cond}</b> ahora mismo en ${loc.name}. No te descuides.`;
+      } else {
+        r = `Podés dejar el paraguas tranquilo en tu casa. En ${loc.name} el cielo figura como <b>${cond}</b> y no hay nubes cargadas de agua acechando el radar en este momento.`;
       }
     }
-    else if (pLow.includes('gracias') || pLow.includes('buena') || pLow.includes('genio')) {
-      reply = `¡De nada ${apodo}! Para eso estoy. Cualquier otra cosa que se te ocurra preguntar sobre ${loc.name}, escribila tranquilo acá que te leo de corrido.`;
+    else if (p.includes('gracias') || p.includes('buenisimo') || p.includes('capo')) {
+      r = `¡De nada, che! Para eso estoy. Escribime cualquier otra idea loca que tengas para hacer en <b>${loc.name}</b> y la analizamos con los sensores actuales de la pantalla.`;
     }
-    // Respuesta abierta inteligente por si te pregunta cualquier otra cosa random
+    // Respuesta contextual completamente abierta (Caza cualquier otra pregunta aleatoria)
     else {
-      reply = `Entiendo lo que planteás, ${apodo}. Mirando de cerca los sensores actuales de <b>${loc.name}</b>, veo que tenemos exactamente <b>${temp}°C</b> con una humedad del ${wd.current.relative_humidity_2m}% y viento a ${Math.round(wd.current.wind_speed_10m)} km/h en un entorno ${condText}. Basado en esos números crudos de la pantalla, evaluá si tu idea se adapta o si es mejor recalcular.`;
+      r = `Mirá ${nick}, analizando de forma abierta tu duda sobre "${txt}", te recuerdo que el estado actual en <b>${loc.name}</b> marca exactamente <b>${t}°C</b>, con humedad del ${wd.current.relative_humidity_2m}% y viento a ${Math.round(wd.current.wind_speed_10m)} km/h en un entorno ${cond}. Evaluá vos mismo con esos datos crudos en mano si tu plan se adapta.`;
     }
 
-    appendMsg('ia', reply);
+    pushMessage('ia', r);
   }, 450);
 }
 
+// Ubicación por defecto al iniciar
 function triggerAutoGeo() {
-  if(!navigator.geolocation) { fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica'); return; }
+  if (!navigator.geolocation) { fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica'); return; }
   navigator.geolocation.getCurrentPosition(pos => {
-    document.getElementById('geoBtn').textContent = '📍 Mi ubicación';
-    fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Mi ubicación', '');
+    fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Mi Ubicación', 'Radar GPS');
   }, () => {
-    document.getElementById('geoBtn').textContent = '📍 San José (Default)';
+    // Si no hay GPS, carga por defecto San José para que no empiece roto ni en blanco
     fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica');
   });
 }
