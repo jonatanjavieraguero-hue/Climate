@@ -65,7 +65,7 @@ body {
 }
 .geo-btn:hover { background: rgba(255,255,255,0.18); border-color: rgba(255,255,255,0.3); }
 
-/* ─── SEARCH (FIXED SEARCH) ─── */
+/* ─── SEARCH ─── */
 .search-wrap { position: relative; margin-bottom: 28px; z-index: 100; }
 .search-in {
   width: 100%; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
@@ -87,15 +87,27 @@ body {
 
 #content { display: flex; flex-direction: column; gap: 16px; }
 
-/* ─── HERO NARRATIVE (LA ESTRELLA DE LA PÁGINA) ─── */
+/* ─── HERO NARRATIVE (LA ESTRELLA) ─── */
 .hero-narrative-card {
   background: linear-gradient(135deg, rgba(232,255,87,0.12) 0%, rgba(255,255,255,0.03) 100%);
   border: 2px solid rgba(232,255,87,0.3); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
   border-radius: var(--r); padding: 32px 28px; position: relative; overflow: hidden;
 }
 .hero-loc { font-size: .85rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 8px; }
-.hero-city { font-size: 2.5rem; font-weight: 800; letter-spacing: -1px; line-height: 1.1; margin-bottom: 16px; }
 .hero-text { font-size: 1.35rem; font-weight: 600; line-height: 1.5; color: #ffffff; letter-spacing: -0.2px; }
+
+/* NICKNAME CHANGER INSIDE HERO */
+.nick-banner { font-size: 0.75rem; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 12px; cursor: pointer; opacity: 0.7; }
+.nick-banner:hover { opacity: 1; background: rgba(255,255,255,0.15); }
+
+/* NAME CAPTURE SCREEN */
+.name-box { background: var(--card); border: 1px solid var(--card-b); border-radius: var(--r); padding: 30px; text-align: center; }
+.name-box h3 { font-size: 1.4rem; margin-bottom: 10px; font-weight: 800; }
+.name-box p { font-size: 0.9rem; opacity: 0.6; margin-bottom: 20px; }
+.name-row { display: flex; gap: 10px; max-width: 400px; margin: 0 auto; }
+.name-in { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--card-b); color: white; border-radius: 50px; padding: 12px 20px; font-family: 'Syne', sans-serif; outline: none; font-size: 1rem; text-align: center; }
+.name-in:focus { border-color: var(--accent); }
+.name-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50px; padding: 0 24px; font-weight: 700; font-family: 'Syne', sans-serif; cursor: pointer; }
 
 /* ─── MINI TEMPERATURE CHIP ─── */
 .mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 24px; padding-top: 20px; border-top: 1px solid rgba(255,255,255,0.08); }
@@ -140,7 +152,7 @@ body {
 .rec-pills { display: flex; flex-wrap: wrap; gap: 8px; }
 .rec-pill { background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.1); border-radius: 30px; padding: 6px 14px; font-size: .85rem; font-weight: 600; }
 
-/* ─── CHAT INTELIGENTE REPARADO ─── */
+/* ─── CHAT INTERACTIVO INTELIGENTE ─── */
 .chat-wrap { background: rgba(0,0,0,0.2); border: 1px solid var(--card-b); border-radius: var(--r); padding: 20px; }
 .chat-msgs { max-height: 280px; overflow-y: auto; margin-bottom: 14px; display: flex; flex-direction: column; gap: 10px; padding-right: 4px; }
 .msg { max-width: 85%; padding: 12px 18px; border-radius: 18px; font-size: .9rem; line-height: 1.5; animation: msgin .25s ease both; }
@@ -156,7 +168,7 @@ body {
 .send-btn { background: var(--accent); color: #0f1b2d; border: none; border-radius: 50%; width: 48px; height: 48px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-weight: 700; }
 
 .sec-lbl { font-size: .72rem; opacity: .45; letter-spacing: 1.5px; text-transform: uppercase; font-weight: 700; margin-top: 10px; margin-bottom: 4px; }
-.welcome { text-align: center; padding: 80px 20px; }
+.welcome { text-align: center; padding: 60px 20px; }
 .welcome-sym { font-size: 4.5rem; font-family: 'Syne Mono'; margin-bottom: 16px; color: var(--accent); }
 .welcome h2 { font-size: 2.2rem; font-weight: 800; margin-bottom: 12px; }
 .welcome p { opacity: .6; font-size: .95rem; line-height: 1.7; max-width: 320px; margin: 0 auto; }
@@ -199,6 +211,26 @@ body {
 
 <script>
 let wd = null, loc = null, acTimer = null;
+let userName = localStorage.getItem('dummy_name') || '';
+
+// Diccionario de apodos automáticos graciosos
+const NICKNAMES = {
+  'jonatan': 'Choni', 'jonathan': 'Jona', 'franco': 'Franquito', 'francisco': 'Fran',
+  'santiago': 'Santi', 'guillermo': 'Guille', 'nicolas': 'Nico', 'alejandro': 'Ale',
+  'juan': 'Juancho', 'mateo': 'Matute', 'lucas': 'Luquitas', 'matias': 'Mati',
+  'rodrigo': 'Rodri', 'diego': 'Dieguito', 'martin': 'Tincho', 'sebastian': 'Seba',
+  'camila': 'Cami', 'sofia': 'Sofi', 'valentina': 'Valen', 'florencia': 'Flor',
+  'maria': 'Mari', 'agustina': 'Agus', 'lucia': 'Lu', 'daniela': 'Dani'
+};
+
+function getNickname(name) {
+  if (!name) return 'Titán';
+  const normal = name.trim().toLowerCase().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+  if (NICKNAMES[normal]) return NICKNAMES[normal];
+  // Si no está, inventa uno genérico con onda
+  const generics = ['Fiera', 'Maquinaria', 'Capo', 'Jefe', 'Lince', 'Crack'];
+  return generics[Math.floor((normal.charCodeAt(0) || 0) % generics.length)];
+}
 
 function wSym(code, day=true) {
   if (code===0) return day ? '☀' : '☽';
@@ -216,46 +248,92 @@ function wText(code) {
   return m[code]||'Variable';
 }
 
-// Generador de descripciones divertidas sin tecnicismos
-function generateFunnyNarrative(c, d) {
-  const t = Math.round(c.temperature_2m);
-  const feels = Math.round(c.apparent_temperature);
-  const code = c.weather_code;
-  const rain = d.precipitation_sum[0];
-  const wind = c.wind_speed_10m;
-  const uv = d.uv_index_max[0];
+// Factoría de Slangs e Idiomas Locales según País
+function getSlangNarrative(country, code, t, feels, rain, wind, uv) {
+  const c = (country || '').toLowerCase();
+  const nick = getNickname(userName);
+  
+  let base = "";
+  let extra = "";
 
-  let phrases = [];
-
-  // Condición base
-  if ([95,96,99].includes(code)) {
-    phrases.push("Se cae el cielo abajo. Hay truenos, relámpagos y una pinta de que San Pedro está reordenando los muebles.");
-  } else if (rain > 2) {
-    phrases.push("Está lloviendo lindo. Ideal para cancelar planes, mirar una peli y llenarse de culpa por no hacer nada productivo.");
-  } else if ([45,48].includes(code)) {
-    phrases.push("Hay tanta niebla que si salís te chocás contra un árbol. Visibilidad modo Silent Hill activada.");
-  } else if (t >= 30) {
-    phrases.push("Hace un calor de locos. Caminás media cuadra y ya sos un charco humano. Ventilador o muerte.");
-  } else if (t <= 11) {
-    phrases.push("Hace un frío que te parte. Te metés las manos en los bolsillos y no las sacás hasta la primavera.");
-  } else if (code === 0) {
-    phrases.push("El cielo está más limpio que tu cuenta bancaria a fin de mes. Un solcito hermoso.");
-  } else {
-    phrases.push("Día gris, ni fu ni fa. El cielo tiene el color de una media vieja, pero se puede salir sin drama.");
+  // 1. DEFINICIÓN POR PAÍS
+  if (c.includes('argentina')) {
+    // ARGENTINA slangs
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Qué onda, ${nick}! Se cae el cielo abajo, bro. Meté la ropa adentro porque se larga un diluvio de la patada y te va a licuar las plantas.`;
+    } else if (t >= 30) {
+      base = `¡Qué hacés, ${nick}! Che, hace un calor de cagarse afuera. Caminás media cuadra y ya sos un charco humano, posta.`;
+    } else if (t <= 12) {
+      base = `¡Buenas, ${nick}! Hace un frío que te parte al medio. Salí bien abrigado y no seas salame, mirá que te congelás al toque.`;
+    } else {
+      base = `¡Todo tranqui, ${nick}! El día está ahí, medio pelo. Ni frío ni calor, zafa lindo para salir a dar una vuelta sin drama.`;
+    }
+    if (wind > 25) extra = " Hay un viento bárbaro que te vuela la gorra.";
+    if (uv >= 7) extra += " Ponete protector porque quedás como un tomate en ensalada.";
+  } 
+  else if (c.includes('colombia')) {
+    // COLOMBIA slangs
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Q'hubo, ${nick}, parce! Qué viaje, se está desgajando el cielo durísimo. No salga sin paraguas si no se quiere pegar una saneada medrosa.`;
+    } else if (t >= 30) {
+      base = `¡Qué más, ${nick}! Uy juemadre, está haciendo un calor bien berraco. Provoca quedarse quieto tomando algo frío.`;
+    } else if (t <= 14) {
+      base = `¡Hola, ${nick}! Está haciendo un frío bien harto afuera, póngase una buena chaqueta para salir a la calle.`;
+    } else {
+      base = `¡Qué onda, ${nick}, todo bien! El clima está una elegancia, apenas para salir a dar una vuelta sin tanto visaje.`;
+    }
+    if (wind > 25) extra = " Está aventando una ventolera brava.";
+  } 
+  else if (c.includes('costa rica')) {
+    // COSTA RICA slangs
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Pura vida, ${nick}! Mae, se viene un baldazo de agua del copón. Se va a inundar todo, mejor se guarda de una.`;
+    } else if (t >= 30) {
+      base = `¡Qué dice, ${nick}, mae! Está pegando un solazo de locos, legalmente se va a derretir si sale al mediodía.`;
+    } else if (t <= 14) {
+      base = `¡Pura vida, ${nick}! Qué chiflón de frío está haciendo, mae. Alístese el polerón o la jacket porque se va a congelar.`;
+    } else {
+      base = `¡Wipe, ${nick}! El tiempo está bien monito hoy, ni mucha lluvia ni mucho sol. Sabor.`;
+    }
+  } 
+  else if (c.includes('mexico') || c.includes('méxico')) {
+    // MÉXICO slangs
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Qué onda, ${nick}, carnal! Va a caer un mendigo aguacero marca diablo. No te arriesgues y llévate las de la lluvia.`;
+    } else if (t >= 30) {
+      base = `¡Qué transa, ${nick}! Hace un calorón de la fregada, la neta está como para una chela bien fría porque el sol no perdona.`;
+    } else if (t <= 12) {
+      base = `¡Qué onda, ${nick}! Está haciendo un chingo de frío, tápate bien carnal, saca la chamarra gruesa de una vez.`;
+    } else {
+      base = `¡Qué milagro, ${nick}! El clima está bastante chido hoy, ni frío ni calor, ideal para andar en la calle Agustín de Iturbide.`;
+    }
+  } 
+  else if (c.includes('españa') || c.includes('espana')) {
+    // ESPAÑA slangs
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Hombre, ${nick}, tío! Menuda tormenta, está cayendo la del pulpo. Como salgas a la calle te vas a quedar empapado perdío.`;
+    } else if (t >= 30) {
+      base = `¡Qué pasa, ${nick}! Hace un calor de la hostia afuera, chaval. No hay quien pare bajo el sol sin una buena sombra.`;
+    } else if (t <= 11) {
+      base = `¡Muy buenas, ${nick}! Hace un frío que pela. Píllate un buen abrigo o un plumífero porque te vas a quedar pajarito.`;
+    } else {
+      base = `¡Hola, ${nick}! Menudo día más majo se ha quedado. No hace falta complicarse mucho la vida hoy, se está de lujo.`;
+    }
+  } 
+  else {
+    // ESPAÑOL DIVERTIDO ESTÁNDAR
+    if ([95,96,99].includes(code) || rain > 3) {
+      base = `¡Hola, ${nick}! Se cae el cielo en pedazos. Hay una pinta tremenda de tormenta y vas a terminar flotando si salís desarmado.`;
+    } else if (t >= 30) {
+      base = `¡Hola, ${nick}! El sol está modo derretimiento activado. Parece que estamos viviendo adentro de un horno microondas.`;
+    } else if (t <= 12) {
+      base = `¡Hola, ${nick}! Hace un frío polar insoportable. Si salís en remera vas a quedar tieso como estatua de plaza.`;
+    } else {
+      base = `¡Hola, ${nick}! Día templado y tranquilo. El cielo está pintado de un gris neutro que no molesta a nadie.`;
+    }
   }
 
-  // Sensación térmica vs Real
-  if (feels > t + 2) {
-    phrases.push(`Ojo, el termómetro dice ${t}° pero la pesadez te la hace sentir de ${feels}°. Es una trampa húmeda.`);
-  } else if (feels < t - 2) {
-    phrases.push(`Hay un vientito traicionero. Dice ${t}° pero salís y te congelás como si hicieran ${feels}°. Ponete un buzo.`);
-  }
-
-  // Extras graciosos (Viento / UV)
-  if (wind > 28) phrases.push("El viento te va a despeinar hasta las ideas. Agarrate la gorra.");
-  if (uv >= 7) phrases.push("El índice UV está picado. Si no te ponés protector solar vas a quedar como un tomate en ensalada.");
-
-  return phrases.join(" ");
+  return `"${base}${extra}"`;
 }
 
 const THEMES = {
@@ -312,12 +390,56 @@ async function fetchWeather(lat, lon, name, country) {
   }
 }
 
+function saveName() {
+  const input = document.getElementById('nameIn');
+  if (input && input.value.trim()) {
+    userName = input.value.trim();
+    localStorage.setItem('dummy_name', userName);
+    render();
+  }
+}
+
+function resetName() {
+  userName = '';
+  localStorage.removeItem('dummy_name');
+  render();
+}
+
 function render() {
+  // Si no hay nombre guardado, forzamos pantalla de captura para personalizar la experiencia
+  if (!userName) {
+    document.getElementById('content').innerHTML = `
+      <div class="name-box">
+        <h3>¡Pará un cacho! ¿Cómo te llamás?</h3>
+        <p>Poné tu nombre real para que el sistema te adivine tu verdadero apodo y te hable como corresponde.</p>
+        <div class="name-row">
+          <input class="name-in" id="nameIn" type="text" placeholder="Tu nombre acá..." onkeydown="if(event.key==='Enter')saveName()">
+          <button class="name-btn" onclick="saveName()">Listo</button>
+        </div>
+      </div>
+    `;
+    return;
+  }
+
+  // Si no hay locación seleccionada, mostramos la pantalla de bienvenida clásica
+  if (!wd) {
+    document.getElementById('content').innerHTML = `
+      <div class="welcome">
+        <div class="welcome-sym">☀</div>
+        <h2>¡Qué onda, ${getNickname(userName)}!</h2>
+        <p>Sin tecnicismos pesados. Sin vueltas.<br>Buscá tu rincón en el mapa arriba para saber qué onda el tiempo hoy.</p>
+        <div class="nick-banner" onclick="resetName()">¿No sos ${userName}? Cambiar nombre</div>
+      </div>
+    `;
+    return;
+  }
+
   const c = wd.current, d = wd.daily, h = wd.hourly;
   const day = c.is_day===1;
   applyTheme(c.weather_code, day);
 
-  const funnyText = generateFunnyNarrative(c, d);
+  // Expresión graciosa con slangs adaptada por país
+  const funnyText = getSlangNarrative(loc.country, c.weather_code, c.temperature_2m, c.apparent_temperature, d.precipitation_sum[0], c.wind_speed_10m, d.uv_index_max[0]);
 
   let hHtml=''; let now=new Date(); let cnt=0;
   for(let i=0; i<h.time.length && cnt<10; i++){
@@ -332,32 +454,31 @@ function render() {
     cnt++;
   }
 
-  const dns=['Dom','Lun','Mar','Mié','Jue','Vie','Sáb'];
+  const dns=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
   let fcHtml='';
   for(let i=0;i<5;i++){
     const nd=new Date(d.time[i]);
     fcHtml+=`<div class="fc-day">
-      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].toUpperCase()}</div>
+      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].substring(0,3).toUpperCase()}</div>
       <div class="fc-sym">${wSym(d.weather_code[i])}</div>
       <div class="fc-max">${Math.round(d.temperature_2m_max[i])}°</div>
       <div class="fc-min">${Math.round(d.temperature_2m_min[i])}°</div>
     </div>`;
   }
 
-  // Recomendaciones de mochila
   const recs=[];
   if(c.temperature_2m>26) recs.push('Ropa cortita y botellita de agua');
   else if(c.temperature_2m<13) recs.push('Campera que abrigue en serio');
   else recs.push('Un bucito por las dudas');
   if(d.precipitation_sum[0]>1) recs.push('Paraguas (salvo que te guste mojarte)');
-  if(d.uv_index_max[0]>=5) recs.push('Protector solar para no quedar como un tomate');
+  if(d.uv_index_max[0]>=5) recs.push('Protector solar para la piel');
 
   const C=2*Math.PI*34, filled=C*(c.relative_humidity_2m/100);
 
   document.getElementById('content').innerHTML = `
     <div class="hero-narrative-card">
       <div class="hero-loc">📍 ${loc.name}, ${loc.country || 'Planeta Tierra'}</div>
-      <div class="hero-text">"${funnyText}"</div>
+      <div class="hero-text">${funnyText}</div>
       
       <div class="mini-weather-row">
         <div class="mini-temp">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
@@ -366,11 +487,12 @@ function render() {
           <div class="mini-hl">Máx: ${Math.round(d.temperature_2m_max[0])}° | Mín: ${Math.round(d.temperature_2m_min[0])}°</div>
         </div>
       </div>
+      <div class="nick-banner" onclick="resetName()">¿No sos ${userName}? Cambiar</div>
     </div>
 
     <div class="stats-grid">
       <div class="stat"><div class="stat-sym">≋</div><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
-      <div class="stat"><div class="stat-sym">◉</div><div class="stat-val">${d.precipitation_sum[0]} mm</div><div class="stat-lbl">Agua caída</div></div>
+      <div class="stat"><div class="stat-sym">◉</div><div class="stat-val">${d.precipitation_sum[0]} mm</div><div class="stat-lbl">Agua</div></div>
       <div class="stat"><div class="stat-sym">◈</div><div class="stat-val">UV ${Math.round(c.uv_index)}</div><div class="stat-lbl">Rayos UV</div></div>
       <div class="stat"><div class="stat-sym">▲</div><div class="stat-val">${Math.round(d.wind_speed_10m_max[0])} km/h</div><div class="stat-lbl">Ráfagas</div></div>
     </div>
@@ -385,7 +507,7 @@ function render() {
       </div>
       <div class="hum-info">
         <div class="hum-title">Humedad ambiente</div>
-        <div class="hum-desc">${c.relative_humidity_2m > 75 ? 'El aire es prácticamente sopa flotante.' : c.relative_humidity_2m < 35 ? 'Más seco que desierto de película.' : 'Humedad decente, se puede respirar sin esfuerzo.'}</div>
+        <div class="hum-desc">${c.relative_humidity_2m > 75 ? 'El aire es prácticamente una sopa flotante.' : c.relative_humidity_2m < 35 ? 'Más seco que lengua de loro.' : 'Humedad decente, se respira tranqui.'}</div>
       </div>
     </div>
 
@@ -400,23 +522,24 @@ function render() {
       <div class="rec-pills">${recs.map(i=>`<span class="rec-pill">${i}</span>`).join('')}</div>
     </div>
 
+    <!-- CHAT INTERACTIVO INTELIGENTE ACTUALIZADO -->
     <div class="chat-wrap">
-      <div class="sec-lbl">Preguntale al asistente de clima</div>
+      <div class="sec-lbl">Preguntale al asistente inteligente</div>
       <div class="chips">
-        <span class="chip" onclick="sq('¿Me voy a mojar hoy?')">¿Va a llover hoy?</span>
-        <span class="chip" onclick="sq('¿Qué ropa me pongo?')">¿Qué me pongo?</span>
-        <span class="chip" onclick="sq('¿Cómo se viene el finde?')">¿Qué onda el finde?</span>
+        <span class="chip" onclick="sq('¿Cuál va a ser el día más frío de la semana?')">¿Día más frío?</span>
+        <span class="chip" onclick="sq('¿Cuál va a ser el día más caluroso?')">¿Día más caluroso?</span>
+        <span class="chip" onclick="sq('¿Qué ropa me pongo hoy?')">¿Qué me pongo hoy?</span>
       </div>
       <div class="chat-msgs" id="cm"></div>
       <div class="chat-row">
-        <input class="chat-in" id="ci" placeholder="Escribí tu pregunta sobre el tiempo acá..." onkeydown="if(event.key==='Enter')sc()">
+        <input class="chat-in" id="ci" placeholder="Preguntá por días fríos, calurosos, lluvia..." onkeydown="if(event.key==='Enter')sc()">
         <button class="send-btn" onclick="sc()">➔</button>
       </div>
     </div>
   `;
 }
 
-// ─── CHAT INTELIGENTE LOCAL DINÁMICO ───
+// ─── CEREBRO DEL CHAT TOTALMENTE REPARADO Y COMPLETO ───
 function sc() {
   const inp = document.getElementById('ci'), msg = inp.value.trim();
   if(!msg || !wd) return;
@@ -424,36 +547,70 @@ function sc() {
   addM(msg, 'u');
   
   setTimeout(() => {
-    let response = `Mirá, de reojo veo que en ${loc.name} hacen unos ${Math.round(wd.current.temperature_2m)}°C. ¿Querés saber algo específico sobre la lluvia, el finde o la ropa?`;
     const m = msg.toLowerCase();
+    const d = wd.daily;
+    const dns = ['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
+    let response = `Che, no te entendí del todo bien la pregunta. Probá consultándome específicamente por cuál va a ser el día más frío de la semana, el día más caliente, o si va a llover.`;
     
-    if (m.includes('lluvia') || m.includes('llover') || m.includes('mojar') || m.includes('agua') || m.includes('paraguas')) {
-      const rain = wd.daily.precipitation_sum[0];
-      response = rain > 1.5 
-        ? `¡Sí! Hay ${rain} mm de lluvia anotados para hoy en ${loc.name}. Si salís sin paraguas o piloto te vas a arrepentir fuerte.` 
-        : `De lluvia venimos zafando impecable. Hay un total de ${rain} mm estimado, o sea, casi nada. Podés dejar el paraguas tranquilo.`;
+    // ANALIZAR DÍA MÁS FRÍO DE LA SEMANA
+    if (m.includes('frio') || m.includes('fresco') || m.includes('minima') || m.includes('baja')) {
+      let minTemp = Infinity;
+      let minIndex = 0;
+      for (let i = 0; i < d.temperature_2m_min.length; i++) {
+        if (d.temperature_2m_min[i] < minTemp) {
+          minTemp = d.temperature_2m_min[i];
+          minIndex = i;
+        }
+      }
+      const dayDate = new Date(d.time[minIndex]);
+      const nameDay = minIndex === 0 ? 'Hoy mismo' : minIndex === 1 ? 'Mañana' : dns[dayDate.getDay()];
+      response = `El día más frío de toda la semana va a ser el **${nameDay}**, con una temperatura mínima que va a bajar hasta los **${Math.round(minTemp)}°C**. ¡Vas a tener que salir super abrigado!`;
     } 
-    else if (m.includes('ropa') || m.includes('abrig') || m.includes('ponerme') || m.includes('pongo') || m.includes('short')) {
-      const t = wd.current.temperature_2m;
-      if (t >= 26) {
-        response = `En ${loc.name} hacen ${Math.round(t)}°C. Salí de short, remera suelta y lentes. Cualquier otra cosa es una tortura autoinducida.`;
-      } else if (t <= 13) {
-        response = `Hace frío lindo (${Math.round(t)}°C). Campera pesada de una. No te hagas el valiente que la vas a pasar mal.`;
+    
+    // ANALIZAR DÍA MÁS CALUROSO DE LA SEMANA
+    else if (m.includes('calor') || m.includes('caluroso') || m.includes('caliente') || m.includes('maxima') || m.includes('alta')) {
+      let maxTemp = -Infinity;
+      let maxIndex = 0;
+      for (let i = 0; i < d.temperature_2m_max.length; i++) {
+        if (d.temperature_2m_max[i] > maxTemp) {
+          maxTemp = d.temperature_2m_max[i];
+          maxIndex = i;
+        }
+      }
+      const dayDate = new Date(d.time[maxIndex]);
+      const nameDay = maxIndex === 0 ? 'Hoy mismo' : maxIndex === 1 ? 'Mañana' : dns[dayDate.getDay()];
+      response = `El día más caluroso y picado de la semana va a ser el **${nameDay}**, donde el termómetro va a clavar una máxima de **${Math.round(maxTemp)}°C**. Ideal para andar ligero de ropa.`;
+    } 
+    
+    // DETECTAR LLUVIA
+    else if (m.includes('lluvia') || m.includes('llover') || m.includes('mojar') || m.includes('agua') || m.includes('paraguas')) {
+      const rainToday = d.precipitation_sum[0];
+      if (rainToday > 1.5) {
+        response = `Sí, para hoy acá se esperan unos **${rainToday} mm** de agua acumulada. No te descuides y salí con paraguas si no querés terminar empapado.`;
       } else {
-        response = `Día ideal para vestirse tipo cebolla: remera y un buzo arriba. Con ${Math.round(t)}°C si caminás te da calor, pero si te parás te refrescás.`;
+        // Buscar si llueve otro día de la semana
+        let nextRainIndex = -1;
+        for(let i=1; i<7; i++) {
+          if(d.precipitation_sum[i] > 2) { nextRainIndex = i; break; }
+        }
+        if (nextRainIndex !== -1) {
+          const rDate = new Date(d.time[nextRainIndex]);
+          response = `Hoy venimos zafando del agua limpito. Pero ojo, el **${dns[rDate.getDay()]}** se ve bastante inestable y marca caída de agua (**${d.precipitation_sum[nextRainIndex]} mm**).`;
+        } else {
+          response = `Podés guardar el paraguas en el fondo del ropero. Toda la semana se ve súper seca y sin indicios de tormentas.`;
+        }
       }
     } 
-    else if (m.includes('fin de semana') || m.includes('finde') || m.includes('sábado') || m.includes('domingo')) {
-      const nextCode = wd.daily.weather_code[2] || wd.daily.weather_code[1];
-      response = `Para el finde en ${loc.name} se proyecta un cielo principalmente ${wText(nextCode).toLowerCase()}. Pegale una mirada al bloque de arriba antes de armar un asado al aire libre.`;
-    }
-    else if (m.includes('entrenar') || m.includes('deporte') || m.includes('correr') || m.includes('plaza')) {
-      if (wd.current.temperature_2m > 29) {
-        response = `Uff, con este calor correr es un intento de suicidio deportivo. Si vas a ir, llevate tres litros de agua o esperá a la noche.`;
-      } else if (wd.daily.precipitation_sum[0] > 2) {
-        response = `Está para hacer flexiones en el living de tu casa. Afuera te vas a patinar y mojar de arriba a abajo.`;
+    
+    // ROPA PARA HOY
+    else if (m.includes('ropa') || m.includes('pongo') || m.includes('ponerme') || m.includes('abrigo') || m.includes('vestir')) {
+      const currentT = wd.current.temperature_2m;
+      if (currentT >= 26) {
+        response = `Ahora mismo hacen ${Math.round(currentT)}°C. Ni la pienses: short, remera bien liviana y lentes de sol. Ponerte otra cosa es sufrir gratis.`;
+      } else if (currentT <= 13) {
+        response = `Está bastante helado afuera (${Math.round(currentT)}°C). Ponete una buena campera abrigada de entrada, no seas valiente al cohete.`;
       } else {
-        response = `¡Clave! El tiempo está ideal para mover el esqueleto al aire libre en ${loc.name}. Dale sin vueltas.`;
+        response = `El día está ideal para vestirse estilo cebolla (por capas). Con ${Math.round(currentT)}°C salís con una remera cómoda y un buzo arriba por si refresca en la sombra.`;
       }
     }
     
@@ -468,7 +625,7 @@ function addM(t,cls){
   div.appendChild(m); div.scrollTop=div.scrollHeight;
 }
 
-// ─── BUSCADOR GLOBAL REPARADO (Usa Nominatim OpenStreetMap - Encuentra TODO) ───
+// ─── BUSCADOR GLOBAL (Nominatim OpenStreetMap) ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   const q = this.value.trim();
@@ -476,7 +633,6 @@ document.getElementById('srch').addEventListener('input', function() {
   
   acTimer = setTimeout(async () => {
     try {
-      // Endpoint ultra receptivo para ciudades, barrios, playas o pueblos de cualquier país
       const r = await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&addressdetails=1&limit=5&accept-language=es`);
       const data = await r.json();
       const ac = document.getElementById('ac');
@@ -529,9 +685,9 @@ document.getElementById('geoBtn').onclick = () => {
   });
 };
 
-// Carga inicial por defecto si acepta permisos
 window.addEventListener('load', () => {
-  if(navigator.geolocation) {
+  render(); // Inicializa o pide nombre
+  if(userName && navigator.geolocation) {
     navigator.geolocation.getCurrentPosition(async pos => {
       const {latitude:lat, longitude:lon} = pos.coords;
       try {
