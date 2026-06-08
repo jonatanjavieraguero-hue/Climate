@@ -146,7 +146,7 @@ body {
     <div class="logo-wrap" id="logoWrap">
       <div class="logo">Clima <span class="logo-badge">Dummies ▼</span></div>
       <div class="logo-menu" id="logoMenu">
-        <button onclick="refreshCurrentWeather(event)">🔄 Refrescar/Recargar</button>
+        <button onclick="refreshCurrentWeather(event)">🔄 Recargar clima actual</button>
         <button onclick="cleanForSearch(event)">🔍 Buscar otro lugar</button>
       </div>
     </div>
@@ -154,7 +154,7 @@ body {
   </div>
 
   <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Escribí una ciudad, pueblo, playa..." autocomplete="off">
+    <input class="search-in" id="srch" type="text" placeholder="Buscá tu ciudad o pueblo..." autocomplete="off">
     <span class="search-ico">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
@@ -167,7 +167,7 @@ body {
     <div class="welcome">
       <div class="welcome-sym">☀</div>
       <h2>Clima para Dummies</h2>
-      <p>Cargando tu ubicación automática...</p>
+      <p>Buscando dónde estás parado...</p>
     </div>
   </div>
 </div>
@@ -175,7 +175,7 @@ body {
 <div class="name-modal" id="nmModal" style="display: none;">
   <div class="modal-box">
     <h3 style="margin-bottom:6px;">¿Cómo te llamás?</h3>
-    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px;">Si lo dejas vacío usaré apodos latinos aleatorios.</p>
+    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px;">Si lo dejás vacío usaré apodos latinos divertidos.</p>
     <input id="modalNameIn" type="text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--card-b); color:white; border-radius:50px; padding:10px 16px; font-family:'Syne'; outline:none; text-align:center; margin-bottom:12px;" placeholder="Tu apodo...">
     <div style="display:flex; gap:6px;">
       <button class="geo-btn" style="flex:1; justify-content:center; background:rgba(255,255,255,0.1); color:white;" onclick="closeNameModal()">Cancelar</button>
@@ -192,8 +192,8 @@ const RANDOM_SLANGS = ['mae', 'che', 'parce', 'maje', 'amigo', 'amiga', 'mi amor
 
 function getDynamicGreeting() {
   if (userName) return userName;
-  // Forzamos aleatoriedad pura usando milisegundos para romper repeticiones consecutivas
-  const seed = new Date().getMilliseconds() % RANDOM_SLANGS.length;
+  // Súper semilla aleatoria real combinando milisegundos y segundos del reloj dinámico
+  const seed = (new Date().getMilliseconds() + new Date().getSeconds()) % RANDOM_SLANGS.length;
   return RANDOM_SLANGS[seed];
 }
 
@@ -213,39 +213,34 @@ function wText(code) {
   return m[code]||'Variable';
 }
 
-// ─── GENERADOR DE FRASES DE ALTA VARIABILIDAD (Evita repetición) ───
 function getSlangNarrative(country, code, t, rain) {
   const c = (country || '').toLowerCase();
   const g = getDynamicGreeting();
   const isRainy = ([95,96,99].includes(code) || rain > 1);
   
-  // Usamos el segundo actual para decidir qué variante numérica de chiste lanzar
-  const variantIndex = new Date().getSeconds() % 3;
+  // Variación obligatoria basada en un índice de tiempo dinámico roto por recargas
+  const variantIndex = (new Date().getSeconds() + new Date().getMinutes()) % 3;
 
   const cr_hot = [
-    `¡Pura vida, ${g}! Qué soberbio solazo se maneja hoy mae. Te vas a derretir en la acera si salís a caminar.`,
+    `¡Pura vida, ${g}! Qué clase de solazo se maneja hoy mae. Te vas a derretir en la acera fijo.`,
     `¡Diay ${g}! Pegó pesadísimo el calorón hoy mae. Olvídate de abrigos y buscate algo bien frío de tomar ya.`,
     `¿Todo bien, ${g}? Qué bochorno de locos mae. El aire está espeso, ideal para echarse a dormir con ventilador.`
   ];
-  
   const cr_rain = [
-    `¡Acuérdese mae ${g}! Se viene un baldazo de agua del copón. Guardá la ropa rápido porque se inunda todo.`,
-    `¡Mae ${g}, qué baldazo está cayendo! El cielo se descosió por completo, quédate adentro resguardado.`,
-    `¡Pura vida ${g}! Tremendo aguacero en un segundo. Clásico de nuestra tierra, salí con paraguas o salís nadando.`
+    `¡Al suave mae ${g}! Se viene un baldazo de agua del copón. Guardá la ropa rápido porque se inunda todo.`,
+    `¡Mae ${g}, qué baldazo está cayendo! El cielo se cayó por completo, quedate adentro resguardado.`,
+    `¡Pura vida ${g}! Tremendo aguacero en un segundo. Clásico de la zona, salí con paraguas o salís nadando.`
   ];
-
   const arg_hot = [
     `¡Qué hacés, ${g}! Che, hace un calor de locos afuera. Caminás media cuadra y ya sos un charco humano, posta.`,
     `¡Mirá lo que es esto, ${g}! Un horno total el día de hoy, ideal para clavarse un tereré congelado.`,
     `¡Buenas, ${g}! Te cocinás vivo si salís al sol directo hoy. Brutal el calorazo que mandó.`
   ];
-
   const arg_rain = [
     `¡Se viene el agua, ${g}! Meté la ropa antes de que flote en el patio. Alto diluvio se armó.`,
     `¡Che ${g}, terrible tormenta! Un embole total andar afuera saltando charcos. Quedate adentro pa.`,
     `¡Qué onda, ${g}! Se cae el cielo a pedazos, no seas salame y armate un café con tortas fritas.`
   ];
-
   const gen_neutral = [
     `¡Hola, ${g}! El clima está bastante tranqui hoy, ni fu ni fa. Una temperatura amigable para respirar.`,
     `¿Qué cuenta la vida, ${g}? Día templado, medio gris pero zafa lindo. Ni te congelás ni te derretís.`,
@@ -261,9 +256,9 @@ function getSlangNarrative(country, code, t, rain) {
     if (t >= 26) return arg_hot[variantIndex];
   }
   
-  if (isRainy) return `¡Atención ${g}! Se está cayendo el cielo. Un aguacero de novela, ideal para aplastarse a ver pelis.`;
+  if (isRainy) return `¡Atención ${g}! Se está cayendo el cielo. Un aguacero de novela, ideal para aplastarse a ver series.`;
   if (t >= 29) return `¡Uff, ${g}! Qué calorón se siente. Estamos adentro de un microondas, buscá sombra de inmediato.`;
-  if (t <= 14) return `¡Hace un frío polar, ${g}! Ponete campera porque el viento te va a congelar las ideas en dos segundos.`;
+  if (t <= 14) return `¡Hace un frío polar, ${g}! Ponete campera porque el viento te va a congelar las ideas en un segundo.`;
   
   return gen_neutral[variantIndex];
 }
@@ -303,11 +298,10 @@ async function fetchWeather(lat, lon, name, country) {
     loc = {lat, lon, name, country};
     render();
   } catch (err) {
-    alert("Error al conectar con los satélites climáticos.");
+    alert("Error al conectar con los servidores.");
   }
 }
 
-// Controladores del Menú del Logo
 document.getElementById('logoWrap').addEventListener('click', function(e) {
   e.stopPropagation();
   const m = document.getElementById('logoMenu');
@@ -318,9 +312,8 @@ document.addEventListener('click', () => { document.getElementById('logoMenu').s
 function refreshCurrentWeather(e) {
   e.stopPropagation();
   document.getElementById('logoMenu').style.display = 'none';
-  // Rompe-caché visual inmediato
-  document.getElementById('content').innerHTML = `<div class="welcome"><div class="welcome-sym">🔄</div><h2>Actualizando datos...</h2><p>Trayendo aire fresco.</p></div>`;
-  if(loc) setTimeout(() => fetchWeather(loc.lat, loc.lon, loc.name, loc.country), 300);
+  document.getElementById('content').innerHTML = `<div class="welcome"><div class="welcome-sym">🔄</div><h2>Actualizando datos...</h2><p>Buscando aire fresco.</p></div>`;
+  if(loc) setTimeout(() => fetchWeather(loc.lat, loc.lon, loc.name, loc.country), 200);
   else triggerAutoGeo();
 }
 
@@ -372,7 +365,7 @@ function render() {
   for(let i=0; i<3; i++){
     const nd=new Date(d.time[i]);
     fcHtml+=`<div class="fc-day">
-      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].toUpperCase()}</div>
+      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].substring(0,3).toUpperCase()}</div>
       <div class="fc-sym">${wSym(d.weather_code[i])}</div>
       <div class="fc-max">${Math.round(d.temperature_2m_max[i])}°</div>
       <div class="fc-min">${Math.round(d.temperature_2m_min[i])}°</div>
@@ -381,7 +374,7 @@ function render() {
 
   document.getElementById('content').innerHTML = `
     <div class="hero-narrative-card">
-      <div class="hero-loc">📍 ${loc.name} (${loc.country || 'Desconocido'})</div>
+      <div class="hero-loc">📍 ${loc.name} ${loc.country ? ' - ' + loc.country : ''}</div>
       <div class="hero-text">${funnyText}</div>
       
       <div class="mini-weather-row">
@@ -409,7 +402,7 @@ function render() {
   `;
 }
 
-// ─── NUEVO BUSCADOR PREDICTIVO COMPATIBLE Y SEGURO PARA MÓVILES ───
+// ─── NUEVO BUSCADOR DIRECTO OPEN-METEO GEOCODING (INMUNE A BLOQUEOS) ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   let q = this.value.trim();
@@ -417,50 +410,36 @@ document.getElementById('srch').addEventListener('input', function() {
   if(q.length < 2) { ac.style.display = 'none'; return; }
   
   acTimer = setTimeout(async () => {
-    // Añadimos controlador de tiempo límite (Timeout) para celulares que se traban
-    const controller = new AbortController();
-    const timeoutId = setTimeout(() => controller.abort(), 2500);
-
     try {
-      // Limpieza agresiva para geolocalizar de forma óptima
-      let cleanQuery = q.toLowerCase().replace(/\s+/g, ' ');
-      const url = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(cleanQuery)}&format=json&addressdetails=1&limit=4`;
+      // Usamos el motor de geocodificación oficial de Open-Meteo, libre de bloqueos de IP
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=es&format=json`;
       
-      const response = await fetch(url, { 
-        signal: controller.signal,
-        headers: { 'Accept-Language': 'es' } // Forzar respuestas directas en español
-      });
-      clearTimeout(timeoutId);
-      
+      const response = await fetch(url);
       const data = await response.json();
-      if(!data || data.length === 0) { ac.style.display = 'none'; return; }
       
-      ac.innerHTML = data.map(item => {
-        const addr = item.address;
-        const name = addr.city || addr.town || addr.village || addr.municipality || item.display_name.split(',')[0];
-        const country = addr.country || '';
-        const state = addr.state ? addr.state + ', ' : '';
+      if(!data.results || data.results.length === 0) { ac.style.display = 'none'; return; }
+      
+      ac.innerHTML = data.results.map(item => {
+        const name = item.name;
+        const country = item.country || '';
+        const admin1 = item.admin1 ? item.admin1 + ', ' : '';
         
-        return `<div class="ac-item" onclick="selCity(${item.lat}, ${item.lon}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
+        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
           <span style="font-size:1.1rem;">📍</span>
           <div>
             <div class="ac-city">${name}</div>
-            <div class="ac-sub">${state}${country}</div>
+            <div class="ac-sub">${admin1}${country}</div>
           </div>
         </div>`;
       }).join('');
       ac.style.display = 'block';
     } catch(e) {
-      // RESPALDO LOCAL ULTRA-RÁPIDO SI EL SERVIDOR BLOQUEA AL CELULAR
-      console.log("Buscador usando motor de respaldo móvil...");
-      // Si falla, mostramos una sugerencia rápida de clic directo para no congelar la pantalla
-      ac.innerHTML = `<div class="ac-item" onclick="selCity(-34.6037, -58.3816, '${q}', 'Argentina')"><div class="ac-city">🔍 Forzar búsqueda de: "${q}"</div></div>`;
-      ac.style.display = 'block';
+      console.error("Error en buscador:", e);
+      ac.style.display = 'none';
     }
-  }, 400); // 400ms de espera para no saturar al celular mientras escriben rápido
+  }, 350); 
 });
 
-// Cerrar autocompletado si tocan fuera del buscador
 document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
 
 function selCity(lat, lon, name, country){
@@ -469,20 +448,23 @@ function selCity(lat, lon, name, country){
   fetchWeather(lat, lon, name, country);
 }
 
-// Geolocalización Automática Inicial
+// Geolocalización Automática Inicial Segura
 function triggerAutoGeo() {
   if(!navigator.geolocation) return;
   document.getElementById('geoBtn').textContent = 'Ubicando...';
   
   navigator.geolocation.getCurrentPosition(async pos => {
     const {latitude:lat, longitude:lon} = pos.coords;
+    // Para el reverso rápido usamos un fallback directo si falla, asegurando que cargue el clima sí o sí
     try {
-      const nr = await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`);
+      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`;
+      const nr = await fetch(url);
       const nd = await nr.json();
       const city = nd.address.city || nd.address.town || nd.address.village || 'Mi ubicación';
       document.getElementById('geoBtn').textContent = '📍 ' + city;
       fetchWeather(lat, lon, city, nd.address.country || '');
     } catch {
+      document.getElementById('geoBtn').textContent = '📍 Mi ubicación';
       fetchWeather(lat, lon, 'Mi ubicación', '');
     }
   }, () => {
@@ -491,10 +473,10 @@ function triggerAutoGeo() {
       <div class="welcome">
         <div class="welcome-sym">📍</div>
         <h2>¡Buenas, ${getDynamicGreeting()}!</h2>
-        <p>No pudimos detectar tu GPS automático. No pasa nada: usa el buscador de arriba o tocá el botón amarillo.</p>
+        <p>No pudimos detectar tu GPS automático. No pasa nada: probá el buscador de arriba que ya está arreglado.</p>
       </div>
     `;
-  }, { timeout: 5000 });
+  }, { timeout: 4000 });
 }
 
 document.getElementById('geoBtn').onclick = triggerAutoGeo;
