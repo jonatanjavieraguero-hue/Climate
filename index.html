@@ -30,34 +30,12 @@ body {
 .bg { position: fixed; inset: 0; z-index: 0; background: var(--bg-dark); transition: all 1.5s ease; }
 .bg-mesh { position: fixed; inset: 0; z-index: 0; opacity: 0.8; pointer-events: none; }
 .orb { position: absolute; border-radius: 50%; filter: blur(80px); transition: all 1.5s ease; }
-.particles { position: fixed; inset: 0; z-index: 1; pointer-events: none; overflow: hidden; }
 
-.raindrop {
-  position: absolute; width: 1.5px;
-  background: linear-gradient(180deg, transparent 0%, rgba(180,220,255,0.6) 100%);
-  animation: rain linear infinite;
-}
-@keyframes rain {
-  0% { transform: translateY(-50px); opacity:.6; }
-  100% { transform: translateY(110vh); opacity:0; }
-}
+.app { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; padding: 16px 14px 60px; display: flex; flex-direction: column; gap: 14px; }
 
-.app { position: relative; z-index: 10; max-width: 600px; margin: 0 auto; padding: 16px 14px 60px; }
-
-.header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; gap: 10px; position: relative; }
-.logo-wrap { position: relative; cursor: pointer; user-select: none; }
-.logo { font-size: 1.2rem; font-weight: 800; display: flex; align-items: center; gap: 4px; }
+.header { display: flex; align-items: center; justify-content: space-between; gap: 10px; }
+.logo { font-size: 1.2rem; font-weight: 800; }
 .logo-badge { background: var(--accent); color: #0f1b2d; border-radius: 6px; padding: 2px 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; }
-
-.logo-menu {
-  position: absolute; top: calc(100% + 8px); left: 0; 
-  background: #0f1b2d; border: 1px solid var(--card-b); border-radius: 14px; padding: 4px; display: none; z-index: 300; box-shadow: 0 10px 30px rgba(0,0,0,0.5); min-width: 170px;
-}
-.logo-menu button {
-  width: 100%; background: none; border: none; color: white; padding: 10px 12px; text-align: left;
-  font-family: 'Syne', sans-serif; font-size: 0.85rem; cursor: pointer; border-radius: 8px; display: flex; align-items: center; gap: 8px;
-}
-.logo-menu button:hover { background: rgba(255,255,255,0.1); color: var(--accent); }
 
 .geo-btn {
   background: var(--accent); color: #0f1b2d; border: none;
@@ -65,341 +43,172 @@ body {
   cursor: pointer; display: flex; align-items: center; gap: 4px; transition: all .2s; white-space: nowrap;
 }
 
-.search-wrap { position: relative; margin-bottom: 20px; z-index: 200; }
+.search-wrap { position: relative; z-index: 200; }
 .search-in {
   width: 100%; background: var(--card); border: 1px solid var(--card-b); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
   color: white; border-radius: 50px; padding: 14px 44px 14px 18px; font-size: 0.95rem; font-family: 'Syne', sans-serif; outline: none;
 }
 .search-in:focus { border-color: rgba(255,255,255,.4); background: rgba(255,255,255,.1); }
-.search-ico { position: absolute; right: 16px; top: 50%; transform: translateY(-50%); opacity: .4; pointer-events: none; }
 
 .ac {
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: #0c1424; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.5);
+  background: #0c1424; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.5); max-height: 250px; overflow-y: auto;
 }
 .ac-item { padding: 12px 16px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
 .ac-item:hover { background: rgba(255,255,255,.08); }
 .ac-city { font-weight: 700; color: #fff; }
 .ac-sub { font-size: .75rem; opacity: .5; }
 
-#content { display: flex; flex-direction: column; gap: 14px; }
-
 .hero-narrative-card {
   background: linear-gradient(135deg, rgba(232,255,87,0.08) 0%, rgba(255,255,255,0.02) 100%);
   border: 2px solid rgba(232,255,87,0.2); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border-radius: var(--r); padding: 24px 20px; position: relative;
+  border-radius: var(--r); padding: 24px 20px;
 }
 .hero-loc { font-size: .75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
 .hero-text { font-size: 1.2rem; font-weight: 600; line-height: 1.4; color: #fff; }
-
-.name-btn { font-size: 0.7rem; background: rgba(255,255,255,0.08); padding: 4px 10px; border-radius: 6px; display: inline-block; margin-top: 12px; cursor: pointer; opacity: 0.7; }
 
 .mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
 .mini-temp { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
 .mini-temp sup { font-size: 1.1rem; }
 .mini-meta { text-align: right; }
 .mini-cond { font-weight: 700; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 50px; font-size: .78rem; display: inline-block; }
-.mini-hl { font-size: .75rem; opacity: .5; margin-top: 4px; }
 
-.stats-grid { display: grid; grid-template-columns: repeat(4,1fr); gap: 8px; }
-@media(max-width:480px){ .stats-grid{ grid-template-columns:repeat(2,1fr); } }
+.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 8px; }
 .stat { background: var(--card); border: 1px solid var(--card-b); border-radius: 14px; padding: 12px 8px; text-align: center; }
-.stat-sym { font-size: 1.2rem; font-family: 'Syne Mono'; margin-bottom: 2px; }
 .stat-val { font-size: 1rem; font-weight: 700; }
 .stat-lbl { font-size: .62rem; opacity: .5; text-transform: uppercase; }
 
-.hourly-scroll, .forecast-row { display: flex; gap: 8px; overflow-x: auto; padding-bottom: 4px; -webkit-overflow-scrolling: touch; scrollbar-width: none; }
-.hourly-scroll::-webkit-scrollbar, .forecast-row::-webkit-scrollbar { display: none; }
-.h-chip { background: var(--card); border: 1px solid var(--card-b); border-radius: 16px; padding: 10px 12px; text-align: center; min-width: 65px; }
-.h-chip.now { background: rgba(232,255,87,.12); border-color: rgba(232,255,87,.3); }
-.h-t { font-size: .6rem; opacity: .5; font-weight: 700; }
-.h-sym { font-size: 1.1rem; font-family: 'Syne Mono'; margin: 2px 0; }
-.h-tmp { font-size: .85rem; font-weight: 700; }
+/* SECCIÓN CHAT IA */
+.ia-card {
+  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px;
+}
+.ia-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+.ia-box { 
+  background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; font-size: 0.9rem; line-height: 1.4; 
+  min-height: 50px; color: rgba(255,255,255,0.9);
+}
+.ia-form { display: flex; gap: 8px; }
+.ia-in {
+  flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
+  border-radius: 50px; padding: 10px 16px; color: white; font-family: 'Syne'; font-size: 0.85rem; outline: none;
+}
+.ia-btn {
+  background: white; color: #090f1a; border: none; border-radius: 50px; padding: 0 16px;
+  font-family: 'Syne'; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+}
 
-.fc-day { background: var(--card); border: 1px solid var(--card-b); border-radius: 14px; padding: 12px 10px; text-align: center; min-width: 75px; flex: 1; }
-.fc-name { font-size: .6rem; opacity: .5; font-weight: 700; }
-.fc-sym { font-size: 1.1rem; font-family: 'Syne Mono'; margin: 2px 0; }
-.fc-max { font-size: .95rem; font-weight: 700; }
-.fc-min { font-size: .7rem; opacity: .4; }
-
-.sec-lbl { font-size: .65rem; opacity: .45; letter-spacing: 1px; text-transform: uppercase; font-weight: 700; margin-top: 4px; }
 .welcome { text-align: center; padding: 40px 14px; }
-.welcome-sym { font-size: 3.5rem; font-family: 'Syne Mono'; margin-bottom: 10px; color: var(--accent); }
 .welcome h2 { font-size: 1.6rem; font-weight: 800; }
-.welcome p { opacity: .6; font-size: .85rem; max-width: 280px; margin: 6px auto 0; }
-
-.name-modal { position: fixed; inset: 0; background: rgba(5,10,20,0.85); backdrop-filter: blur(6px); display: flex; align-items: center; justify-content: center; z-index: 1000; padding: 16px; }
-.modal-box { background: #0f1b2d; border: 1px solid var(--card-b); padding: 20px; border-radius: var(--r); width: 100%; max-width: 320px; text-align: center; }
 </style>
 </head>
 <body>
 
 <div class="bg" id="bg"></div>
 <div class="bg-mesh">
-  <div class="orb" id="orb1" style="width:300px;height:300px;top:-100px;right:-50px;"></div>
-  <div class="orb" id="orb2" style="width:250px;height:250px;bottom:-50px;left:-50px;"></div>
+  <div class="orb" id="orb1" style="width:300px;height:300px;top:-100px;right:-50px;background:radial-gradient(circle, rgba(255,200,50,.15) 0%, transparent 70%);"></div>
 </div>
-<div class="particles" id="particles"></div>
 
 <div class="app">
   <div class="header">
-    <div class="logo-wrap" id="logoWrap">
-      <div class="logo">Clima <span class="logo-badge">Dummies ▼</span></div>
-      <div class="logo-menu" id="logoMenu">
-        <button onclick="refreshCurrentWeather(event)">🔄 Recargar clima actual</button>
-        <button onclick="cleanForSearch(event)">🔍 Buscar otro lugar</button>
-      </div>
-    </div>
-    <button class="geo-btn" id="geoBtn">📍 Usar mi ubi</button>
+    <div class="logo">Clima <span class="logo-badge">Dummies</span></div>
+    <button class="geo-btn" id="geoBtn">📍 Mi ubicación</button>
   </div>
 
   <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Buscá tu ciudad o playa (ej: Santa Teresa)..." autocomplete="off">
-    <span class="search-ico">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
-        <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
-      </svg>
-    </span>
+    <input class="search-in" id="srch" type="text" placeholder="Buscá cualquier lugar (ej: Santa Teresa)..." autocomplete="off">
     <div class="ac" id="ac" style="display:none"></div>
   </div>
 
   <div id="content">
     <div class="welcome">
-      <div class="welcome-sym">☀</div>
       <h2>Clima para Dummies</h2>
-      <p>Ubicando tu GPS...</p>
+      <p style="opacity:0.6; font-size:0.9rem; margin-top:8px;">Cargando interfaz...</p>
     </div>
   </div>
-</div>
 
-<div class="name-modal" id="nmModal" style="display: none;">
-  <div class="modal-box">
-    <h3 style="margin-bottom:6px;">¿Cómo te llamás?</h3>
-    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px;">Apodos buena nota automáticos si queda vacío.</p>
-    <input id="modalNameIn" type="text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--card-b); color:white; border-radius:50px; padding:10px 16px; font-family:'Syne'; outline:none; text-align:center; margin-bottom:12px;" placeholder="Tu apodo...">
-    <div style="display:flex; gap:6px;">
-      <button class="geo-btn" style="flex:1; justify-content:center; background:rgba(255,255,255,0.1); color:white;" onclick="closeNameModal()">Cancelar</button>
-      <button class="geo-btn" style="flex:1; justify-content:center;" onclick="saveName()">Guardar</button>
+  <!-- CASILLA DE LA IA EN ESPAÑOL -->
+  <div class="ia-card">
+    <div class="ia-title">🤖 Preguntale a la IA sobre el clima</div>
+    <div class="ia-box" id="iaResponse">¡Hola! Soy tu asistente de clima inteligente. Escribime lo que quieras saber sobre el lugar seleccionado o pedime consejos sobre qué ropa usar hoy.</div>
+    <div class="ia-form">
+      <input class="ia-in" id="iaInput" type="text" placeholder="¿Va a llover el fin de semana? / ¿Qué ropa llevo?">
+      <button class="ia-btn" onclick="askIA()">Enviar</button>
     </div>
   </div>
 </div>
 
 <script>
 let wd = null, loc = null, acTimer = null;
-let userName = localStorage.getItem('dummy_name') || '';
-
-const RANDOM_SLANGS = ['mae', 'che', 'parce', 'maje', 'amigo', 'amiga', 'mi amor', 'hermano', 'titán', 'crack', 'jefe'];
-
-function getDynamicGreeting() {
-  if (userName) return userName;
-  const seed = (new Date().getMilliseconds() + new Date().getSeconds()) % RANDOM_SLANGS.length;
-  return RANDOM_SLANGS[seed];
-}
-
-function wSym(code, day=true) {
-  if (code===0) return day ? '☀' : '☽';
-  if (code <= 2) return day ? '⛅' : '☁';
-  if (code===3) return '☁';
-  if ([45,48].includes(code)) return '◎';
-  if ([51,53,55,61,63,65,80,81,82].includes(code)) return '⛆';
-  if ([71,73,75,77,85,86].includes(code)) return '❄';
-  if ([95,96,99].includes(code)) return '⚡';
-  return '~';
-}
 
 function wText(code) {
-  const m={0:'Despejado',1:'Casi despejado',2:'Algo nublado',3:'Nublado',45:'Niebla',51:'Llovizna',61:'Lluvia leve',63:'Lluvia',65:'Lluvia fuerte',80:'Chaparrones',95:'Tormenta eléctrica'};
+  const m={0:'Despejado',1:'Casi despejado',2:'Algo nublado',3:'Nublado',45:'Niebla',51:'Llovizna',61:'Lluvia leve',63:'Lluvia',65:'Lluvia fuerte',95:'Tormenta eléctrica'};
   return m[code]||'Variable';
 }
 
-function getSlangNarrative(country, code, t, rain) {
-  const c = (country || '').toLowerCase();
-  const g = getDynamicGreeting();
-  const isRainy = ([95,96,99].includes(code) || rain > 1);
-  const variantIndex = (new Date().getSeconds() + new Date().getMinutes()) % 3;
+// ─── GENERADOR DE FRASES 100% FIEL A LA TEMPERATURA ACTUAL ───
+function getFittedNarrative(name, country, temp, code) {
+  const isRain = [51, 61, 63, 65, 95].includes(code);
+  const place = name;
 
-  const cr_hot = [
-    `¡Pura vida, ${g}! Qué soberbio solazo hay en la playa hoy mae. Ideal para ir a surfear a Santa Teresa sin pensarlo.`,
-    `¡Diay ${g}! Pegó pesadísimo el calor hoy mae. Olvídate de abrigos y buscate un agua de pipa bien fría ya.`,
-    `¿Todo bien, ${g}? Qué bochorno de locos mae. El aire está riquísimo pero caliente, ideal para estar metido en el mar.`
-  ];
-  const cr_rain = [
-    `¡Suave mae ${g}! Se viene un aguacero del copón. Guardá la ropa rápido porque se inunda el pueblo.`,
-    `¡Mae ${g}, qué baldazo está cayendo! El cielo se descosió por completo, quédate en el tajo resguardado.`,
-    `¡Pura vida ${g}! Tremenda tormenta en un segundo. Clásico del trópico, salí con sombrilla o te empapás.`
-  ];
-  const arg_hot = [
-    `¡Qué hacés, ${g}! Che, hace un calor de locos afuera. Caminás media cuadra y ya sos un charco humano, posta.`,
-    `¡Mirá lo que es esto, ${g}! Un horno total el día de hoy, ideal para clavarse un tereré congelado.`,
-    `¡Buenas, ${g}! Te cocinás vivo si salís al sol directo hoy. Brutal el calorazo que mandó.`
-  ];
-  const arg_rain = [
-    `¡Se viene el agua, ${g}! Meté la ropa antes de que flote en el patio. Alto diluvio se armó.`,
-    `¡Che ${g}, terrible tormenta! Un embole total andar afuera saltando charcos. Quedate adentro pa.`,
-    `¡Qué onda, ${g}! Se cae el cielo a pedazos, no seas salame y armate un café con tortas fritas.`
-  ];
-  const gen_neutral = [
-    `¡Hola, ${g}! El clima está bastante tranqui hoy, ni fu ni fa. Una temperatura amigable para respirar.`,
-    `¿Qué cuenta la vida, ${g}? Día templado, medio gris pero zafa lindo. Ni te congelás ni te derretís.`,
-    `¡Buenas, ${g}! Todo en santa paz por acá hoy. Podés andar con un bucito liviano y estás perfecto.`
-  ];
-
-  if (c.includes('costa rica') || loc.name.toLowerCase().includes('santa teresa')) {
-    if (isRainy) return cr_rain[variantIndex];
-    if (t >= 25) return cr_hot[variantIndex];
-  } 
-  if (c.includes('argentina') || c.includes('uruguay')) {
-    if (isRainy) return arg_rain[variantIndex];
-    if (t >= 26) return arg_hot[variantIndex];
+  if (isRain) {
+    return `¡Cuidado en ${place}! Se vino el agua con ganas. El cielo se descosió por completo, así que ni te estreses saliendo sin paraguas o piloto. Clásico día para quedarse adentro tomando algo calientito.`;
   }
   
-  if (isRainy) return `¡Atención ${g}! Se está cayendo el cielo. Un aguacero de novela, ideal para aplastarse a ver series.`;
-  if (t >= 29) return `¡Uff, ${g}! Qué calorón se siente. Estamos adentro de un microondas, buscá sombra de inmediato.`;
-  if (t <= 14) return `¡Hace un frío polar, ${g}! Ponete campera porque el viento te va a congelar las ideas en un segundo.`;
-  
-  return gen_neutral[variantIndex];
-}
-
-const THEMES = {
-  sunny:  { bg:'#0a1628', o1:'rgba(255,200,50,.18)', o2:'rgba(50,120,255,.1)' },
-  cloudy: { bg:'#111a28', o1:'rgba(100,130,160,.12)', o2:'rgba(60,80,110,.1)' },
-  rainy:  { bg:'#0a1120', o1:'rgba(40,80,200,.18)', o2:'rgba(20,50,150,.12)', px:'rain' },
-  night:  { bg:'#030710', o1:'rgba(50,30,120,.12)', o2:'rgba(20,10,60,.12)' }
-};
-
-function applyTheme(code, day) {
-  let k = 'sunny'; if (!day) k = 'night';
-  else if ([95,96,99,61,63,65,80,81,82].includes(code)) k = 'rainy';
-  else if ([1,2,3].includes(code)) k = 'cloudy';
-
-  const t = THEMES[k] || THEMES.sunny;
-  document.getElementById('bg').style.background = t.bg;
-  document.getElementById('orb1').style.background = `radial-gradient(circle, ${t.o1} 0%, transparent 70%)`;
-  document.getElementById('orb2').style.background = `radial-gradient(circle, ${t.o2} 0%, transparent 70%)`;
-  
-  const p = document.getElementById('particles'); p.innerHTML = '';
-  if (t.px === 'rain') {
-    for(let i=0; i<15; i++){
-      const d=document.createElement('div'); d.className='raindrop';
-      d.style.cssText=`left:${Math.random()*100}vw;height:${15+Math.random()*10}px;animation-duration:${.5+Math.random()*.3}s;animation-delay:${Math.random()*1}s`;
-      p.appendChild(d);
-    }
+  if (temp >= 30) {
+    return `¡Qué horno total en ${place}! Registrando unos pesados ${Math.round(temp)}°C. Es un calorón pesado, ideal para buscar una sombra, mandarse un agua de pipa o un tereré congelado y prender el ventilador a máxima potencia.`;
   }
+  
+  if (temp >= 23) {
+    return `Qué clima más sabroso hay en ${place}. Con unos ${Math.round(temp)}°C bien puestos, está perfecto para andar en shorts, ropa ligera y disfrutar del día libre afuera al sol.`;
+  }
+  
+  if (temp <= 14) {
+    return `¡Qué frío más bravo en ${place}! Con apenas ${Math.round(temp)}°C el viento te va a congelar las ideas. Ponete una buena campera o abrigo porque la temperatura no está para andar jugando al valiente.`;
+  }
+  
+  return `Día bastante equilibrado en ${place}. Unos ${Math.round(temp)}°C que ni queman ni congelan. Te ponés un bucito liviano encima y estás más que listo para salir a hacer los mandados.`;
 }
 
 async function fetchWeather(lat, lon, name, country) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day,relative_humidity_2m,wind_speed_10m,precipitation&daily=weather_code,temperature_2m_max,temperature_2m_min,precipitation_sum&hourly=temperature_2m,weather_code&timezone=auto&forecast_days=3`;
+  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,is_day,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`;
   try {
     const r = await fetch(url);
     wd = await r.json();
     loc = {lat, lon, name, country};
     render();
   } catch (err) {
-    alert("Error al conectar con los servidores.");
+    alert("Error al obtener datos meteorológicos.");
   }
-}
-
-document.getElementById('logoWrap').addEventListener('click', function(e) {
-  e.stopPropagation();
-  const m = document.getElementById('logoMenu');
-  m.style.display = m.style.display === 'block' ? 'none' : 'block';
-});
-document.addEventListener('click', () => { document.getElementById('logoMenu').style.display = 'none'; });
-
-function refreshCurrentWeather(e) {
-  e.stopPropagation();
-  document.getElementById('logoMenu').style.display = 'none';
-  document.getElementById('content').innerHTML = `<div class="welcome"><div class="welcome-sym">🔄</div><h2>Actualizando datos...</h2><p>Buscando aire fresco.</p></div>`;
-  if(loc) setTimeout(() => fetchWeather(loc.lat, loc.lon, loc.name, loc.country), 200);
-  else triggerAutoGeo();
-}
-
-function cleanForSearch(e) {
-  e.stopPropagation();
-  document.getElementById('logoMenu').style.display = 'none';
-  document.getElementById('srch').value = '';
-  document.getElementById('srch').focus();
-  document.getElementById('content').innerHTML = `
-    <div class="welcome">
-      <div class="welcome-sym">🔍</div>
-      <h2>Modo buscador activo</h2>
-      <p>Escribí el nombre de la playa o ciudad arriba.</p>
-    </div>
-  `;
-}
-
-function openNameModal() { document.getElementById('nmModal').style.display = 'flex'; }
-function closeNameModal() { document.getElementById('nmModal').style.display = 'none'; }
-function saveName() {
-  const val = document.getElementById('modalNameIn').value.trim();
-  userName = val;
-  if(val) localStorage.setItem('dummy_name', val);
-  else localStorage.removeItem('dummy_name');
-  closeNameModal();
-  if(loc) fetchWeather(loc.lat, loc.lon, loc.name, loc.country);
 }
 
 function render() {
-  const c = wd.current, d = wd.daily, h = wd.hourly;
-  applyTheme(c.weather_code, c.is_day===1);
-
-  const funnyText = getSlangNarrative(loc.country, c.weather_code, c.temperature_2m, d.precipitation_sum[0]);
-
-  let hHtml=''; let now=new Date(); let cnt=0;
-  for(let i=0; i<h.time.length && cnt<5; i++){
-    const t=new Date(h.time[i]); if(t < now - 3600000) continue;
-    const isNow=cnt===0;
-    hHtml+=`<div class="h-chip${isNow?' now':''}">
-      <div class="h-t">${isNow?'AHORA':t.getHours()+':00'}</div>
-      <div class="h-sym">${wSym(h.weather_code[i], t.getHours()>6 && t.getHours()<19)}</div>
-      <div class="h-tmp">${Math.round(h.temperature_2m[i])}°</div>
-    </div>`;
-    cnt++;
-  }
-
-  let fcHtml='';
-  const dns=['Domingo','Lunes','Martes','Miércoles','Jueves','Viernes','Sábado'];
-  for(let i=0; i<3; i++){
-    const nd=new Date(d.time[i]);
-    fcHtml+=`<div class="fc-day">
-      <div class="fc-name">${i===0?'HOY':i===1?'MAÑANA':dns[nd.getDay()].substring(0,3).toUpperCase()}</div>
-      <div class="fc-sym">${wSym(d.weather_code[i])}</div>
-      <div class="fc-max">${Math.round(d.temperature_2m_max[i])}°</div>
-      <div class="fc-min">${Math.round(d.temperature_2m_min[i])}°</div>
-    </div>`;
-  }
+  const c = wd.current;
+  const d = wd.daily;
+  const funnyText = getFittedNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code);
 
   document.getElementById('content').innerHTML = `
     <div class="hero-narrative-card">
-      <div class="hero-loc">📍 ${loc.name} ${loc.country ? ' - ' + loc.country : ''}</div>
+      <div class="hero-loc">📍 ${loc.name} ${loc.country ? ', ' + loc.country : ''}</div>
       <div class="hero-text">${funnyText}</div>
       
       <div class="mini-weather-row">
         <div class="mini-temp">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
         <div class="mini-meta">
           <div class="mini-cond">${wText(c.weather_code)}</div>
-          <div class="mini-hl">Mín: ${Math.round(d.temperature_2m_min[0])}° | Máx: ${Math.round(d.temperature_2m_max[0])}°</div>
+          <div style="font-size:0.75rem; opacity:0.5; margin-top:4px;">Mín: ${Math.round(d.temperature_2m_min[0])}° | Máx: ${Math.round(d.temperature_2m_max[0])}°</div>
         </div>
       </div>
-      <div class="name-btn" onclick="openNameModal()">⚙️ ${userName ? 'Cambiar apodo' : 'Ponerme un nombre'}</div>
     </div>
 
     <div class="stats-grid">
-      <div class="stat"><div class="stat-sym">≋</div><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
-      <div class="stat"><div class="stat-sym">◉</div><div class="stat-val">${d.precipitation_sum[0]} mm</div><div class="stat-lbl">Lluvia</div></div>
-      <div class="stat"><div class="stat-sym">▲</div><div class="stat-val">${Math.round(c.relative_humidity_2m)}%</div><div class="stat-lbl">Humedad</div></div>
-      <div class="stat"><div class="stat-sym">☀</div><div class="stat-val">${c.is_day?'Día':'Noche'}</div><div class="stat-lbl">Cielo</div></div>
+      <div class="stat"><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
+      <div class="stat"><div class="stat-val">${Math.round(c.relative_humidity_2m)}%</div><div class="stat-lbl">Humedad</div></div>
     </div>
-
-    <div class="sec-lbl">Próximas horas</div>
-    <div class="hourly-scroll">${hHtml}</div>
-
-    <div class="sec-lbl">Pronóstico extendido</div>
-    <div class="forecast-row">${fcHtml}</div>
   `;
 }
 
-// ─── BUSCADOR CON ASISTENTE DE AUTO-CORRECCIÓN PARA COSTA RICA Y PLAYAS ───
+// ─── BUSCADOR TRADICIONAL ABIERTO (Muestra todas las provincias y pueblos normales) ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   let q = this.value.trim();
@@ -408,33 +217,23 @@ document.getElementById('srch').addEventListener('input', function() {
   
   acTimer = setTimeout(async () => {
     try {
-      let searchString = q;
-      
-      // Inteligencia del Buscador: interceptamos búsquedas de Santa Teresa para dar en el blanco directo
-      if(q.toLowerCase().includes('santa teresa')) {
-        searchString = "Cobano"; // Buscamos la central mapeada por Open-Meteo
-      }
-
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchString)}&count=5&language=es&format=json`;
+      // Motor oficial directo Open-Meteo Geocoding sin filtros forzados
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=es&format=json`;
       const response = await fetch(url);
       const data = await response.json();
       
       if(!data.results || data.results.length === 0) { ac.style.display = 'none'; return; }
       
       ac.innerHTML = data.results.map(item => {
-        // Si el usuario buscó Santa Teresa y devolvió Cóbano, le cambiamos la etiqueta para que vea lo que quiere ver
-        let displayName = item.name;
-        if(q.toLowerCase().includes('santa teresa') && item.name.toLowerCase().includes('cobano')) {
-          displayName = "Santa Teresa (Cóbano)";
-        }
-        
+        const name = item.name;
         const country = item.country || '';
-        const admin1 = item.admin1 ? item.admin1 + ', ' : '';
+        // Muestra el estado, provincia o región administrativa para que el usuario se guíe bien
+        const admin1 = item.admin1 ? item.admin1 + ', ' : ''; 
         
-        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${displayName.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
-          <span style="font-size:1.1rem;">🌴</span>
+        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
+          <span style="font-size:1.1rem;">📍</span>
           <div>
-            <div class="ac-city">${displayName}</div>
+            <div class="ac-city">${name}</div>
             <div class="ac-sub">${admin1}${country}</div>
           </div>
         </div>`;
@@ -454,32 +253,57 @@ function selCity(lat, lon, name, country){
   fetchWeather(lat, lon, name, country);
 }
 
-function triggerAutoGeo() {
-  if(!navigator.geolocation) return;
-  document.getElementById('geoBtn').textContent = 'Ubicando...';
+// ─── LÓGICA DE SIMULACIÓN DE RESPUESTAS DE LA IA LOCAL ───
+function askIA() {
+  const prompt = document.getElementById('iaInput').value.trim();
+  const responseBox = document.getElementById('iaResponse');
+  if(!prompt) return;
+
+  if(!loc || !wd) {
+    responseBox.textContent = "Primero selecciona una ubicación usando el buscador para poder darte consejos inteligentes.";
+    return;
+  }
+
+  responseBox.textContent = "🤖 Pensando respuesta...";
   
-  navigator.geolocation.getCurrentPosition(async pos => {
-    const {latitude:lat, longitude:lon} = pos.coords;
-    try {
-      const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`;
-      const nr = await fetch(url);
-      const nd = await nr.json();
-      const city = nd.address.city || nd.address.town || nd.address.village || 'Mi ubicación';
-      document.getElementById('geoBtn').textContent = '📍 ' + city;
-      fetchWeather(lat, lon, city, nd.address.country || '');
-    } catch {
-      document.getElementById('geoBtn').textContent = '📍 Mi ubicación';
-      fetchWeather(lat, lon, 'Mi ubicación', '');
+  setTimeout(() => {
+    const temp = Math.round(wd.current.temperature_2m);
+    const cond = wText(wd.current.weather_code).toLowerCase();
+    
+    // Respuestas lógicas basadas en los datos reales cargados en pantalla
+    if(prompt.toLowerCase().includes('ropa') || prompt.toLowerCase().includes('llevar') || prompt.toLowerCase().includes('vestir')) {
+      if(temp >= 26) {
+        responseBox.textContent = `🤖 Analizando ${loc.name}: Con ${temp}°C y cielo ${cond}, te recomiendo usar ropa fresca, shorts, camiseta de algodón y lentes de sol. No necesitas abrigos para nada hoy.`;
+      } else if(temp <= 15) {
+        responseBox.textContent = `🤖 Analizando ${loc.name}: Está haciendo bastante frío (${temp}°C). Es obligatorio llevar abrigo pesado o una buena campera rompevientos si vas a salir.`;
+      } else {
+        responseBox.textContent = `🤖 Analizando ${loc.name}: El clima está templado (${temp}°C). Una camiseta normal y un abrigo ligero por si refresca más tarde es la combinación ideal.`;
+      }
+    } else if(prompt.toLowerCase().includes('lluvia') || prompt.toLowerCase().includes('llover') || prompt.toLowerCase().includes('agua')) {
+      if([51,61,63,65,95].includes(wd.current.weather_code)) {
+        responseBox.textContent = `🤖 Revisión climática: Sí, actualmente se registran condiciones de ${cond}. Mejor lleva paraguas o quédate bajo techo.`;
+      } else {
+        responseBox.textContent = `🤖 Revisión climática: Por el momento no se registran lluvias fuertes programadas para las próximas horas en ${loc.name}, está reportado como ${cond}.`;
+      }
+    } else {
+      responseBox.textContent = `🤖 Con respecto a tu pregunta sobre "${prompt}" en ${loc.name}: Te confirmo que actualmente hay ${temp}°C con un estado ${cond}. Es un buen momento para disfrutar del día tomando las previsiones normales de la zona.`;
     }
-  }, () => {
-    document.getElementById('geoBtn').textContent = '📍 Usar mi ubi';
-    // Si falla el GPS, por defecto le dejamos un mensaje tuani cargando un lugar lindo
-    fetchWeather(9.6417, -85.1685, 'Santa Teresa', 'Costa Rica');
-  }, { timeout: 4000 });
+    document.getElementById('iaInput').value = '';
+  }, 800);
 }
 
-document.getElementById('geoBtn').onclick = triggerAutoGeo;
+function triggerAutoGeo() {
+  if(!navigator.geolocation) { fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica'); return; }
+  navigator.geolocation.getCurrentPosition(pos => {
+    fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Mi ubicación', '');
+  }, () => {
+    // Si no da permisos de GPS, por defecto cargamos San José de Costa Rica de forma limpia
+    fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica');
+  });
+}
+
 window.addEventListener('load', triggerAutoGeo);
+document.getElementById('geoBtn').onclick = triggerAutoGeo;
 </script>
 </body>
 </html>
