@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Clima para Dummies</title>
+<link href="https://fonts.googleapis.com/css2?family=Libre+Baskerville:ital,wght@0,400;0,700;1,400&family=Geist+Mono:wght@300;400&family=DM+Sans:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
+
+:root{
+  --bg:#0a0a0a;
+  --surface:#111111;
+  --surface2:#1a1a1a;
+  --border:#222222;
+  --border2:#2e2e2e;
+  --text:#f0f0f0;
+  --text2:#888888;
+  --text3:#444444;
+  --accent:#e8e0d0;
+  --gold:#c9a84c;
+  --gold-dim:#c9a84c22;
+  --user-bg:#1e1e1e;
+  --radius:6px;
+}
+
+html{font-size:16px;-webkit-font-smoothing:antialiased}
+
+body{
+  font-family:'DM Sans',sans-serif;
+  background:var(--bg);
+  color:var(--text);
+  min-height:100vh;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+  padding-bottom:80px;
+}
+
+.app{
+  width:100%;
+  max-width:520px;
+  padding:0 24px;
+}
+
+/* ── HEADER ── */
+.header{
+  padding:52px 0 40px;
+  border-bottom:1px solid var(--border);
+  margin-bottom:36px;
+}
+
+.eyebrow{
+  font-family:'Geist Mono',monospace;
+  font-size:0.68rem;
+  font-weight:300;
+  letter-spacing:0.18em;
+  color:var(--text3);
+  text-transform:uppercase;
+  margin-bottom:14px;
+}
+
+.logo{
+  font-family:'Libre Baskerville',serif;
+  font-size:2.1rem;
+  font-weight:700;
+  line-height:1.1;
+  color:var(--text);
+  letter-spacing:-0.02em;
+}
+
+.logo em{
+  font-style:italic;
+  font-weight:400;
+  color:var(--gold);
+}
+
+.tagline{
+  margin-top:10px;
+  font-size:0.82rem;
+  color:var(--text2);
+  font-weight:300;
+  letter-spacing:0.01em;
+}
+
+/* ── SEARCH SECTION ── */
+.section{margin-bottom:28px}
+
+.section-label{
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:0.15em;
+  text-transform:uppercase;
+  color:var(--text3);
+  margin-bottom:12px;
+}
+
+.btn-gps{
+  width:100%;
+  background:transparent;
+  border:1px solid var(--border2);
+  color:var(--text);
+  border-radius:var(--radius);
+  padding:15px 20px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem;
+  font-weight:400;
+  cursor:pointer;
+  display:flex;
+  align-items:center;
+  gap:10px;
+  transition:border-color .2s,background .2s;
+  letter-spacing:0.01em;
+}
+.btn-gps:hover{border-color:var(--gold);background:var(--gold-dim)}
+.btn-gps:active{opacity:.7}
+.btn-gps:disabled{opacity:.3;cursor:default}
+
+.gps-icon{
+  width:28px;height:28px;
+  border:1px solid var(--border2);
+  border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-size:0.8rem;
+  flex-shrink:0;
+  transition:border-color .2s;
+}
+.btn-gps:hover .gps-icon{border-color:var(--gold)}
+
+.divider{
+  display:flex;align-items:center;gap:14px;
+  margin:20px 0;
+}
+.divider-line{flex:1;height:1px;background:var(--border)}
+.divider-text{
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;
+  color:var(--text3);
+  letter-spacing:0.1em;
+}
+
+/* Autocomplete */
+.autocomplete-wrap{position:relative}
+
+.search-row{
+  display:flex;
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  overflow:hidden;
+  transition:border-color .2s;
+}
+.search-row:focus-within{border-color:var(--gold)}
+
+.search-input{
+  flex:1;
+  background:transparent;
+  border:none;
+  padding:15px 18px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem;
+  color:var(--text);
+  outline:none;
+}
+.search-input::placeholder{color:var(--text3)}
+
+.btn-buscar{
+  background:transparent;
+  border:none;
+  border-left:1px solid var(--border2);
+  color:var(--text2);
+  padding:0 18px;
+  font-family:'Geist Mono',monospace;
+  font-size:0.72rem;
+  letter-spacing:0.1em;
+  cursor:pointer;
+  transition:color .2s,background .2s;
+  text-transform:uppercase;
+  white-space:nowrap;
+}
+.btn-buscar:hover{color:var(--gold);background:var(--gold-dim)}
+.btn-buscar:disabled{opacity:.3;cursor:default}
+
+/* Dropdown */
+.dropdown{
+  display:none;
+  position:absolute;
+  top:calc(100% + 4px);
+  left:0;right:0;
+  background:var(--surface);
+  border:1px solid var(--border2);
+  border-radius:var(--radius);
+  z-index:100;
+  overflow:hidden;
+}
+.dropdown.open{display:block}
+
+.d-item{
+  padding:12px 18px;
+  font-size:0.85rem;
+  color:var(--text2);
+  cursor:pointer;
+  border-bottom:1px solid var(--border);
+  transition:background .15s,color .15s;
+  line-height:1.3;
+}
+.d-item:last-child{border-bottom:none}
+.d-item:hover,.d-item.sel{background:var(--surface2);color:var(--text)}
+.d-item strong{color:var(--text);font-weight:400}
+.d-item span{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;
+  color:var(--text3);
+  display:block;
+  margin-top:2px;
+}
+
+/* ── ERROR ── */
+.error{
+  display:none;
+  font-family:'Geist Mono',monospace;
+  font-size:0.75rem;
+  color:#c0392b;
+  letter-spacing:0.04em;
+  padding:10px 0;
+  border-bottom:1px solid #c0392b22;
+  margin-bottom:16px;
+}
+.error.visible{display:block}
+
+/* ── LOCATION LINE ── */
+.location-line{
+  display:none;
+  align-items:baseline;
+  gap:10px;
+  margin-bottom:28px;
+  padding-bottom:20px;
+  border-bottom:1px solid var(--border);
+}
+.location-line.visible{display:flex}
+
+.location-name{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.1rem;
+  font-style:italic;
+  color:var(--gold);
+}
+.location-sub{
+  font-family:'Geist Mono',monospace;
+  font-size:0.68rem;
+  color:var(--text3);
+  letter-spacing:0.1em;
+}
+.btn-change{
+  margin-left:auto;
+  background:none;border:none;
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;
+  letter-spacing:0.1em;
+  color:var(--text3);
+  cursor:pointer;
+  text-transform:uppercase;
+  transition:color .2s;
+  padding:2px 0;
+}
+.btn-change:hover{color:var(--text)}
+
+/* ── WEATHER CARD ── */
+.weather-card{
+  display:none;
+  margin-bottom:28px;
+  animation:fadeIn .4s ease both;
+}
+.weather-card.visible{display:block}
+
+@keyframes fadeIn{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+
+.w-top{
+  display:flex;
+  align-items:flex-start;
+  gap:20px;
+  margin-bottom:20px;
+}
+
+.w-emoji{
+  font-size:2.6rem;
+  line-height:1;
+  flex-shrink:0;
+  margin-top:2px;
+}
+
+.w-right{}
+
+.w-phrase{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.25rem;
+  font-weight:700;
+  line-height:1.3;
+  color:var(--text);
+  margin-bottom:10px;
+}
+
+.w-detail{
+  font-size:0.88rem;
+  color:var(--text2);
+  line-height:1.7;
+  font-weight:300;
+}
+
+/* Data row */
+.data-row{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:1px;
+  background:var(--border);
+  border:1px solid var(--border);
+  border-radius:var(--radius);
+  overflow:hidden;
+  margin-top:20px;
+}
+
+.data-cell{
+  background:var(--surface);
+  padding:14px 16px;
+}
+
+.data-label{
+  font-family:'Geist Mono',monospace;
+  font-size:0.62rem;
+  letter-spacing:0.12em;
+  color:var(--text3);
+  text-transform:uppercase;
+  margin-bottom:5px;
+}
+
+.data-val{
+  font-family:'Libre Baskerville',serif;
+  font-size:1.3rem;
+  color:var(--text);
+  line-height:1;
+}
+
+.data-unit{
+  font-family:'Geist Mono',monospace;
+  font-size:0.7rem;
+  color:var(--text3);
+  margin-left:3px;
+}
+
+/* ── CHAT ── */
+.chat-wrap{
+  display:none;
+  animation:fadeIn .4s ease .1s both;
+}
+.chat-wrap.visible{display:block}
+
+.chat-rule{
+  display:flex;
+  align-items:center;
+  gap:14px;
+  margin-bottom:20px;
+}
+.chat-rule-line{flex:1;height:1px;background:var(--border)}
+.chat-rule-label{
+  font-family:'Geist Mono',monospace;
+  font-size:0.65rem;
+  color:var(--text3);
+  letter-spacing:0.12em;
+  text-transform:uppercase;
+}
+
+.chat-messages{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  max-height:420px;
+  overflow-y:auto;
+  margin-bottom:14px;
+  padding-right:2px;
+}
+.chat-messages::-webkit-scrollbar{width:2px}
+.chat-messages::-webkit-scrollbar-thumb{background:var(--border2)}
+
+.bubble{
+  font-size:0.88rem;
+  line-height:1.7;
+  font-weight:300;
+  animation:fadeIn .2s ease both;
+}
+.bubble.user{
+  color:var(--text2);
+  padding:12px 16px;
+  background:var(--surface2);
+  border-radius:var(--radius);
+  align-self:flex-end;
+  max-width:88%;
+}
+.bubble.ai{
+  color:var(--text);
+  padding:0;
+  max-width:100%;
+  border-left:2px solid var(--gold);
+  padding-left:16px;
+}
+.bubble.ai.loading{color:var(--text3);font-style:italic}
+
+/* Chips */
+.chips{
+  display:flex;
+  flex-wrap:wrap;
+  gap:6px;
+  margin-bottom:16px;
+}
+.chip{
+  background:transparent;
+  border:1px solid var(--border2);
+  border-radius:2px;
+  padding:6px 12px;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.78rem;
+  color:var(--text2);
+  cursor:pointer;
+  transition:border-color .15s,color .15s;
+}
+.chip:hover{border-color:var(--gold);color:var(--text)}
+
+/* Chat input */
+.chat-input-wrap{
+  border-top:1px solid var(--border);
+  padding-top:16px;
+  display:flex;
+  gap:10px;
+  align-items:center;
+}
+
+.chat-input{
+  flex:1;
+  background:transparent;
+  border:none;
+  border-bottom:1px solid var(--border2);
+  padding:8px 0;
+  font-family:'DM Sans',sans-serif;
+  font-size:0.9rem;
+  color:var(--text);
+  outline:none;
+  transition:border-color .2s;
+}
+.chat-input::placeholder{color:var(--text3)}
+.chat-input:focus{border-color:var(--gold)}
+
+.send-btn{
+  background:none;
+  border:1px solid var(--border2);
+  color:var(--text2);
+  border-radius:50%;
+  width:34px;height:34px;
+  cursor:pointer;
+  font-size:0.9rem;
+  display:flex;align-items:center;justify-content:center;
+  transition:border-color .2s,color .2s;
+  flex-shrink:0;
+}
+.send-btn:hover{border-color:var(--gold);color:var(--gold)}
+.send-btn:disabled{opacity:.25;cursor:default}
+
+/* spinner */
+.spin{
+  display:inline-block;
+  width:12px;height:12px;
+  border:1.5px solid var(--border2);
+  border-top-color:var(--text2);
+  border-radius:50%;
+  animation:rot .7s linear infinite;
+}
+@keyframes rot{to{transform:rotate(360deg)}}
+
+.dots::after{
+  content:'.';
+  animation:dt 1.2s steps(3,end) infinite;
+}
+@keyframes dt{0%{content:'.'}33%{content:'..'}66%{content:'...'}}
+</style>
+</head>
+<body>
+<div class="app">
+
+  <!-- HEADER -->
+  <div class="header">
+    <div class="eyebrow">Meteorología en cristiano</div>
+    <div class="logo">Clima para <em>Dummies</em></div>
+    <div class="tagline">El pronóstico, sin tecnicismos.</div>
+  </div>
+
+  <!-- SEARCH -->
+  <div class="section">
+    <div class="section-label">Ubicación</div>
+
+    <button class="btn-gps" id="btn-gps" onclick="usarGPS()">
+      <div class="gps-icon">◎</div>
+      Usar mi ubicación actual
+    </button>
+
+    <div class="divider">
+      <div class="divider-line"></div>
+      <div class="divider-text">o</div>
+      <div class="divider-line"></div>
+    </div>
+
+    <div class="autocomplete-wrap">
+      <div class="search-row">
+        <input class="search-input" id="lugar-input" type="text"
+          placeholder="Escribí un lugar…"
+          autocomplete="off"
+          oninput="onInput()"
+          onkeydown="onKeydown(event)">
+        <button class="btn-buscar" id="btn-buscar" onclick="buscarDesdeInput()">Buscar</button>
+      </div>
+      <div class="dropdown" id="dropdown"></div>
+    </div>
+  </div>
+
+  <div class="error" id="error"></div>
+
+  <!-- LOCATION LINE -->
+  <div class="location-line" id="loc-line">
+    <div class="location-name" id="loc-name"></div>
+    <div class="location-sub">Clima actual</div>
+    <button class="btn-change" onclick="resetear()">Cambiar →</button>
+  </div>
+
+  <!-- WEATHER -->
+  <div class="weather-card" id="weather-card">
+    <div class="w-top">
+      <div class="w-emoji" id="w-emoji"></div>
+      <div class="w-right">
+        <div class="w-phrase" id="w-phrase"></div>
+        <div class="w-detail" id="w-detail"></div>
+      </div>
+    </div>
+    <div class="data-row" id="data-row"></div>
+  </div>
+
+  <!-- CHAT -->
+  <div class="chat-wrap" id="chat-wrap">
+    <div class="chat-rule">
+      <div class="chat-rule-line"></div>
+      <div class="chat-rule-label">Preguntale</div>
+      <div class="chat-rule-line"></div>
+    </div>
+    <div class="chat-messages" id="chat-messages"></div>
+    <div class="chips" id="chips"></div>
+    <div class="chat-input-wrap">
+      <input class="chat-input" id="chat-input" type="text"
+        placeholder="¿Llevo paraguas el martes?…"
+        onkeydown="if(event.key==='Enter')send()">
+      <button class="send-btn" id="send-btn" onclick="send()" title="Enviar">↑</button>
+    </div>
+  </div>
+
+</div>
+
+<script>
+// ── STATE ──
+let clima=null, lugar='', history=[], acResults=[], selIdx=-1, timer=null;
+
+const CHIPS=['¿Cómo estará el finde?','¿Llevo paraguas mañana?','¿Va a llover esta semana?','¿Qué día hace más calor?','¿Conviene salir hoy?','¿Cuánto frío hace de noche?'];
+
+// ── AUTOCOMPLETE ──
+function onInput(){
+  clearTimeout(timer);
+  const v=document.getElementById('lugar-input').value.trim();
+  if(v.length<2){closeDD();return}
+  timer=setTimeout(()=>fetchAC(v),280);
+}
+async function fetchAC(q){
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(q)}&format=json&limit=5&addressdetails=1`,{headers:{'Accept-Language':'es'}});
+    acResults=await r.json();selIdx=-1;renderDD();
+  }catch{closeDD()}
+}
+function renderDD(){
+  const dd=document.getElementById('dropdown');
+  if(!acResults.length){closeDD();return}
+  dd.innerHTML=acResults.map((it,i)=>{
+    const n=it.display_name.split(',')[0];
+    const s=it.display_name.split(',').slice(1,3).join(',').trim();
+    return `<div class="d-item" data-i="${i}" onclick="pickAC(${i})"><strong>${n}</strong><span>${s}</span></div>`;
+  }).join('');
+  dd.classList.add('open');
+}
+function closeDD(){document.getElementById('dropdown').classList.remove('open');acResults=[];selIdx=-1}
+function pickAC(i){
+  const it=acResults[i];if(!it)return;
+  lugar=it.display_name.split(',')[0];
+  document.getElementById('lugar-input').value=lugar;
+  closeDD();loadClima(it.lat,it.lon,lugar);
+}
+function onKeydown(e){
+  const items=document.querySelectorAll('.d-item');
+  if(e.key==='ArrowDown'){selIdx=Math.min(selIdx+1,items.length-1);hilite(items)}
+  else if(e.key==='ArrowUp'){selIdx=Math.max(selIdx-1,-1);hilite(items)}
+  else if(e.key==='Enter'){selIdx>=0&&acResults[selIdx]?pickAC(selIdx):buscarDesdeInput()}
+  else if(e.key==='Escape')closeDD();
+}
+function hilite(items){items.forEach((el,i)=>el.classList.toggle('sel',i===selIdx))}
+document.addEventListener('click',e=>{if(!e.target.closest('.autocomplete-wrap'))closeDD()});
+
+// ── GPS ──
+function usarGPS(){
+  if(!navigator.geolocation){err('Tu navegador no soporta GPS. Escribí el lugar.');return}
+  setLoad(true);hideErr();
+  navigator.geolocation.getCurrentPosition(async pos=>{
+    const{latitude:la,longitude:lo}=pos.coords;
+    try{
+      const r=await fetch(`https://nominatim.openstreetmap.org/reverse?lat=${la}&lon=${lo}&format=json`,{headers:{'Accept-Language':'es'}});
+      const d=await r.json();
+      lugar=d.address?.city||d.address?.town||d.address?.village||d.address?.county||'tu ubicación';
+    }catch{lugar='tu ubicación'}
+    await loadClima(la,lo,lugar);
+  },()=>{err('No se pudo acceder a tu ubicación. Escribí el lugar.');setLoad(false)},{timeout:10000});
+}
+
+// ── SEARCH ──
+async function buscarDesdeInput(){
+  const v=document.getElementById('lugar-input').value.trim();if(!v)return;
+  closeDD();setLoad(true);hideErr();
+  try{
+    const r=await fetch(`https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(v)}&format=json&limit=1`,{headers:{'Accept-Language':'es'}});
+    const d=await r.json();
+    if(!d.length){err(`No encontré "${v}". Probá con otro nombre.`);setLoad(false);return}
+    lugar=d[0].display_name.split(',')[0];
+    await loadClima(d[0].lat,d[0].lon,lugar);
+  }catch{err('Algo salió mal. Revisá tu conexión.');setLoad(false)}
+}
+
+// ── CLIMA ──
+async function loadClima(lat,lon,nom){
+  lugar=nom;
+  try{
+    const r=await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,apparent_temperature,rain,wind_speed_10m,weather_code,relative_humidity_2m&daily=temperature_2m_max,temperature_2m_min,precipitation_sum,wind_speed_10m_max,weather_code,precipitation_probability_max&timezone=auto&forecast_days=7`);
+    const raw=await r.json();
+    clima={
+      ahora:{temp:Math.round(raw.current.temperature_2m),sens:Math.round(raw.current.apparent_temperature),lluvia:raw.current.rain,viento:Math.round(raw.current.wind_speed_10m),hum:raw.current.relative_humidity_2m},
+      semana:raw.daily.time.map((d,i)=>({fecha:d,max:Math.round(raw.daily.temperature_2m_max[i]),min:Math.round(raw.daily.temperature_2m_min[i]),lluvia:raw.daily.precipitation_sum[i],prob:raw.daily.precipitation_probability_max[i],viento:Math.round(raw.daily.wind_speed_10m_max[i])}))
+    };
+    document.getElementById('loc-name').textContent=lugar;
+    document.getElementById('loc-line').classList.add('visible');
+    renderClima();
+    renderChat();
+    history=[];document.getElementById('chat-messages').innerHTML='';
+    renderChips();
+  }catch{err('No se pudo obtener el clima. Intentá de nuevo.')}
+  setLoad(false);
+}
+
+// ── RENDER CLIMA ──
+function renderClima(){
+  const c=clima.ahora;
+  let emoji,phrase,detail;
+  if(c.lluvia>2){emoji='🌧️';phrase='Está lloviendo en serio.';detail=`Cayeron ${c.lluvia}mm en la última hora. No salgas sin piloto o paraguas. Con ${c.viento} km/h de viento el paraguas solo puede no alcanzar — mejor un piloto impermeable. La sensación es de ${c.sens}°C, así que el frío se suma al agua.`}
+  else if(c.lluvia>0){emoji='🌦️';phrase='Llovizna molesta.';detail=`No te empapás, pero algo te cae. Con ${c.temp}°C y sensación de ${c.sens}°C, llevate algo liviano para cubrirte. Si vas a estar mucho tiempo afuera, mejor un paraguas chico o campera con capucha.`}
+  else if(c.temp>33){emoji='🥵';phrase='Calor intenso. De los que pegan.';detail=`Son ${c.temp}°C con sensación de ${c.sens}°C y ${c.hum}% de humedad — una combinación pesada. Hidratate seguido, evitá el sol entre las 12 y las 16hs, y vestite con ropa clara y liviana. Si podés, quedate en un lugar con aire.`}
+  else if(c.viento>35){emoji='💨';phrase='Ventarrón. Fuerte de verdad.';detail=`El viento está a ${c.viento} km/h y la sensación cae a ${c.sens}°C. Si tenés cosas afuera guardalas. El paraguas no sirve de mucho con este viento — mejor campera.`}
+  else if(c.temp<4){emoji='🥶';phrase='Frío en serio. Abrigate bien.';detail=`Son ${c.temp}°C con sensación de ${c.sens}°C. Varias capas, cubrí las orejas y las manos. No es un día para salir con remera haciendo el héroe.`}
+  else if(c.temp<14){emoji='🧥';phrase='Fresco. Ponete algo encima.';detail=`Hay ${c.temp}°C con sensación de ${c.sens}°C. Con remera sola te arrepentís. Un buzo o campera liviana está perfecto. Si salís a la noche puede bajar bastante más — llevá algo extra.`}
+  else if(c.temp>=19&&c.temp<=28&&c.lluvia===0&&c.viento<25){emoji='😎';phrase='Día impecable. Aprovechalo.';detail=`${c.temp}°C con sensación de ${c.sens}°C, sin lluvia y viento suave de ${c.viento} km/h. El clima ideal para cualquier actividad afuera. No sobran estos días.`}
+  else{emoji='🌤️';phrase='Día tranquilo, sin sorpresas.';detail=`Temperatura de ${c.temp}°C con sensación de ${c.sens}°C y ${c.hum}% de humedad. Sin lluvia a la vista, viento de ${c.viento} km/h. Podés salir sin preocuparte demasiado.`}
+
+  document.getElementById('w-emoji').textContent=emoji;
+  document.getElementById('w-phrase').textContent=phrase;
+  document.getElementById('w-detail').textContent=detail;
+  document.getElementById('data-row').innerHTML=`
+    <div class="data-cell"><div class="data-label">Temperatura</div><div class="data-val">${c.temp}<span class="data-unit">°C</span></div></div>
+    <div class="data-cell"><div class="data-label">Sensación</div><div class="data-val">${c.sens}<span class="data-unit">°C</span></div></div>
+    <div class="data-cell"><div class="data-label">Humedad</div><div class="data-val">${c.hum}<span class="data-unit">%</span></div></div>
+    <div class="data-cell"><div class="data-label">Viento</div><div class="data-val">${c.viento}<span class="data-unit">km/h</span></div></div>
+  `;
+  document.getElementById('weather-card').classList.add('visible');
+}
+
+// ── CHAT ──
+function renderChat(){document.getElementById('chat-wrap').classList.add('visible')}
+function renderChips(){
+  document.getElementById('chips').innerHTML=CHIPS.map(c=>`<button class="chip" onclick="useChip('${c}')">${c}</button>`).join('');
+}
+function useChip(t){document.getElementById('chat-input').value=t;send()}
+
+async function send(){
+  const input=document.getElementById('chat-input');
+  const q=input.value.trim();if(!q||!clima)return;
+  input.value='';
+  document.getElementById('chips').innerHTML='';
+  document.getElementById('send-btn').disabled=true;
+
+  addBubble('user',q);
+  const loading=addBubble('ai','Pensando',true);
+  history.push({role:'user',content:q});
+
+  const hoy=new Date().toLocaleDateString('es-AR',{weekday:'long',day:'numeric',month:'long'});
+  const c=clima.ahora;
+  const sem=clima.semana.map((d,i)=>{
+    const l=['Hoy','Mañana','Pasado','En 3 días','En 4 días','En 5 días','En 6 días'];
+    return `${l[i]||d.fecha}: máx ${d.max}°C, mín ${d.min}°C, lluvia ${d.lluvia}mm, prob lluvia ${d.prob}%, viento ${d.viento}km/h`;
+  }).join('\n');
+
+  const sys=`Sos un amigo que entiende mucho de meteorología y habla en español latinoamericano simple, directo y cercano. Sin tecnicismos innecesarios.
+
+Respondé siempre entre 3 y 6 oraciones. Explicá qué significa el dato para la vida cotidiana — si conviene salir, qué ropa usar, si hay que preocuparse. Sé útil y concreto. Usá emojis con moderación.
+
+Si preguntan sobre clima pasado que no tenés en los datos, explicá el fenómeno meteorológico de forma simple y educativa, aclarando que no tenés esos datos históricos.
+
+DATOS DE ${lugar} — ${hoy}:
+Ahora: ${c.temp}°C (sensación ${c.sens}°C), lluvia ${c.lluvia}mm, viento ${c.viento}km/h, humedad ${c.hum}%
+
+Pronóstico semana:
+${sem}`;
+
+  try{
+    const resp=await fetch('https://api.anthropic.com/v1/messages',{
+      method:'POST',
+      headers:{'Content-Type':'application/json','anthropic-dangerous-direct-browser-access':'true'},
+      body:JSON.stringify({model:'claude-sonnet-4-20250514',max_tokens:1000,system:sys,messages:history})
+    });
+    if(!resp.ok){const e=await resp.json().catch(()=>({}));throw new Error(e.error?.message||`HTTP ${resp.status}`)}
+    const data=await resp.json();
+    const txt=data.content?.find(b=>b.type==='text')?.text||'No pude procesar eso, probá de nuevo.';
+    loading.classList.remove('loading');loading.textContent=txt;
+    history.push({role:'assistant',content:txt});
+  }catch(e){
+    loading.classList.remove('loading');
+    loading.textContent=`Algo falló al conectar (${e.message}). Probá de nuevo.`;
+    loading.style.color='#c0392b';
+    history.pop();
+  }
+  document.getElementById('send-btn').disabled=false;
+  scrollChat();
+}
+
+// ── HELPERS ──
+function addBubble(role,text,loading=false){
+  const wrap=document.getElementById('chat-messages');
+  const el=document.createElement('div');
+  el.className=`bubble ${role}${loading?' loading':''}`;
+  el.innerHTML=loading?`<span class="dots">${text}</span>`:text;
+  wrap.appendChild(el);scrollChat();return el;
+}
+function scrollChat(){const w=document.getElementById('chat-messages');w.scrollTop=w.scrollHeight}
+function setLoad(v){
+  const g=document.getElementById('btn-gps'),b=document.getElementById('btn-buscar');
+  g.disabled=v;b.disabled=v;
+  g.innerHTML=v?'<div class="gps-icon"><span class="spin"></span></div> Cargando…':'<div class="gps-icon">◎</div> Usar mi ubicación actual';
+}
+function err(msg){const el=document.getElementById('error');el.textContent='— '+msg;el.classList.add('visible')}
+function hideErr(){document.getElementById('error').classList.remove('visible')}
+function resetear(){
+  clima=null;lugar='';history=[];
+  document.getElementById('weather-card').classList.remove('visible');
+  document.getElementById('chat-wrap').classList.remove('visible');
+  document.getElementById('loc-line').classList.remove('visible');
+  document.getElementById('chat-messages').innerHTML='';
+  document.getElementById('lugar-input').value='';
+  hideErr();
+}
+</script>
+</body>
+</html>
