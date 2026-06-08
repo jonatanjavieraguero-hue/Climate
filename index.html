@@ -2,349 +2,200 @@
 <html lang="es">
 <head>
 <meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-<title>Clima Inteligente Total</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Clima para Dummies</title>
 <link rel="preconnect" href="https://fonts.googleapis.com">
-<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;500;600;700;800&family=Syne+Mono&display=swap" rel="stylesheet">
 <style>
-* { margin:0; padding:0; box-sizing:border-box; -webkit-tap-highlight-color:transparent; }
+* { margin:0; padding:0; box-sizing:border-box; }
+
 :root {
-  --bg-dark: #070b12;
-  --card: rgba(255,255,255,0.06);
-  --card-border: rgba(255,255,255,0.12);
-  --accent: #E8FF57;
-  --text: #ffffff;
+  --card: rgba(255,255,255,0.1);
+  --card-b: rgba(255,255,255,0.18);
   --blur: blur(20px);
-  --r: 20px;
+  --r: 22px;
+  --text: #fff;
+  --soft: rgba(255,255,255,0.6);
+  --accent: #E8FF57;
 }
-body { font-family: 'Syne', sans-serif; min-height: 100vh; color: var(--text); background: var(--bg-dark); overflow-x: hidden; }
 
-.bg-mesh { position: fixed; inset: 0; z-index: 0; pointer-events: none; opacity: 0.7; }
-.orb { position: absolute; border-radius: 50%; filter: blur(90px); }
+body {
+  font-family: 'Syne', sans-serif;
+  min-height: 100vh;
+  color: var(--text);
+  overflow-x: hidden;
+  background: #0f1b2d;
+}
 
-.app { position: relative; z-index: 10; max-width: 550px; margin: 0 auto; padding: 20px 14px 80px; display: flex; flex-direction: column; gap: 16px; }
+/* ─── MESH GRADIENT BG ─── */
+.bg {
+  position: fixed; inset: 0; z-index: 0;
+  transition: all 2s ease;
+}
+.bg-mesh {
+  position: fixed; inset: 0; z-index: 0;
+  opacity: 0.9;
+  transition: all 2s ease;
+}
+.orb {
+  position: absolute; border-radius: 50%;
+  filter: blur(80px); transition: all 2s ease;
+  pointer-events: none;
+}
 
-.header { display: flex; align-items: center; justify-content: space-between; }
-.logo { font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px; }
-.logo-badge { background: var(--accent); color: #000; border-radius: 6px; padding: 1px 6px; font-size: 0.65rem; font-weight: 800; text-transform: uppercase; vertical-align: middle; }
+/* ─── PARTICLES ─── */
+.particles {
+  position: fixed; inset: 0; z-index: 1;
+  pointer-events: none; overflow: hidden;
+}
+.raindrop {
+  position: absolute; width: 1.5px;
+  background: linear-gradient(180deg, transparent 0%, rgba(180,220,255,0.6) 100%);
+  animation: rain linear infinite; opacity: 0;
+}
+@keyframes rain {
+  0% { transform: translateY(-30px) skewX(-10deg); opacity:.5; }
+  100% { transform: translateY(110vh) skewX(-10deg); opacity:0; }
+}
+.flake {
+  position: absolute; border-radius: 50%;
+  background: rgba(255,255,255,0.8);
+  animation: flakefall linear infinite; opacity: 0;
+}
+@keyframes flakefall {
+  0% { transform: translateY(-10px) translateX(0); opacity:.7; }
+  50% { transform: translateY(50vh) translateX(20px); }
+  100% { transform: translateY(110vh) translateX(-10px); opacity:0; }
+}
 
+/* ─── APP ─── */
+.app {
+  position: relative; z-index: 10;
+  max-width: 680px; margin: 0 auto;
+  padding: 28px 20px 120px;
+}
+
+/* ─── HEADER ─── */
+.header {
+  display: flex; align-items: center; justify-content: space-between;
+  margin-bottom: 24px;
+  animation: dn .5s ease both;
+}
+.logo {
+  font-size: 1.25rem; font-weight: 800; letter-spacing: -0.5px;
+  display: flex; align-items: center; gap: 8px;
+}
+.logo-badge {
+  background: var(--accent); color: #0f1b2d;
+  border-radius: 6px; padding: 2px 8px;
+  font-size: 0.7rem; font-weight: 700; letter-spacing: 1px;
+  text-transform: uppercase;
+}
 .geo-btn {
-  background: var(--accent); color: #070b12; border: none; border-radius: 50px;
-  padding: 8px 16px; font-family: 'Syne', sans-serif; font-size: 0.8rem; font-weight: 700;
-  cursor: pointer; display: flex; align-items: center; gap: 4px; transition: transform 0.2s;
+  background: var(--card); border: 1px solid var(--card-b);
+  backdrop-filter: var(--blur);
+  color: white; border-radius: 50px; padding: 8px 18px;
+  font-family: 'Syne', sans-serif; font-size: 0.78rem; font-weight: 500;
+  cursor: pointer; display: flex; align-items: center; gap: 7px;
+  transition: all .2s; letter-spacing: 0.3px;
 }
+.geo-btn:hover { background: rgba(255,255,255,0.2); }
+.geo-icon { width: 14px; height: 14px; }
 
-/* BUSCADOR BLINDADO INTERNADO */
-.search-wrap { position: relative; z-index: 1000; }
+/* ─── SEARCH BUSCADOR CORREGIDO ─── */
+.search-wrap {
+  position: relative; margin-bottom: 22px;
+  animation: dn .5s .08s ease both; z-index: 2000;
+}
 .search-in {
-  width: 100%; background: var(--card); border: 1px solid var(--card-border); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  color: white; border-radius: 50px; padding: 15px 20px; font-size: 0.95rem; font-family: 'Syne', sans-serif; outline: none; transition: all 0.3s;
+  width: 100%;
+  background: var(--card); border: 1px solid var(--card-b);
+  backdrop-filter: var(--blur);
+  color: white; border-radius: 50px;
+  padding: 14px 50px 14px 22px;
+  font-size: .95rem; font-family: 'Syne', sans-serif; font-weight: 400;
+  outline: none; transition: all .2s;
 }
-.search-in:focus { border-color: var(--accent); background: rgba(255,255,255,0.1); }
-
+.search-in::placeholder { color: rgba(255,255,255,.4); }
+.search-in:focus { border-color: rgba(255,255,255,.55); background: rgba(255,255,255,.16); }
+.search-ico {
+  position: absolute; right: 18px; top: 50%; transform: translateY(-50%);
+  opacity: .5;
+}
 .ac {
-  position: absolute; top: calc(100% + 6px); left: 0; right: 0;
-  background: #0f1726; border: 1px solid rgba(255,255,255,0.15); border-radius: 18px; overflow: hidden;
-  box-shadow: 0 15px 35px rgba(0,0,0,0.6); max-height: 320px; overflow-y: auto; display: none;
+  position: absolute; top: calc(100% + 6px); left: 0; right: 0; z-index: 2500;
+  background: #0f1b2d; border: 1px solid var(--card-b); border-radius: 18px; 
+  overflow: hidden; box-shadow: 0 12px 40px rgba(0,0,0,.6); max-height: 300px; overflow-y: auto;
 }
-.ac-item { padding: 14px 18px; cursor: pointer; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 12px; }
-.ac-item:hover { background: rgba(255,255,255,.08); }
-.ac-city { font-weight: 700; font-size: 0.95rem; color: #fff; }
-.ac-sub { font-size: .75rem; opacity: 0.5; margin-top: 2px; }
-
-/* PANEL METEOROLÓGICO */
-.hero-card {
-  background: linear-gradient(135deg, rgba(232,255,87,0.06) 0%, rgba(255,255,255,0.02) 100%);
-  border: 2px solid rgba(232,255,87,0.15); backdrop-filter: var(--blur); -webkit-backdrop-filter: var(--blur);
-  border-radius: var(--r); padding: 24px 20px;
+.ac-item {
+  padding: 14px 20px; cursor: pointer; font-size: .88rem;
+  border-bottom: 1px solid rgba(255,255,255,.06);
+  transition: background .15s;
+  display: flex; align-items: center; gap: 12px;
 }
-.hero-loc { font-size: .75rem; font-weight: 800; color: var(--accent); letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 8px; }
-.hero-text { font-size: 1.15rem; font-weight: 600; line-height: 1.45; color: #fff; }
+.ac-item:last-child { border: none; }
+.ac-item:hover { background: rgba(255,255,255,.1); }
+.ac-city { font-weight: 600; color: #fff; }
+.ac-sub { font-size: .72rem; opacity: .5; margin-top: 2px; }
 
-.weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 20px; padding-top: 16px; border-top: 1px solid rgba(255,255,255,0.08); }
-.temp-display { font-size: 3.2rem; font-weight: 800; letter-spacing: -1px; }
-.temp-display sup { font-size: 1.2rem; top: -12px; position: relative; }
-.cond-badge { font-weight: 700; background: rgba(255,255,255,0.1); padding: 6px 12px; border-radius: 50px; font-size: 0.8rem; text-align: right; }
-
-.stats-grid { display: grid; grid-template-columns: repeat(2,1fr); gap: 10px; }
-.stat-box { background: var(--card); border: 1px solid var(--card-border); border-radius: 16px; padding: 14px; text-align: center; }
-.stat-val { font-size: 1.1rem; font-weight: 700; color: #fff; }
-.stat-lbl { font-size: .65rem; opacity: .5; text-transform: uppercase; margin-top: 2px; }
-
-/* CHAT ABIERTO CON MEMORIA COGNITIVA */
-.chat-card {
-  background: rgba(255, 255, 255, 0.03); border: 2px solid rgba(232,255,87,0.12);
-  border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px;
+/* ─── MAIN CARD ─── */
+.main-card {
+  background: var(--card); border: 1px solid var(--card-b);
+  backdrop-filter: var(--blur);
+  border-radius: var(--r); padding: 26px 28px 22px;
+  margin-bottom: 14px;
+  animation: up .6s .15s ease both;
+  position: relative; overflow: hidden;
 }
-.chat-header { font-size: 0.8rem; font-weight: 800; color: var(--accent); display: flex; justify-content: space-between; align-items: center; text-transform: uppercase; }
-.chat-box {
-  background: rgba(0,0,0,0.4); border-radius: 16px; padding: 14px; height: 240px; overflow-y: auto;
-  display: flex; flex-direction: column; gap: 12px; border: 1px solid rgba(255,255,255,0.04);
+.main-card::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  background: linear-gradient(135deg, rgba(255,255,255,.08) 0%, transparent 60%);
 }
-.msg { max-width: 85%; padding: 11px 15px; border-radius: 16px; font-size: 0.88rem; line-height: 1.45; word-wrap: break-word; }
-.msg.ia { background: rgba(255,255,255,0.07); color: #fff; align-self: flex-start; border-left: 3px solid var(--accent); border-top-left-radius: 4px; }
-.msg.user { background: var(--accent); color: #070b12; align-self: flex-end; font-weight: 600; border-top-right-radius: 4px; }
-
-.chat-form { display: flex; gap: 8px; }
-.chat-in {
-  flex: 1; background: rgba(255,255,255,0.07); border: 1px solid rgba(255,255,255,0.15);
-  border-radius: 50px; padding: 14px 20px; color: white; font-family: 'Syne'; font-size: 0.88rem; outline: none;
+.loc-line {
+  font-size: .78rem; font-weight: 500; opacity: .55;
+  letter-spacing: .5px; text-transform: uppercase;
+  margin-bottom: 4px; display: flex; align-items: center; gap: 6px;
 }
-.chat-btn { background: var(--accent); color: #070b12; border: none; border-radius: 50px; padding: 0 22px; font-weight: 800; cursor: pointer; }
-
-.loader-view { text-align: center; padding: 50px 20px; }
-</style>
-</head>
-<body>
-
-<div class="bg-mesh">
-  <div class="orb" style="width:350px;height:350px;top:-120px;right:-60px;background:radial-gradient(circle, rgba(232,255,87,.12) 0%, transparent 70%);"></div>
-</div>
-
-<div class="app">
-  <div class="header">
-    <div class="logo">Clima <span class="logo-badge">Sincronizado v7</span></div>
-    <button class="geo-btn" id="geoBtn">📍 Ubicación GPS</button>
-  </div>
-
-  <!-- BUSCADOR CON FILTRO INTELIGENTE ANTI-ERRORES -->
-  <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Escribí un lugar (ej: Santa Teresa, San José)..." autocomplete="off">
-    <div class="ac" id="ac"></div>
-  </div>
-
-  <div id="content">
-    <div class="loader-view">
-      <h2 style="font-weight:800; font-size:1.4rem;">Conectando Radar...</h2>
-      <p style="opacity:0.5; font-size:0.85rem; margin-top:6px;">Buscando la estación meteorológica más cercana...</p>
-    </div>
-  </div>
-
-  <!-- CHAT DE IA CON CONTEXTO COMPLETO -->
-  <div class="chat-card">
-    <div class="chat-header">
-      <span>💬 Asistente IA Integrado</span>
-      <span style="opacity:0.5; font-size:0.75rem; cursor:pointer;" onclick="document.getElementById('chatBox').innerHTML='<div class class=\'msg ia\'>Chat reiniciado. ¿Qué planeamos?</div>'">Borrar</span>
-    </div>
-    <div class="chat-box" id="chatBox">
-      <div class="msg ia">¡Hola! Buscá cualquier playa o ciudad arriba. El sistema meteorológico le pasará los datos automáticamente a mi memoria para que hablemos de tus planes abiertamente.</div>
-    </div>
-    <div class="chat-form">
-      <input class="chat-in" id="chatInput" type="text" placeholder="Preguntale libremente a la IA sobre el clima..." onkeypress="if(event.key==='Enter') procesarChat()">
-      <button class="chat-btn" onclick="procesarChat()">Enviar</button>
-    </div>
-  </div>
-</div>
-
-<script>
-let wd = null, loc = null, searchTimer = null;
-const SLANGS = ['mae', 'che', 'crack', 'titán', 'jefe', 'campeón', 'hermano'];
-
-// Base de datos de rescate (Si la red falla o no encuentra, esto garantiza que funcione al instante)
-const BACKUP_PLACES = [
-  { name: "Playa Santa Teresa", country: "Puntarenas, Costa Rica", lat: 9.6422, lon: -85.1682 },
-  { name: "Cóbano", country: "Puntarenas, Costa Rica", lat: 9.6814, lon: -85.0974 },
-  { name: "San José", country: "Costa Rica", lat: 9.9281, lon: -84.0907 },
-  { name: "Liberia", country: "Guanacaste, Costa Rica", lat: 10.6350, lon: -85.4377 },
-  { name: "Buenos Aires", country: "Argentina", lat: -34.6037, lon: -58.3816 }
-];
-
-function getConditionText(code) {
-  const codes = {0:'Despejado',1:'Casi Despejado',2:'Algo Nublado',3:'Nublado',45:'Niebla',51:'Llovizna',61:'Lluvia Leve',63:'Lluvia',65:'Fuerte Diluvio',95:'Tormenta Eléctrica'};
-  return codes[code] || 'Estable';
+.city-h {
+  font-size: 2.2rem; font-weight: 800; line-height: 1;
+  letter-spacing: -1px; margin-bottom: 3px;
 }
+.date-h { font-size: .76rem; opacity: .45; letter-spacing: .3px; margin-bottom: 22px; }
 
-function generateNarrative(name, country, temp, code) {
-  const isRain = [51, 61, 63, 65, 95].includes(code);
-  const t = Math.round(temp);
-  const nick = SLANGS[Math.floor(Math.random() * SLANGS.length)];
-  const isCR = (country + name).toLowerCase().includes('costa') || (country + name).toLowerCase().includes('teresa');
-
-  if (isRain) {
-    if (isCR) return `¡Diay ${nick}! Cayó un baldazo tremendo en ${name}. El cielo se vino abajo, guardá la ropa y buscá techo rápido porque te vas a empapar por completo mae.`;
-    return `¡Atajate ${nick}! Se armó alto diluvio en ${name}. Está impecable para quedarse adentro tomando un café bien caliente y metiendo series. Llevá paraguas si salís.`;
-  }
-  if (t >= 30) {
-    if (isCR) return `¡Qué calorón de locos mae! En ${name} el sol pega pesadísimo con unos ${t}°C letales. Excelente para estar metido en el mar de Santa Teresa con un agua de pipa helada.`;
-    return `¡Un horno total ${nick}! Caminás media cuadra en ${name} con estos ${t}°C y te derretís. Buscá urgente algo frío para tomar y aire acondicionado.`;
-  }
-  if (t >= 22) return `Clima soñado y perfecto en ${name}. Gozamos de unos ${t}°C súper limpios y agradables. Ropa cómoda, anteojos de sol y a disfrutar el día afuera, ${nick}.`;
-  if (t <= 14) return `¡Uff, abrígate ${nick}! Hace un frío polar en ${name} con apenas ${t}°C en el termómetro. Ponete una campera abrigada porque el viento te va a congelar.`;
-  
-  return `Día súper templado en ${name}. Unos ${t}°C intermedios ideales para hacer mandados. Te ponés un abrigo liviano encima y estás listo, ${nick}.`;
+.temp-row { display: flex; align-items: flex-start; justify-content: space-between; margin-bottom: 18px; }
+.big-t {
+  font-size: 6rem; font-weight: 800;
+  line-height: 1; letter-spacing: -5px;
 }
-
-// LINK DIRECTO CON EL SERVICIO METEOROLÓGICO (OPEN-METEO)
-async function fetchWeather(lat, lon, name, country) {
-  const url = `https://api.open-meteo.com/v1/forecast?latitude=${lat}&longitude=${lon}&current=temperature_2m,weather_code,relative_humidity_2m,wind_speed_10m&daily=temperature_2m_max,temperature_2m_min&timezone=auto&forecast_days=1`;
-  try {
-    const res = await fetch(url);
-    wd = await res.json();
-    loc = {lat, lon, name, country};
-    
-    // Renderizar tarjeta visual
-    const c = wd.current;
-    const d = wd.daily;
-    document.getElementById('content').innerHTML = `
-      <div class="hero-card">
-        <div class="hero-loc">📍 ${loc.name}${loc.country ? ', ' + loc.country : ''}</div>
-        <div class="hero-text">${generateNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code)}</div>
-        <div class="weather-row">
-          <div class="temp-display">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
-          <div class="cond-badge">
-            <div>${getConditionText(c.weather_code)}</div>
-            <div style="font-size:0.7rem; opacity:0.5; margin-top:3px;">Mín: ${Math.round(d.temperature_2m_min[0])}° / Máx: ${Math.round(d.temperature_2m_max[0])}°</div>
-          </div>
-        </div>
-      </div>
-      <div class="stats-grid">
-        <div class="stat-box"><div class="stat-val">${Math.round(c.wind_speed_10m)} km/h</div><div class="stat-lbl">Viento</div></div>
-        <div class="stat-box"><div class="stat-val">${c.relative_humidity_2m}%</div><div class="stat-lbl">Humedad</div></div>
-      </div>
-    `;
-    
-    // Sincronizar el chat abierto con la base meteorológica actual
-    addChatMessage('ia', `🤖 <b>Radar Sincronizado</b>: Ya cargué el estado de <b>${name}</b>. Registro ${Math.round(c.temperature_2m)}°C y cielo ${getConditionText(code = c.weather_code).toLowerCase()}. Escribime lo que quieras planear de forma abierta.`);
-  } catch (e) {
-    console.error("Fallo de red, usando respaldo local.");
-  }
+.big-t sup { font-size: 2.2rem; vertical-align: top; margin-top: 14px; opacity: .6; letter-spacing: 0; }
+.t-meta { text-align: right; padding-top: 6px; }
+.feels-t { font-size: .8rem; opacity: .55; margin-bottom: 6px; }
+.cond-pill {
+  display: inline-flex; align-items: center; gap: 8px;
+  background: rgba(255,255,255,.15); border: 1px solid rgba(255,255,255,.2);
+  border-radius: 20px; padding: 5px 14px; font-size: .8rem; font-weight: 600;
+  letter-spacing: .2px;
 }
-
-// EL BUSCADOR BLINDADO QUE NUNCA QUEDA EN BLANCO
-document.getElementById('srch').addEventListener('input', function() {
-  clearTimeout(searchTimer);
-  const query = this.value.trim().toLowerCase();
-  const ac = document.getElementById('ac');
-  
-  if (query.length < 2) { ac.style.display = 'none'; return; }
-
-  searchTimer = setTimeout(async () => {
-    // 1. Filtrado ultra rápido de nuestra base de datos local pre-cargada (Santa Teresa, Cóbano, etc.)
-    let matches = BACKUP_PLACES.filter(p => p.name.toLowerCase().includes(query) || p.country.toLowerCase().includes(query));
-    
-    try {
-      // 2. Intentar buscar en vivo en los servidores geográficos mundiales
-      const res = await fetch(`https://photon.komoot.io/api/?q=${encodeURIComponent(query)}&limit=5&lang=es`);
-      const data = await res.json();
-      
-      if (data && data.features) {
-        data.features.forEach(f => {
-          const prop = f.properties;
-          const name = prop.name || prop.city || prop.town;
-          if (name) {
-            const countryText = `${prop.state ? prop.state + ', ' : ''}${prop.country || ''}`;
-            const [lon, lat] = f.geometry.coordinates;
-            // Evitar duplicados
-            if(!matches.some(m => m.name.toLowerCase() === name.toLowerCase())) {
-              matches.push({ name, country: countryText, lat, lon });
-            }
-          }
-        });
-      }
-    } catch(err) {
-      console.log("Modo offline activo: usando base de contingencia.");
-    }
-
-    // Mostrar los resultados pase lo que pase
-    if (matches.length === 0) {
-      ac.innerHTML = `<div class="ac-item" style="cursor:default;opacity:0.6;">❌ No se encontró. Intentá escribir 'Santa Teresa' o 'San José'</div>`;
-    } else {
-      ac.innerHTML = matches.map(m => `
-        <div class="ac-item" onclick="seleccionarDestino(${m.lat}, ${m.lon}, '${m.name.replace(/'/g, "\\'")}', '${m.country.replace(/'/g, "\\'")}')">
-          <span style="font-size:1.1rem;">📍</span>
-          <div>
-            <div class="ac-city">${m.name}</div>
-            <div class="ac-sub">${m.country}</div>
-          </div>
-        </div>
-      `).join('');
-    }
-    ac.style.display = 'block';
-  }, 200);
-});
-
-// Cerrar el buscador al hacer clic afuera
-document.addEventListener('click', e => { if (!e.target.closest('.search-wrap')) document.getElementById('ac').style.display = 'none'; });
-
-function seleccionarDestino(lat, lon, name, country) {
-  document.getElementById('srch').value = name;
-  document.getElementById('ac').style.display = 'none';
-  fetchWeather(lat, lon, name, country);
+.w-symbol {
+  font-size: 3rem; line-height: 1;
+  font-family: 'Syne Mono', monospace;
+  opacity: .9;
 }
+.hi-lo { font-size: .75rem; opacity: .5; margin-top: 4px; letter-spacing: .3px; }
 
-// INTERFAZ DE CHAT ABIERTO REAL CON DETECTOR DE CONTEXTO METEOROLÓGICO
-function addChatMessage(sender, text) {
-  const box = document.getElementById('chatBox');
-  const m = document.createElement('div');
-  m.className = `msg ${sender}`;
-  m.innerHTML = text;
-  box.appendChild(m);
-  box.scrollTop = box.scrollHeight;
+/* narrative */
+.narrative {
+  background: rgba(0,0,0,.2); border-left: 3px solid var(--accent);
+  border-radius: 0 12px 12px 0; padding: 14px 18px;
+  font-size: .92rem; line-height: 1.65; font-weight: 400;
+  font-style: italic; color: rgba(255,255,255,.88);
+  margin-top: 14px;
 }
-
-function procesarChat() {
-  const el = document.getElementById('chatInput');
-  const txt = el.value.trim();
-  if (!txt) return;
-
-  addChatMessage('user', txt);
-  el.value = '';
-
-  if (!wd || !loc) {
-    setTimeout(() => addChatMessage('ia', "⚠️ ¡Ojo! Primero elegí un destino en el buscador de arriba para que pueda chatear con vos usando datos reales."), 400);
-    return;
-  }
-
-  setTimeout(() => {
-    const t = Math.round(wd.current.temperature_2m);
-    const cond = getConditionText(wd.current.weather_code).toLowerCase();
-    const rain = [51, 61, 63, 65, 95].includes(wd.current.weather_code);
-    const p = txt.toLowerCase();
-    const nick = SLANGS[Math.floor(Math.random() * SLANGS.length)];
-
-    let r = "";
-
-    if (p.includes('hola') || p.includes('buenas')) {
-      r = `¡Buenas ${nick}! Todo listo. Decime qué tenías ganas de hacer en <b>${loc.name}</b> hoy con estos ${t}°C y vemos si el clima nos acompaña.`;
-    }
-    else if (p.includes('surf') || p.includes('playa') || p.includes('mar') || p.includes('olas')) {
-      if (rain) r = `Está para atrás, ${nick}. En ${loc.name} hay reporte de <b>${cond}</b> ahora mismo. Salir a la playa o meterse al mar es garantía de pasar un mal rato.`;
-      else if (t >= 25) r = `¡Súper aprobado! Con unos ${t}°C divinos y cielo ${cond} en ${loc.name}, las olas y la arena te están esperando. ¡Metele de una!`;
-      else r = `La playa en ${loc.name} está linda para caminar, pero el termómetro marca ${t}°C. Llevá un bucito por si el viento está fresco cerca de la orilla.`;
-    }
-    else if (p.includes('mate') || p.includes('cafe') || p.includes('café') || p.includes('comer')) {
-      if (rain) r = `¡Ni loco al aire libre! Con esta <b>${cond}</b> en ${loc.name}, lo ideal es meterse en una cafetería cerrada, pedir algo rico y relajarse viendo la lluvia pasar.`;
-      else if (t >= 31) r = `¿Tomar café o mate caliente con ${t}°C a la sombra? Te vas a cocinar, ${nick}. El clima en ${loc.name} te pide a gritos un licuado con mucho hielo o agua de pipa bien fría.`;
-      else r = `¡Planazo ideal! El cielo está ${cond} con ${t}°C en ${loc.name}. Armá el termo o andá a sentarte afuera que la tarde está espectacular.`;
-    }
-    else if (p.includes('ropa') || p.includes('vestir') || p.includes('campera') || p.includes('abrigo')) {
-      if (rain) r = `Salí blindado, ${nick}. Con esta ${cond} en ${loc.name} necesitás campera impermeable, paraguas y calzado cerrado sí o sí.`;
-      else if (t >= 26) r = `Cero camperas. Con un calor de ${t}°C en ${loc.name}, salí de short, remera holgada, gorra y lentes.`;
-      else if (t <= 15) r = `Hace frío real de ${t}°C en ${loc.name}. Ponete un buzo grueso o abrigo pesado porque el viento te va a sacudir.`;
-      else r = `Está templado agradable (${t}°C). Una remera normal y lleva una camperita liviana en la mano por si refresca al caer el sol.`;
-    }
-    else {
-      r = `Mirá ${nick}, analizando tu mensaje sobre "${txt}" en <b>${loc.name}</b>, te recuerdo que tenemos exactamente <b>${t}°C</b>, humedad del ${wd.current.relative_humidity_2m}% y viento a ${Math.round(wd.current.wind_speed_10m)} km/h con cielo ${cond}. Basado en eso, fijate si tu idea cuadra o si es mejor recalcular.`;
-    }
-
-    addChatMessage('ia', r);
-  }, 400);
+.nar-loading {
+  display: flex; align-items: center; gap: 6px;
+  font-size: .8rem; opacity: .5; font-style: normal;
 }
-
-// Localización inicial obligatoria para que no inicie en blanco
-function iniciarApp() {
-  if (navigator.geolocation) {
-    navigator.geolocation.getCurrentPosition(
-      pos => fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Mi Ubicación', 'GPS'),
-      () => fetchWeather(9.6422, -85.1682, 'Playa Santa Teresa', 'Costa Rica')
-    );
-  } else {
-    fetchWeather(9.6422, -85.1682, 'Playa Santa Teresa', 'Costa Rica');
-  }
-}
-
-window.addEventListener('load', iniciarApp);
-document.getElementById('geoBtn').onclick = iniciarApp;
-</script>
-</body>
-</html>
+.dot { width: 5px; height: 5px; border-radius: 50%; background: white; animation: dotpop 1.2s infinite; }
+.dot:nth-child(2){ animation-delay:.2s; }
+.dot:nth-child(3){ animation-delay:.4s; }
+@keyframes dotpop { 0%,
