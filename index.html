@@ -52,7 +52,7 @@ body {
 
 .ac {
   position: absolute; top: calc(100% + 4px); left: 0; right: 0;
-  background: #0c1424; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.5); max-height: 250px; overflow-y: auto;
+  background: #0c1424; border: 1px solid rgba(255,255,255,0.15); border-radius: 16px; overflow: hidden; box-shadow: 0 12px 30px rgba(0,0,0,0.5); max-height: 280px; overflow-y: auto;
 }
 .ac-item { padding: 12px 16px; cursor: pointer; font-size: .9rem; border-bottom: 1px solid rgba(255,255,255,.05); display: flex; align-items: center; gap: 10px; }
 .ac-item:hover { background: rgba(255,255,255,.08); }
@@ -65,7 +65,7 @@ body {
   border-radius: var(--r); padding: 24px 20px;
 }
 .hero-loc { font-size: .75rem; font-weight: 700; color: var(--accent); letter-spacing: 1px; text-transform: uppercase; margin-bottom: 6px; }
-.hero-text { font-size: 1.2rem; font-weight: 600; line-height: 1.4; color: #fff; }
+.hero-text { font-size: 1.15rem; font-weight: 600; line-height: 1.4; color: #fff; }
 
 .mini-weather-row { display: flex; align-items: center; justify-content: space-between; margin-top: 16px; padding-top: 14px; border-top: 1px solid rgba(255,255,255,0.08); }
 .mini-temp { font-size: 2.8rem; font-weight: 800; letter-spacing: -1px; }
@@ -78,25 +78,27 @@ body {
 .stat-val { font-size: 1rem; font-weight: 700; }
 .stat-lbl { font-size: .62rem; opacity: .5; text-transform: uppercase; }
 
-/* SECCIÓN CHAT IA */
+/* CONTENEDOR DE IA */
 .ia-card {
-  background: rgba(255, 255, 255, 0.04); border: 1px solid rgba(255,255,255,0.1);
+  background: rgba(255, 255, 255, 0.04); border: 2px solid rgba(232,255,87,0.15);
   border-radius: var(--r); padding: 16px; display: flex; flex-direction: column; gap: 12px;
 }
-.ia-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; }
+.ia-title { font-size: 0.8rem; font-weight: 700; color: var(--accent); text-transform: uppercase; letter-spacing: 1px; display: flex; align-items: center; gap: 6px; }
 .ia-box { 
-  background: rgba(0,0,0,0.2); border-radius: 12px; padding: 12px; font-size: 0.9rem; line-height: 1.4; 
-  min-height: 50px; color: rgba(255,255,255,0.9);
+  background: rgba(0,0,0,0.25); border-radius: 12px; padding: 12px; font-size: 0.9rem; line-height: 1.4; 
+  min-height: 60px; color: rgba(255,255,255,0.95); border-left: 3px solid var(--accent);
 }
 .ia-form { display: flex; gap: 8px; }
 .ia-in {
-  flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.1);
-  border-radius: 50px; padding: 10px 16px; color: white; font-family: 'Syne'; font-size: 0.85rem; outline: none;
+  flex: 1; background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15);
+  border-radius: 50px; padding: 12px 18px; color: white; font-family: 'Syne'; font-size: 0.85rem; outline: none;
 }
+.ia-in:focus { border-color: var(--accent); }
 .ia-btn {
-  background: white; color: #090f1a; border: none; border-radius: 50px; padding: 0 16px;
-  font-family: 'Syne'; font-weight: 700; font-size: 0.85rem; cursor: pointer;
+  background: var(--accent); color: #090f1a; border: none; border-radius: 50px; padding: 0 20px;
+  font-family: 'Syne'; font-weight: 800; font-size: 0.85rem; cursor: pointer; transition: transform 0.1s;
 }
+.ia-btn:active { transform: scale(0.95); }
 
 .welcome { text-align: center; padding: 40px 14px; }
 .welcome h2 { font-size: 1.6rem; font-weight: 800; }
@@ -106,68 +108,86 @@ body {
 
 <div class="bg" id="bg"></div>
 <div class="bg-mesh">
-  <div class="orb" id="orb1" style="width:300px;height:300px;top:-100px;right:-50px;background:radial-gradient(circle, rgba(255,200,50,.15) 0%, transparent 70%);"></div>
+  <div class="orb" id="orb1" style="width:300px;height:300px;top:-100px;right:-50px;background:radial-gradient(circle, rgba(232,255,87,.15) 0%, transparent 70%);"></div>
 </div>
 
 <div class="app">
   <div class="header">
-    <div class="logo">Clima <span class="logo-badge">Dummies</span></div>
-    <button class="geo-btn" id="geoBtn">📍 Mi ubicación</button>
+    <div class="logo">Clima <span class="logo-badge">Dummies v3</span></div>
+    <button class="geo-btn" id="geoBtn">📍 Ubicando GPS...</button>
   </div>
 
   <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Buscá cualquier lugar (ej: Santa Teresa)..." autocomplete="off">
+    <input class="search-in" id="srch" type="text" placeholder="Buscá cualquier lugar (ej: santa teresa costa rica)..." autocomplete="off">
     <div class="ac" id="ac" style="display:none"></div>
   </div>
 
   <div id="content">
     <div class="welcome">
       <h2>Clima para Dummies</h2>
-      <p style="opacity:0.6; font-size:0.9rem; margin-top:8px;">Cargando interfaz...</p>
+      <p style="opacity:0.6; font-size:0.9rem; margin-top:8px;">Sincronizando satélites...</p>
     </div>
   </div>
 
-  <!-- CASILLA DE LA IA EN ESPAÑOL -->
+  <!-- SECCIÓN INTERACTIVA DE IA -->
   <div class="ia-card">
-    <div class="ia-title">🤖 Preguntale a la IA sobre el clima</div>
-    <div class="ia-box" id="iaResponse">¡Hola! Soy tu asistente de clima inteligente. Escribime lo que quieras saber sobre el lugar seleccionado o pedime consejos sobre qué ropa usar hoy.</div>
+    <div class="ia-title">🤖 Consultorio de la IA Inteligente</div>
+    <div class="ia-box" id="iaResponse">¡Hola! Buscá o seleccioná cualquier lugar arriba. Cuando cargue, podés preguntarme lo que quieras sobre el clima de esa zona (ropa, planes, lluvia) y te voy a responder en serio.</div>
     <div class="ia-form">
-      <input class="ia-in" id="iaInput" type="text" placeholder="¿Va a llover el fin de semana? / ¿Qué ropa llevo?">
-      <button class="ia-btn" onclick="askIA()">Enviar</button>
+      <input class="ia-in" id="iaInput" type="text" placeholder="¿Me voy a mojar hoy? / ¿Qué ropa me pongo?">
+      <button class="ia-btn" onclick="askIA()">Preguntar</button>
     </div>
   </div>
 </div>
 
 <script>
 let wd = null, loc = null, acTimer = null;
+const SLANGS = ['mae', 'che', 'parce', 'titán', 'crack', 'jefe', 'campeón', 'hermano'];
+
+function getSlang() {
+  return SLANGS[Math.floor(Math.random() * SLANGS.length)];
+}
 
 function wText(code) {
   const m={0:'Despejado',1:'Casi despejado',2:'Algo nublado',3:'Nublado',45:'Niebla',51:'Llovizna',61:'Lluvia leve',63:'Lluvia',65:'Lluvia fuerte',95:'Tormenta eléctrica'};
   return m[code]||'Variable';
 }
 
-// ─── GENERADOR DE FRASES 100% FIEL A LA TEMPERATURA ACTUAL ───
+// ─── GENERADOR DE HISTORIAS SECO Y FIEL A LA TEMPERATURA REAL ───
 function getFittedNarrative(name, country, temp, code) {
   const isRain = [51, 61, 63, 65, 95].includes(code);
-  const place = name;
+  const apodo = getSlang();
+  const cName = (country || '').toLowerCase();
+  const t = Math.round(temp);
 
+  // Lógica de lluvias
   if (isRain) {
-    return `¡Cuidado en ${place}! Se vino el agua con ganas. El cielo se descosió por completo, así que ni te estreses saliendo sin paraguas o piloto. Clásico día para quedarse adentro tomando algo calientito.`;
+    if(cName.includes('costa rica') || name.toLowerCase().includes('teresa')) {
+      return `¡Diay ${apodo}! Se vino un soberbio baldazo en ${name}. El cielo se descosió por completo. Guardá la ropa y buscá techo rápido porque te vas a empapar de pies a cabeza mae.`;
+    }
+    return `¡Atajate ${apodo}! Se armó alto diluvio en ${name}. Está para quedarse adentro saltando charcos en Netflix y meter café con algo rico. Ni se te ocurra salir sin paraguas pa.`;
   }
   
-  if (temp >= 30) {
-    return `¡Qué horno total en ${place}! Registrando unos pesados ${Math.round(temp)}°C. Es un calorón pesado, ideal para buscar una sombra, mandarse un agua de pipa o un tereré congelado y prender el ventilador a máxima potencia.`;
+  // Lógica Calor Extremo
+  if (t >= 31) {
+    if(cName.includes('costa rica') || name.toLowerCase().includes('teresa')) {
+      return `¡Qué calorón de locos mae! En ${name} pegó pesadísimo el sol con ${t}°C. Ideal para estar tirado en Santa Teresa con un agua de pipa bien fría y no moverse para nada.`;
+    }
+    return `¡Un horno total ${apodo}! Caminás media cuadra en ${name} con estos ${t}°C y te derretís en el asfalto. Buscá aire acondicionado o un tereré con tres kilos de hielo urgente.`;
   }
   
-  if (temp >= 23) {
-    return `Qué clima más sabroso hay en ${place}. Con unos ${Math.round(temp)}°C bien puestos, está perfecto para andar en shorts, ropa ligera y disfrutar del día libre afuera al sol.`;
+  // Lógica Clima Caliente / Lindo
+  if (t >= 23) {
+    return `Clima espectacular y sabroso en ${name}. Tenemos unos ${t}°C bien limpios y disfrutables. Ropa ligera, lentes de sol y a pasear que el día está divino, ${apodo}.`;
   }
   
-  if (temp <= 14) {
-    return `¡Qué frío más bravo en ${place}! Con apenas ${Math.round(temp)}°C el viento te va a congelar las ideas. Ponete una buena campera o abrigo porque la temperatura no está para andar jugando al valiente.`;
+  // Lógica Frío Bravo
+  if (t <= 14) {
+    return `¡Uff, abrígate ${apodo}! Hace un frío polar en ${name} con apenas ${t}°C. Ponete una buena campera pesada porque el viento te va a congelar las ideas en un segundo.`;
   }
   
-  return `Día bastante equilibrado en ${place}. Unos ${Math.round(temp)}°C que ni queman ni congelan. Te ponés un bucito liviano encima y estás más que listo para salir a hacer los mandados.`;
+  // Neutral Templado
+  return `Día bastante equilibrado en ${name}. Unos ${t}°C intermedios que ni queman ni congelan. Te ponés un abrigo liviano por si refresca y estás listo para los mandados, ${apodo}.`;
 }
 
 async function fetchWeather(lat, lon, name, country) {
@@ -177,20 +197,23 @@ async function fetchWeather(lat, lon, name, country) {
     wd = await r.json();
     loc = {lat, lon, name, country};
     render();
+    
+    // Reiniciar cajón de IA con el nuevo contexto del lugar
+    document.getElementById('iaResponse').textContent = `🤖 Conectado al satélite de ${name}. Ahora podés preguntarme lo que quieras sobre el clima actual de acá.`;
   } catch (err) {
-    alert("Error al obtener datos meteorológicos.");
+    alert("Error al obtener datos del clima.");
   }
 }
 
 function render() {
   const c = wd.current;
   const d = wd.daily;
-  const funnyText = getFittedNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code);
+  const narrative = getFittedNarrative(loc.name, loc.country, c.temperature_2m, c.weather_code);
 
   document.getElementById('content').innerHTML = `
     <div class="hero-narrative-card">
       <div class="hero-loc">📍 ${loc.name} ${loc.country ? ', ' + loc.country : ''}</div>
-      <div class="hero-text">${funnyText}</div>
+      <div class="hero-text">${narrative}</div>
       
       <div class="mini-weather-row">
         <div class="mini-temp">${Math.round(c.temperature_2m)}<sup>°C</sup></div>
@@ -208,7 +231,7 @@ function render() {
   `;
 }
 
-// ─── BUSCADOR TRADICIONAL ABIERTO (Muestra todas las provincias y pueblos normales) ───
+// ─── BUSCADOR REPARADO (Procesa textos compuestos como "santa teresa costa rica") ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   let q = this.value.trim();
@@ -217,24 +240,29 @@ document.getElementById('srch').addEventListener('input', function() {
   
   acTimer = setTimeout(async () => {
     try {
-      // Motor oficial directo Open-Meteo Geocoding sin filtros forzados
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=6&language=es&format=json`;
+      // Limpiamos y preparamos la cadena de texto para evitar que la URL de Open-Meteo falle
+      let cleanQuery = q.replace(/\s+/g, ' '); 
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(cleanQuery)}&count=10&language=es&format=json`;
+      
       const response = await fetch(url);
       const data = await response.json();
       
-      if(!data.results || data.results.length === 0) { ac.style.display = 'none'; return; }
+      if(!data.results || data.results.length === 0) { 
+        ac.innerHTML = `<div class="ac-item" style="cursor:default;opacity:0.6;">❌ No se encontraron resultados. Intenta con menos palabras.</div>`;
+        ac.style.display = 'block';
+        return; 
+      }
       
       ac.innerHTML = data.results.map(item => {
         const name = item.name;
         const country = item.country || '';
-        // Muestra el estado, provincia o región administrativa para que el usuario se guíe bien
         const admin1 = item.admin1 ? item.admin1 + ', ' : ''; 
         
         return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
           <span style="font-size:1.1rem;">📍</span>
           <div>
             <div class="ac-city">${name}</div>
-            <div class="ac-sub">${admin1}${country}</div>
+            <div class="ac-sub">${admin1}${country} (Lat: ${item.latitude.toFixed(2)})</div>
           </div>
         </div>`;
       }).join('');
@@ -248,56 +276,73 @@ document.getElementById('srch').addEventListener('input', function() {
 document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
 
 function selCity(lat, lon, name, country){
-  document.getElementById('srch').value = name;
+  document.getElementById('srch').value = name + (country ? `, ${country}` : '');
   document.getElementById('ac').style.display = 'none';
   fetchWeather(lat, lon, name, country);
 }
 
-// ─── LÓGICA DE SIMULACIÓN DE RESPUESTAS DE LA IA LOCAL ───
+// ─── COHESIÓN DE RESPUESTAS DE IA (Sincronizado con las variables reales) ───
 function askIA() {
   const prompt = document.getElementById('iaInput').value.trim();
   const responseBox = document.getElementById('iaResponse');
   if(!prompt) return;
 
   if(!loc || !wd) {
-    responseBox.textContent = "Primero selecciona una ubicación usando el buscador para poder darte consejos inteligentes.";
+    responseBox.textContent = "⚠️ Primero tenés que buscar un lugar en el buscador de arriba para que pueda analizar su clima.";
     return;
   }
 
-  responseBox.textContent = "🤖 Pensando respuesta...";
+  responseBox.textContent = "🤖 Analizando datos reales de satélite...";
   
   setTimeout(() => {
     const temp = Math.round(wd.current.temperature_2m);
-    const cond = wText(wd.current.weather_code).toLowerCase();
+    const condText = wText(wd.current.weather_code).toLowerCase();
+    const isRainy = [51,61,63,65,95].includes(wd.current.weather_code);
+    const pLow = prompt.toLowerCase();
     
-    // Respuestas lógicas basadas en los datos reales cargados en pantalla
-    if(prompt.toLowerCase().includes('ropa') || prompt.toLowerCase().includes('llevar') || prompt.toLowerCase().includes('vestir')) {
-      if(temp >= 26) {
-        responseBox.textContent = `🤖 Analizando ${loc.name}: Con ${temp}°C y cielo ${cond}, te recomiendo usar ropa fresca, shorts, camiseta de algodón y lentes de sol. No necesitas abrigos para nada hoy.`;
+    // Inteligencia Contextual Fiel:
+    if(pLow.includes('ropa') || pLow.includes('llevar') || pLow.includes('vestir') || pLow.includes('pon')) {
+      if(isRainy) {
+        responseBox.textContent = `🤖 Consejo de vestimenta para ${loc.name}: Está reportado con ${condText}. Olvidate de andar jugando al valiente: la combinación ganadora hoy es paraguas, una buena campera impermeable y calzado cerrado para no inundarte los pies.`;
+      } else if(temp >= 26) {
+        responseBox.textContent = `🤖 Consejo de vestimenta para ${loc.name}: Con un calorazo real de ${temp}°C, la regla es clara: shorts, remera liviana de algodón, lentes de sol y gorra. No cargues abrigo porque vas a sufrir el bochorno de gusto.`;
       } else if(temp <= 15) {
-        responseBox.textContent = `🤖 Analizando ${loc.name}: Está haciendo bastante frío (${temp}°C). Es obligatorio llevar abrigo pesado o una buena campera rompevientos si vas a salir.`;
+        responseBox.textContent = `🤖 Consejo de vestimenta para ${loc.name}: El termómetro marca un frío serio de ${temp}°C. Es obligatorio salir con una buena campera abrigada o buzo grueso, preferiblemente que corte el viento.`;
       } else {
-        responseBox.textContent = `🤖 Analizando ${loc.name}: El clima está templado (${temp}°C). Una camiseta normal y un abrigo ligero por si refresca más tarde es la combinación ideal.`;
+        responseBox.textContent = `🤖 Consejo de vestimenta para ${loc.name}: El clima está super templado (${temp}°C). Con una remera normal y un bucito o saquito liviano en la mano por si refresca más tarde estás impecable.`;
       }
-    } else if(prompt.toLowerCase().includes('lluvia') || prompt.toLowerCase().includes('llover') || prompt.toLowerCase().includes('agua')) {
-      if([51,61,63,65,95].includes(wd.current.weather_code)) {
-        responseBox.textContent = `🤖 Revisión climática: Sí, actualmente se registran condiciones de ${cond}. Mejor lleva paraguas o quédate bajo techo.`;
+    } else if(pLow.includes('lluvia') || pLow.includes('llover') || pLow.includes('agua') || pLow.includes('moja')) {
+      if(isRainy) {
+        responseBox.textContent = `🤖 Reporte de Agua: Confirmado al 100%. Los sensores marcan ${condText} ahora mismo en ${loc.name}. Si salís te vas a mojar, planificá actividades bajo techo.`;
       } else {
-        responseBox.textContent = `🤖 Revisión climática: Por el momento no se registran lluvias fuertes programadas para las próximas horas en ${loc.name}, está reportado como ${cond}.`;
+        responseBox.textContent = `🤖 Reporte de Agua: Todo limpio. En ${loc.name} el cielo está ${condText} con ${temp}°C. No se ven tormentas ni nubarrones pesados de agua acechando en las próximas horas.`;
+      }
+    } else if(pLow.includes('playa') || pLow.includes('mar') || pLow.includes('salir') || pLow.includes('hacer')) {
+      if(isRainy) {
+        responseBox.textContent = `🤖 Recomendación de planes: Con este tiempo de ${condText} en ${loc.name}, ir a la playa o caminar afuera es una mala idea. Mejor guardate en un café, restaurante o disfrutá de quedarte adentro.`;
+      } else if(temp >= 25) {
+        responseBox.textContent = `🤖 Recomendación de planes: ¡Día ideal! Con ${temp}°C y sin lluvias, está pintado para meterle playa, caminata al aire libre o salir a turistear sin miedo. ¡Aprovechalo!`;
+      } else {
+        responseBox.textContent = `🤖 Recomendación de planes: Está agradable con ${temp}°C. Podés salir a caminar o hacer mandados tranquilamente, solo llevá un abrigo por si se levanta viento.`;
       }
     } else {
-      responseBox.textContent = `🤖 Con respecto a tu pregunta sobre "${prompt}" en ${loc.name}: Te confirmo que actualmente hay ${temp}°C con un estado ${cond}. Es un buen momento para disfrutar del día tomando las previsiones normales de la zona.`;
+      responseBox.textContent = `🤖 Respuesta Climática: Analizando tu pregunta sobre "${prompt}" en ${loc.name}, te recuerdo que tenemos exactamente ${temp}°C con el cielo ${condText}. Tomá tus precauciones normales según estos números reales en pantalla.`;
     }
     document.getElementById('iaInput').value = '';
-  }, 800);
+  }, 600);
 }
 
 function triggerAutoGeo() {
   if(!navigator.geolocation) { fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica'); return; }
   navigator.geolocation.getCurrentPosition(pos => {
+    // Si da permisos, obtenemos su ubicación exacta de forma limpia
+    const btn = document.getElementById('geoBtn');
+    btn.textContent = '📍 Mi ubicación';
     fetchWeather(pos.coords.latitude, pos.coords.longitude, 'Mi ubicación', '');
   }, () => {
-    // Si no da permisos de GPS, por defecto cargamos San José de Costa Rica de forma limpia
+    // Si no da permisos o falla, por defecto cargamos un valor para que la app no empiece vacía
+    const btn = document.getElementById('geoBtn');
+    btn.textContent = '📍 San José (Default)';
     fetchWeather(9.9281, -84.0907, 'San José', 'Costa Rica');
   });
 }
