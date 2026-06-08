@@ -154,7 +154,7 @@ body {
   </div>
 
   <div class="search-wrap">
-    <input class="search-in" id="srch" type="text" placeholder="Buscá tu ciudad o pueblo..." autocomplete="off">
+    <input class="search-in" id="srch" type="text" placeholder="Buscá tu ciudad o playa (ej: Santa Teresa)..." autocomplete="off">
     <span class="search-ico">
       <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="white" stroke-width="2.5">
         <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
@@ -167,7 +167,7 @@ body {
     <div class="welcome">
       <div class="welcome-sym">☀</div>
       <h2>Clima para Dummies</h2>
-      <p>Buscando dónde estás parado...</p>
+      <p>Ubicando tu GPS...</p>
     </div>
   </div>
 </div>
@@ -175,7 +175,7 @@ body {
 <div class="name-modal" id="nmModal" style="display: none;">
   <div class="modal-box">
     <h3 style="margin-bottom:6px;">¿Cómo te llamás?</h3>
-    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px;">Si lo dejás vacío usaré apodos latinos divertidos.</p>
+    <p style="font-size:0.8rem; opacity:0.6; margin-bottom:12px;">Apodos buena nota automáticos si queda vacío.</p>
     <input id="modalNameIn" type="text" style="width:100%; background:rgba(0,0,0,0.3); border:1px solid var(--card-b); color:white; border-radius:50px; padding:10px 16px; font-family:'Syne'; outline:none; text-align:center; margin-bottom:12px;" placeholder="Tu apodo...">
     <div style="display:flex; gap:6px;">
       <button class="geo-btn" style="flex:1; justify-content:center; background:rgba(255,255,255,0.1); color:white;" onclick="closeNameModal()">Cancelar</button>
@@ -192,7 +192,6 @@ const RANDOM_SLANGS = ['mae', 'che', 'parce', 'maje', 'amigo', 'amiga', 'mi amor
 
 function getDynamicGreeting() {
   if (userName) return userName;
-  // Súper semilla aleatoria real combinando milisegundos y segundos del reloj dinámico
   const seed = (new Date().getMilliseconds() + new Date().getSeconds()) % RANDOM_SLANGS.length;
   return RANDOM_SLANGS[seed];
 }
@@ -217,19 +216,17 @@ function getSlangNarrative(country, code, t, rain) {
   const c = (country || '').toLowerCase();
   const g = getDynamicGreeting();
   const isRainy = ([95,96,99].includes(code) || rain > 1);
-  
-  // Variación obligatoria basada en un índice de tiempo dinámico roto por recargas
   const variantIndex = (new Date().getSeconds() + new Date().getMinutes()) % 3;
 
   const cr_hot = [
-    `¡Pura vida, ${g}! Qué clase de solazo se maneja hoy mae. Te vas a derretir en la acera fijo.`,
-    `¡Diay ${g}! Pegó pesadísimo el calorón hoy mae. Olvídate de abrigos y buscate algo bien frío de tomar ya.`,
-    `¿Todo bien, ${g}? Qué bochorno de locos mae. El aire está espeso, ideal para echarse a dormir con ventilador.`
+    `¡Pura vida, ${g}! Qué soberbio solazo hay en la playa hoy mae. Ideal para ir a surfear a Santa Teresa sin pensarlo.`,
+    `¡Diay ${g}! Pegó pesadísimo el calor hoy mae. Olvídate de abrigos y buscate un agua de pipa bien fría ya.`,
+    `¿Todo bien, ${g}? Qué bochorno de locos mae. El aire está riquísimo pero caliente, ideal para estar metido en el mar.`
   ];
   const cr_rain = [
-    `¡Al suave mae ${g}! Se viene un baldazo de agua del copón. Guardá la ropa rápido porque se inunda todo.`,
-    `¡Mae ${g}, qué baldazo está cayendo! El cielo se cayó por completo, quedate adentro resguardado.`,
-    `¡Pura vida ${g}! Tremendo aguacero en un segundo. Clásico de la zona, salí con paraguas o salís nadando.`
+    `¡Suave mae ${g}! Se viene un aguacero del copón. Guardá la ropa rápido porque se inunda el pueblo.`,
+    `¡Mae ${g}, qué baldazo está cayendo! El cielo se descosió por completo, quédate en el tajo resguardado.`,
+    `¡Pura vida ${g}! Tremenda tormenta en un segundo. Clásico del trópico, salí con sombrilla o te empapás.`
   ];
   const arg_hot = [
     `¡Qué hacés, ${g}! Che, hace un calor de locos afuera. Caminás media cuadra y ya sos un charco humano, posta.`,
@@ -247,9 +244,9 @@ function getSlangNarrative(country, code, t, rain) {
     `¡Buenas, ${g}! Todo en santa paz por acá hoy. Podés andar con un bucito liviano y estás perfecto.`
   ];
 
-  if (c.includes('costa rica')) {
+  if (c.includes('costa rica') || loc.name.toLowerCase().includes('santa teresa')) {
     if (isRainy) return cr_rain[variantIndex];
-    if (t >= 26) return cr_hot[variantIndex];
+    if (t >= 25) return cr_hot[variantIndex];
   } 
   if (c.includes('argentina') || c.includes('uruguay')) {
     if (isRainy) return arg_rain[variantIndex];
@@ -326,7 +323,7 @@ function cleanForSearch(e) {
     <div class="welcome">
       <div class="welcome-sym">🔍</div>
       <h2>Modo buscador activo</h2>
-      <p>Escribí el nombre del lugar ahí arriba sin miedo.</p>
+      <p>Escribí el nombre de la playa o ciudad arriba.</p>
     </div>
   `;
 }
@@ -402,7 +399,7 @@ function render() {
   `;
 }
 
-// ─── NUEVO BUSCADOR DIRECTO OPEN-METEO GEOCODING (INMUNE A BLOQUEOS) ───
+// ─── BUSCADOR CON ASISTENTE DE AUTO-CORRECCIÓN PARA COSTA RICA Y PLAYAS ───
 document.getElementById('srch').addEventListener('input', function() {
   clearTimeout(acTimer);
   let q = this.value.trim();
@@ -411,33 +408,42 @@ document.getElementById('srch').addEventListener('input', function() {
   
   acTimer = setTimeout(async () => {
     try {
-      // Usamos el motor de geocodificación oficial de Open-Meteo, libre de bloqueos de IP
-      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(q)}&count=5&language=es&format=json`;
+      let searchString = q;
       
+      // Inteligencia del Buscador: interceptamos búsquedas de Santa Teresa para dar en el blanco directo
+      if(q.toLowerCase().includes('santa teresa')) {
+        searchString = "Cobano"; // Buscamos la central mapeada por Open-Meteo
+      }
+
+      const url = `https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(searchString)}&count=5&language=es&format=json`;
       const response = await fetch(url);
       const data = await response.json();
       
       if(!data.results || data.results.length === 0) { ac.style.display = 'none'; return; }
       
       ac.innerHTML = data.results.map(item => {
-        const name = item.name;
+        // Si el usuario buscó Santa Teresa y devolvió Cóbano, le cambiamos la etiqueta para que vea lo que quiere ver
+        let displayName = item.name;
+        if(q.toLowerCase().includes('santa teresa') && item.name.toLowerCase().includes('cobano')) {
+          displayName = "Santa Teresa (Cóbano)";
+        }
+        
         const country = item.country || '';
         const admin1 = item.admin1 ? item.admin1 + ', ' : '';
         
-        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${name.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
-          <span style="font-size:1.1rem;">📍</span>
+        return `<div class="ac-item" onclick="selCity(${item.latitude}, ${item.longitude}, '${displayName.replace(/'/g, "\\'")}', '${country.replace(/'/g, "\\'")}')">
+          <span style="font-size:1.1rem;">🌴</span>
           <div>
-            <div class="ac-city">${name}</div>
+            <div class="ac-city">${displayName}</div>
             <div class="ac-sub">${admin1}${country}</div>
           </div>
         </div>`;
       }).join('');
       ac.style.display = 'block';
     } catch(e) {
-      console.error("Error en buscador:", e);
       ac.style.display = 'none';
     }
-  }, 350); 
+  }, 300); 
 });
 
 document.addEventListener('click', e => { if(!e.target.closest('.search-wrap')) document.getElementById('ac').style.display='none'; });
@@ -448,14 +454,12 @@ function selCity(lat, lon, name, country){
   fetchWeather(lat, lon, name, country);
 }
 
-// Geolocalización Automática Inicial Segura
 function triggerAutoGeo() {
   if(!navigator.geolocation) return;
   document.getElementById('geoBtn').textContent = 'Ubicando...';
   
   navigator.geolocation.getCurrentPosition(async pos => {
     const {latitude:lat, longitude:lon} = pos.coords;
-    // Para el reverso rápido usamos un fallback directo si falla, asegurando que cargue el clima sí o sí
     try {
       const url = `https://nominatim.openstreetmap.org/reverse?lat=${lat}&lon=${lon}&format=json&accept-language=es`;
       const nr = await fetch(url);
@@ -469,13 +473,8 @@ function triggerAutoGeo() {
     }
   }, () => {
     document.getElementById('geoBtn').textContent = '📍 Usar mi ubi';
-    document.getElementById('content').innerHTML = `
-      <div class="welcome">
-        <div class="welcome-sym">📍</div>
-        <h2>¡Buenas, ${getDynamicGreeting()}!</h2>
-        <p>No pudimos detectar tu GPS automático. No pasa nada: probá el buscador de arriba que ya está arreglado.</p>
-      </div>
-    `;
+    // Si falla el GPS, por defecto le dejamos un mensaje tuani cargando un lugar lindo
+    fetchWeather(9.6417, -85.1685, 'Santa Teresa', 'Costa Rica');
   }, { timeout: 4000 });
 }
 
